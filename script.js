@@ -5,7 +5,7 @@
  * Change API_URL to your Cloudflare Worker URL.
  */
 
-const API_URL = "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/check-dr";
+const API_URL = "https://bulk-dr-checker.manmicheal214.workers.dev/check-dr";
 
 const MAX_DOMAINS = 100;
 const RESULTS_PER_PAGE = 25;
