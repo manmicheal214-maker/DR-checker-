@@ -1,6 +1,6 @@
 # Bulk Domain Rating Checker
 
-A simple bulk SEO tool that allows users to check Ahrefs Domain Rating (DR) for up to 100 domains.
+A simple bulk SEO tool that checks Ahrefs Domain Rating (DR) for up to 100 domains.
 
 ## Architecture
 
@@ -11,7 +11,7 @@ GitHub Pages
      v
 Cloudflare Worker
      |
-     | Secure API request
+     | Authenticated requests (5 concurrent, 1 domain/request)
      v
 Ahrefs Batch Analysis API
      |
@@ -27,199 +27,85 @@ Results + CSV
 
 ## Features
 
-* Check up to 100 domains
-* Automatic domain normalization
-* Duplicate removal
-* Domain validation
-* Ahrefs Domain Rating results
-* DR color visualization
-* Average DR
-* Successful/failed counts
-* Search results
-* Sort by domain, DR, or status
-* CSV export
-* Responsive design
-* API key protected by Cloudflare Worker
-* No database required
+- Check up to 100 domains
+- Automatic domain normalization and duplicate removal
+- Domain validation
+- Concurrent Ahrefs requests with bounded concurrency
+- Retry handling for rate limits and transient 5xx errors
+- Request timeouts
+- Average DR and success/failure counts
+- Search and sort results
+- Pagination
+- CSV export
+- Responsive design
+- Ahrefs API key protected by a Cloudflare Worker
+- No database required
 
----
-
-# 1. Create GitHub Repository
-
-Create a new GitHub repository.
-
-Example:
+## Files
 
 ```text
-bulk-dr-checker
+index.html   # GitHub Pages frontend
+script.js    # Frontend behavior and API client
+style.css    # Frontend styles
+worker.js    # Cloudflare Worker API
+README.md    # Setup and usage documentation
 ```
 
-Upload:
+## 1. Enable GitHub Pages
 
-```text
-index.html
-style.css
-script.js
-README.md
-worker/worker.js
-```
-
-Do NOT put your Ahrefs API key anywhere in these GitHub files.
-
----
-
-# 2. Enable GitHub Pages
-
-Open:
-
-```text
-Repository
-→ Settings
-→ Pages
-```
-
-Under:
-
-```text
-Build and deployment
-```
-
-Select:
-
-```text
-Deploy from a branch
-```
-
-Choose:
-
-```text
-Branch: main
-Folder: / (root)
-```
-
-Save.
+In the repository settings, open **Pages** and select **Deploy from a branch**, then choose the `main` branch and `/ (root)` folder.
 
 GitHub will provide a URL similar to:
 
 ```text
-https://YOUR-USERNAME.github.io/bulk-dr-checker/
+https://YOUR-USERNAME.github.io/REPOSITORY-NAME/
 ```
 
----
+## 2. Create the Cloudflare Worker
 
-# 3. Create Cloudflare Worker
+Create a Cloudflare Worker and deploy the contents of `worker.js`.
 
-Create a Cloudflare account.
-
-Create a new Worker.
-
-Copy the contents of:
+The Worker exposes:
 
 ```text
-worker/worker.js
+POST /check-dr
 ```
 
-into the Worker.
+## 3. Configure Worker secrets and variables
 
-Deploy the Worker.
-
-You will receive a URL similar to:
-
-```text
-https://bulk-dr-checker.YOUR-SUBDOMAIN.workers.dev
-```
-
----
-
-# 4. Add Ahrefs API Secret
-
-In Cloudflare Worker settings, add a secret:
+Create the following Worker secret:
 
 ```text
 AHREFS_API_KEY
 ```
 
-Value:
-
-```text
-YOUR_AHREFS_API_KEY
-```
-
-Never put this value into:
-
-```text
-index.html
-script.js
-```
-
-or any GitHub file.
-
----
-
-# 5. Configure Allowed Origin
-
-Add a Worker environment variable:
+Create the following Worker environment variable:
 
 ```text
 ALLOWED_ORIGIN
 ```
 
-Set it to your GitHub Pages URL.
-
-Example:
+Set `ALLOWED_ORIGIN` to the **origin only**, without a path. For example:
 
 ```text
 https://YOUR-USERNAME.github.io
 ```
 
-If your project is:
+`ALLOWED_ORIGIN` is required. The Worker rejects browser requests from other origins.
 
-```text
-https://YOUR-USERNAME.github.io/bulk-dr-checker/
-```
+Never put the Ahrefs API key in `index.html`, `script.js`, or any other GitHub Pages file.
 
-the origin is:
+## 4. Configure the frontend
 
-```text
-https://YOUR-USERNAME.github.io
-```
-
-Do not include the `/bulk-dr-checker/` path in `ALLOWED_ORIGIN`.
-
----
-
-# 6. Configure Frontend
-
-Open:
-
-```text
-script.js
-```
-
-Find:
+Set `API_URL` in `script.js` to your deployed Worker endpoint:
 
 ```javascript
 const API_URL = "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/check-dr";
 ```
 
-Replace it with your actual Cloudflare Worker endpoint.
+## 5. Test
 
-Example:
-
-```javascript
-const API_URL =
-  "https://bulk-dr-checker.example.workers.dev/check-dr";
-```
-
-Commit the change.
-
----
-
-# 7. Test
-
-Open your GitHub Pages website.
-
-Paste:
+Paste one domain per line, for example:
 
 ```text
 example.com
@@ -228,75 +114,27 @@ google.com
 hubspot.com
 ```
 
-Click:
+Click **Check DR**.
 
-```text
-Check DR
-```
+The frontend sends all domains in one request. The Worker validates and deduplicates them, then checks domains concurrently with a bounded pool so large requests complete much faster than fully sequential processing.
 
-The browser sends the domains to Cloudflare Worker.
+## Security
 
-Cloudflare Worker sends the authenticated request to Ahrefs.
+The Ahrefs API key must remain inside the Cloudflare Worker secret store.
 
-The API key never reaches the browser.
+Never commit an API key to GitHub. If one is accidentally exposed, revoke it immediately and create a replacement.
 
----
+The Worker also requires an explicit `ALLOWED_ORIGIN` and does not use a wildcard CORS fallback.
 
-# Security
+## Ahrefs API
 
-The Ahrefs API key MUST remain inside the Cloudflare Worker secret.
+This project uses the Ahrefs Batch Analysis API. Before production use, verify the current Ahrefs documentation for endpoint, authentication, request schema, response schema, limits, pricing, licensing, and attribution requirements.
 
-Never do this:
+The Worker isolates the Ahrefs request and response parsing so API changes can be handled without changing the frontend.
 
-```javascript
-const AHREFS_API_KEY = "your-key";
-```
+## Local Frontend Testing
 
-inside the GitHub Pages frontend.
-
-Never commit an API key to GitHub.
-
-If an API key is accidentally committed, revoke it immediately and create a new key.
-
----
-
-# Ahrefs API
-
-This project uses the Ahrefs Batch Analysis API.
-
-Before production deployment, verify the current Ahrefs API documentation for:
-
-* endpoint
-* authentication
-* request body
-* target format
-* selected metrics
-* response format
-* API limits
-* pricing/usage
-* licensing requirements
-
-The API implementation is intentionally isolated in:
-
-```text
-worker/worker.js
-```
-
-The response parser is isolated in:
-
-```text
-parseAhrefsResults()
-```
-
-This makes future Ahrefs API changes easier to implement.
-
----
-
-# Local Frontend Testing
-
-Because the frontend calls the Cloudflare Worker, it is best to serve the files through a local HTTP server rather than opening `index.html` directly.
-
-For example, with Python:
+Serve the frontend over HTTP instead of opening `index.html` directly. For example:
 
 ```bash
 python3 -m http.server 8000
@@ -308,11 +146,9 @@ Then open:
 http://localhost:8000
 ```
 
-Remember that the Cloudflare Worker CORS configuration must allow your local development origin if you want to test locally.
+For local browser testing, set `ALLOWED_ORIGIN` to the exact local origin (`http://localhost:8000`) while testing, then restore the production GitHub Pages origin.
 
----
-
-# CSV
+## CSV
 
 Results can be exported as:
 
@@ -320,7 +156,7 @@ Results can be exported as:
 bulk-dr-results-YYYY-MM-DD.csv
 ```
 
-Example:
+The export includes:
 
 ```csv
 Domain,Domain Rating,Status
@@ -329,91 +165,32 @@ ahrefs.com,91,Success
 example.org,,Not Found
 ```
 
----
+## Troubleshooting
 
-# Troubleshooting
+### "ALLOWED_ORIGIN is not configured"
 
-## "Please configure your Cloudflare Worker URL"
+Add the `ALLOWED_ORIGIN` Worker environment variable and redeploy if required by your deployment setup.
 
-Open:
+### "Origin is not allowed"
 
-```text
-script.js
-```
+Make sure the browser origin exactly matches `ALLOWED_ORIGIN`, including `https://` and excluding any path.
 
-and replace the placeholder Worker URL.
+### "Ahrefs API authentication failed"
 
----
+Check the `AHREFS_API_KEY` Worker secret. Do not put the key in GitHub.
 
-## "Ahrefs API authentication failed"
+### "Ahrefs API rate limit reached"
 
-Check:
+The Worker retries 429 responses using the API's `Retry-After` header when available. Large requests may still be limited by the Ahrefs account's quota or rate limits.
 
-```text
-AHREFS_API_KEY
-```
+### Request timeout
 
-in Cloudflare Worker secrets.
+The frontend allows up to 90 seconds for a bulk request. If a request still times out, retry with fewer domains or inspect the Worker and Ahrefs API logs.
 
-Do not put the key in GitHub.
+## Future Improvements
 
----
-
-## CORS error
-
-Check:
-
-```text
-ALLOWED_ORIGIN
-```
-
-in Cloudflare.
-
-For GitHub Pages:
-
-```text
-https://YOUR-USERNAME.github.io
-```
-
----
-
-## Ahrefs API request failed
-
-Check the current Ahrefs API documentation and verify the request schema in:
-
-```text
-worker/worker.js
-```
-
-The Batch Analysis API schema can change, so the request and response parser may need updating.
-
----
-
-# Future Improvements
-
-Possible future features:
-
-* 1,000+ domain processing through queued batches
-* User accounts
-* Saved projects
-* DR history
-* Historical charts
-* Scheduled checks
-* Email alerts
-* Google Sheets export
-* Excel export
-* Backlink metrics
-* Referring domains
-* Organic traffic
-* Competitor comparison
-* API access for your own users
-* Usage limits
-* Payment/subscription system
-
----
+Possible future features include queued jobs for very large lists, saved projects, DR history, scheduled checks, additional Ahrefs metrics, usage limits, and authentication for multi-user deployments.
 
 ## License
 
-This project is provided as a starter implementation.
-
-Review Ahrefs API terms, licensing requirements, and attribution requirements before using the application commercially.
+This project is provided as a starter implementation. Review Ahrefs API terms, licensing requirements, and attribution requirements before using the application commercially.
