@@ -1,141 +1,103 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Check Ahrefs Domain Rating for up to 100 domains at once.">
   <title>Bulk Domain Rating Checker</title>
-  <meta name="description" content="Check Domain Rating for up to 100 domains at once.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <main class="container">
+    <header class="hero">
+      <div class="badge">SEO TOOL</div>
+      <h1>Bulk Domain Rating Checker</h1>
+      <p>Check Ahrefs Domain Rating for up to 100 domains at once.</p>
+    </header>
 
-```
-<header class="hero">
-  <div class="badge">SEO TOOL</div>
-  <h1>Bulk Domain Rating Checker</h1>
-  <p>Check Ahrefs Domain Rating for up to 100 domains at once.</p>
-</header>
+    <section class="card input-card" aria-labelledby="input-heading">
+      <div class="section-header">
+        <div>
+          <h2 id="input-heading">Enter Domains</h2>
+          <p>One domain per line</p>
+        </div>
+        <span id="domainCounter" class="counter" aria-live="polite">0 / 100</span>
+      </div>
 
-<section class="card input-card">
+      <textarea
+        id="domainInput"
+        placeholder="example.com&#10;ahrefs.com&#10;google.com&#10;hubspot.com"
+        spellcheck="false"
+        aria-label="Domain list"
+        aria-describedby="inputError"
+      ></textarea>
 
-  <div class="section-header">
-    <div>
-      <h2>Enter Domains</h2>
-      <p>One domain per line</p>
-    </div>
+      <div id="inputError" class="error-message hidden" role="status" aria-live="polite"></div>
 
-    <span id="domainCounter" class="counter">0 / 100</span>
-  </div>
+      <div class="actions">
+        <button id="checkButton" class="btn btn-primary" type="button">Check DR</button>
+        <button id="clearButton" class="btn btn-secondary" type="button">Clear</button>
+      </div>
+    </section>
 
-  <textarea
-    id="domainInput"
-    placeholder="example.com&#10;ahrefs.com&#10;google.com&#10;hubspot.com"
-    spellcheck="false"
-    aria-label="Domain list"
-  ></textarea>
+    <section id="loading" class="card loading-card hidden" aria-live="polite" aria-busy="false">
+      <div class="spinner" aria-hidden="true"></div>
+      <div>
+        <strong>Checking Domain Ratings...</strong>
+        <p>Please wait while the domains are being analyzed.</p>
+      </div>
+    </section>
 
-  <div id="inputError" class="error-message hidden"></div>
+    <section id="errorCard" class="card error-card hidden" role="alert">
+      <strong>Something went wrong</strong>
+      <p id="serverError"></p>
+    </section>
 
-  <div class="actions">
-    <button id="checkButton" class="btn btn-primary">
-      Check DR
-    </button>
+    <section id="summary" class="summary-grid hidden" aria-label="Results summary">
+      <div class="summary-card"><span>Total Domains</span><strong id="totalCount">0</strong></div>
+      <div class="summary-card"><span>Successful</span><strong id="successCount">0</strong></div>
+      <div class="summary-card"><span>Failed</span><strong id="failedCount">0</strong></div>
+      <div class="summary-card"><span>Average DR</span><strong id="averageDr">—</strong></div>
+    </section>
 
-    <button id="clearButton" class="btn btn-secondary">
-      Clear
-    </button>
-  </div>
+    <section id="resultsSection" class="card results-card hidden" aria-labelledby="results-heading">
+      <div class="results-header">
+        <div>
+          <h2 id="results-heading">Results</h2>
+          <p>Domain Rating results from Ahrefs.</p>
+        </div>
+        <button id="downloadButton" class="btn btn-success" type="button">Download CSV</button>
+      </div>
 
-</section>
+      <input
+        type="search"
+        id="searchInput"
+        class="search-input"
+        placeholder="Search domains..."
+        aria-label="Search results"
+      >
 
-<section id="loading" class="card loading-card hidden">
-  <div class="spinner"></div>
-  <div>
-    <strong>Checking Domain Ratings...</strong>
-    <p>Please wait while the domains are being analyzed.</p>
-  </div>
-</section>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" data-sort="domain" class="sortable">Domain</th>
+              <th scope="col" data-sort="domain_rating" class="sortable">DR</th>
+              <th scope="col" data-sort="status" class="sortable">Status</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+      <div id="paginationContainer" class="pagination-container" aria-live="polite"></div>
+    </section>
 
-<section id="errorCard" class="card error-card hidden">
-  <strong>Something went wrong</strong>
-  <p id="serverError"></p>
-</section>
-
-<section id="summary" class="summary-grid hidden">
-
-  <div class="summary-card">
-    <span>Total Domains</span>
-    <strong id="totalCount">0</strong>
-  </div>
-
-  <div class="summary-card">
-    <span>Successful</span>
-    <strong id="successCount">0</strong>
-  </div>
-
-  <div class="summary-card">
-    <span>Failed</span>
-    <strong id="failedCount">0</strong>
-  </div>
-
-  <div class="summary-card">
-    <span>Average DR</span>
-    <strong id="averageDr">—</strong>
-  </div>
-
-</section>
-
-<section id="resultsSection" class="card results-card hidden">
-
-  <div class="results-header">
-    <div>
-      <h2>Results</h2>
-      <p>Domain Rating results from Ahrefs.</p>
-    </div>
-
-    <button id="downloadButton" class="btn btn-success">
-      Download CSV
-    </button>
-  </div>
-
-  <input
-    type="search"
-    id="searchInput"
-    class="search-input"
-    placeholder="Search domains..."
-    aria-label="Search results"
-  >
-
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th data-sort="domain" class="sortable">Domain</th>
-          <th data-sort="domain_rating" class="sortable">DR</th>
-          <th data-sort="status" class="sortable">Status</th>
-        </tr>
-      </thead>
-
-      <tbody id="resultsBody"></tbody>
-    </table>
-  </div>
-
-</section>
-
-<footer>
-  <p>
-    Domain Rating data provided through Ahrefs API.
-  </p>
-</footer>
-```
-
+    <footer>
+      <p>Domain Rating data provided through Ahrefs API.</p>
+    </footer>
   </main>
 
-  <script src="script.js"></script>
-
+  <script src="script.js" defer></script>
 </body>
 </html>
