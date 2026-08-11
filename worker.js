@@ -4,12 +4,11 @@
  * Required secret:
  *   AHREFS_API_KEY
  *
- * Optional variable:
- *   ALLOWED_ORIGIN (informational; CORS is intentionally public because
- *   the GitHub Pages frontend is a public browser application.)
+ * The worker uses Ahrefs' Domain Rating Free endpoint. As of
+ * August 10, 2026, Ahrefs requires an API key for this endpoint.
  */
 
-const AHREFS_ENDPOINT = "https://api.ahrefs.com/v3/batch-analysis/batch-analysis";
+const AHREFS_ENDPOINT = "https://api.ahrefs.com/v3/public/domain-rating-free";
 const MAX_DOMAINS = 100;
 const CONCURRENCY = 5;
 const FETCH_TIMEOUT_MS = 30000;
@@ -18,11 +17,6 @@ const RETRY_BASE_MS = 1000;
 const MAX_RETRY_MS = 10000;
 const RETRYABLE = new Set([429, 500, 502, 503, 504]);
 
-/*
- * This endpoint is called directly from a public GitHub Pages site.
- * No browser credentials/cookies are used, so wildcard CORS is appropriate.
- * The Ahrefs API key never leaves this Worker.
- */
 function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
@@ -48,19 +42,15 @@ function sleep(ms) {
 
 function normalizeDomain(value) {
   if (typeof value !== "string") return null;
-
   let input = value.trim();
   if (!input) return null;
 
   try {
     if (!/^https?:\/\//i.test(input)) input = `https://${input}`;
-
     const url = new URL(input);
     let hostname = url.hostname.toLowerCase();
-
     if (hostname.endsWith(".")) hostname = hostname.slice(0, -1);
     if (hostname.startsWith("www.")) hostname = hostname.slice(4);
-
     return hostname;
   } catch {
     return null;
@@ -69,7 +59,6 @@ function normalizeDomain(value) {
 
 function isValidDomain(domain) {
   if (!domain || domain.length > 253) return false;
-
   const labels = domain.split(".");
   if (labels.length < 2) return false;
 
@@ -85,11 +74,9 @@ function isValidDomain(domain) {
 
 function retryDelay(response, attempt) {
   const retryAfter = Number(response.headers.get("Retry-After"));
-
   if (Number.isFinite(retryAfter) && retryAfter >= 0) {
     return Math.min(retryAfter * 1000, MAX_RETRY_MS);
   }
-
   return Math.min(RETRY_BASE_MS * 2 ** (attempt - 1), MAX_RETRY_MS);
 }
 
@@ -116,12 +103,8 @@ async function fetchWithRetry(url, options) {
       await sleep(retryDelay(response, attempt));
     } catch (error) {
       lastError = error;
-
       if (attempt === MAX_ATTEMPTS) throw error;
-
-      await sleep(
-        Math.min(RETRY_BASE_MS * 2 ** (attempt - 1), MAX_RETRY_MS)
-      );
+      await sleep(Math.min(RETRY_BASE_MS * 2 ** (attempt - 1), MAX_RETRY_MS));
     } finally {
       clearTimeout(timeoutId);
     }
@@ -132,68 +115,63 @@ async function fetchWithRetry(url, options) {
 }
 
 function parseResult(domain, data) {
-  let row = null;
+  const rating = Number(data?.domain_rating?.domain_rating);
 
-  if (Array.isArray(data)) row = data[0];
-  else if (Array.isArray(data?.results)) row = data.results[0];
-  else if (Array.isArray(data?.data)) row = data.data[0];
-  else if (Array.isArray(data?.targets)) row = data.targets[0];
-  else if (data?.targets && typeof data.targets === "object") row = data.targets;
-  else if (data && typeof data === "object") row = data;
-
-  if (!row || typeof row !== "object") {
-    return { domain, domain_rating: null, status: "not_found" };
+  if (!Number.isFinite(rating)) {
+    return {
+      domain,
+      domain_rating: null,
+      status: "not_found",
+    };
   }
-
-  const raw =
-    row.domain_rating ??
-    row.domainRating ??
-    row.dr ??
-    row.DomainRating ??
-    row.metrics?.domain_rating;
-
-  const rating =
-    raw === null || raw === undefined || raw === "" ? null : Number(raw);
 
   return {
     domain,
-    domain_rating: Number.isFinite(rating) ? rating : null,
-    status: Number.isFinite(rating) ? "success" : "not_found",
+    domain_rating: rating,
+    status: "success",
   };
 }
 
 async function checkDomain(domain, apiKey) {
   try {
-    const response = await fetchWithRetry(AHREFS_ENDPOINT, {
-      method: "POST",
+    const url = new URL(AHREFS_ENDPOINT);
+    url.searchParams.set("target", `https://${domain}`);
+    url.searchParams.set("output", "json");
+
+    const response = await fetchWithRetry(url.toString(), {
+      method: "GET",
       headers: {
         Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({
-        select: ["domain_rating"],
-        targets: [{ url: domain, mode: "domain", protocol: "both" }],
-        output: "json",
-      }),
     });
 
+    const data = await response.json().catch(() => ({}));
+
     if (!response.ok) {
-      const details = await response.json().catch(() => ({}));
-      console.error("Ahrefs API error", response.status, details);
+      console.error("Ahrefs API error", response.status, data);
 
       let error = "Ahrefs API request failed.";
-      if (response.status === 401) error = "Ahrefs API authentication failed. Check AHREFS_API_KEY.";
-      else if (response.status === 403) error = "Ahrefs API access was denied. Check your Ahrefs account/API permissions.";
-      else if (response.status === 429) error = "Ahrefs API rate limit reached. Please try again later.";
-      else if (response.status >= 500) error = "Ahrefs API is temporarily unavailable.";
+      if (response.status === 401) {
+        error = "Ahrefs API authentication failed. Check AHREFS_API_KEY.";
+      } else if (response.status === 403) {
+        error = "Ahrefs API access was denied. Check your Ahrefs account/API permissions.";
+      } else if (response.status === 429) {
+        error = "Ahrefs API rate limit reached. Please try again later.";
+      } else if (response.status >= 500) {
+        error = "Ahrefs API is temporarily unavailable.";
+      } else if (data?.error?.message) {
+        error = `Ahrefs API: ${data.error.message}`;
+      } else if (data?.message) {
+        error = `Ahrefs API: ${data.message}`;
+      }
 
-      return { domain, domain_rating: null, status: "failed", error };
-    }
-
-    const data = await response.json().catch(() => null);
-    if (!data) {
-      return { domain, domain_rating: null, status: "failed", error: "Invalid Ahrefs response." };
+      return {
+        domain,
+        domain_rating: null,
+        status: "failed",
+        error,
+      };
     }
 
     return parseResult(domain, data);
@@ -204,7 +182,10 @@ async function checkDomain(domain, apiKey) {
       domain,
       domain_rating: null,
       status: "failed",
-      error: error?.name === "AbortError" ? "Ahrefs request timed out." : "Unable to connect to Ahrefs.",
+      error:
+        error?.name === "AbortError"
+          ? "Ahrefs request timed out."
+          : "Unable to connect to Ahrefs.",
     };
   }
 }
@@ -230,10 +211,13 @@ async function processDomains(domains, apiKey) {
 
 async function handleCheck(request, env) {
   if (!env.AHREFS_API_KEY) {
-    return jsonResponse({
-      success: false,
-      error: "AHREFS_API_KEY is not configured in Cloudflare Workers.",
-    }, 500);
+    return jsonResponse(
+      {
+        success: false,
+        error: "AHREFS_API_KEY is not configured in Cloudflare Workers.",
+      },
+      500
+    );
   }
 
   let body;
@@ -248,10 +232,13 @@ async function handleCheck(request, env) {
   }
 
   if (body.domains.length > MAX_DOMAINS) {
-    return jsonResponse({
-      success: false,
-      error: `Maximum ${MAX_DOMAINS} domains are allowed.`,
-    }, 400);
+    return jsonResponse(
+      {
+        success: false,
+        error: `Maximum ${MAX_DOMAINS} domains are allowed.`,
+      },
+      400
+    );
   }
 
   const invalidDomains = [];
@@ -259,7 +246,6 @@ async function handleCheck(request, env) {
 
   for (const item of body.domains) {
     const domain = normalizeDomain(item);
-
     if (!domain || !isValidDomain(domain)) {
       invalidDomains.push(typeof item === "string" ? item : String(item));
     } else {
@@ -270,11 +256,14 @@ async function handleCheck(request, env) {
   const domains = [...new Set(validDomains)];
 
   if (!domains.length) {
-    return jsonResponse({
-      success: false,
-      error: "No valid domains were provided.",
-      invalid_domains: invalidDomains,
-    }, 400);
+    return jsonResponse(
+      {
+        success: false,
+        error: "No valid domains were provided.",
+        invalid_domains: invalidDomains,
+      },
+      400
+    );
   }
 
   const results = await processDomains(domains, env.AHREFS_API_KEY);
@@ -304,6 +293,7 @@ export default {
         cors: "public",
         ahrefsConfigured: Boolean(env.AHREFS_API_KEY),
         endpoint: "/check-dr",
+        ahrefsEndpoint: "/v3/public/domain-rating-free",
       });
     }
 
