@@ -118,31 +118,64 @@ function getStatusClass(status) {
   return "status-failed";
 }
 function displayStatus(status) {
-  if (status === "success") return "Success";
-  if (status === "not_found") return "Not Found";
-  if (status === "failed") return "Failed";
-  return status || "Unknown";
+  if (status === "success") return "ONLINE";
+  if (status === "not_found") return "NOT FOUND";
+  if (status === "failed") return "FAILED";
+  return String(status || "UNKNOWN").toUpperCase();
 }
 
 function createResultRow(result, index) {
   const row = document.createElement("tr");
   const numberCell = document.createElement("td");
-  numberCell.textContent = String(index + 1);
+  numberCell.className = "rank-cell";
+  numberCell.textContent = String(index + 1).padStart(2, "0");
+
   const domainCell = document.createElement("td");
   domainCell.className = "domain-cell";
   domainCell.textContent = result.domain || "—";
+
   const drCell = document.createElement("td");
+  drCell.className = "signal-cell";
   if (typeof result.domain_rating === "number") {
-    const badge = document.createElement("span");
-    badge.className = `dr-badge ${getDrClass(result.domain_rating)}`;
-    badge.textContent = String(result.domain_rating);
-    drCell.appendChild(badge);
-  } else drCell.textContent = "—";
+    const signal = document.createElement("div");
+    signal.className = "signal";
+    signal.setAttribute("aria-label", `Domain Rating ${result.domain_rating} out of 100`);
+
+    const track = document.createElement("span");
+    track.className = "signal-track";
+    track.setAttribute("aria-hidden", "true");
+
+    const fill = document.createElement("span");
+    fill.className = "signal-fill";
+    fill.style.width = `${Math.max(0, Math.min(100, result.domain_rating))}%`;
+    track.appendChild(fill);
+
+    const value = document.createElement("span");
+    value.className = "signal-value";
+    value.textContent = String(result.domain_rating);
+
+    signal.append(track, value);
+    drCell.appendChild(signal);
+  } else {
+    drCell.classList.add("signal-empty");
+    const signal = document.createElement("div");
+    signal.className = "signal";
+    const track = document.createElement("span");
+    track.className = "signal-track";
+    track.setAttribute("aria-hidden", "true");
+    const value = document.createElement("span");
+    value.className = "signal-value";
+    value.textContent = "—";
+    signal.append(track, value);
+    drCell.appendChild(signal);
+  }
+
   const statusCell = document.createElement("td");
   const status = document.createElement("span");
   status.className = `status ${getStatusClass(result.status)}`;
   status.textContent = displayStatus(result.status);
   statusCell.appendChild(status);
+
   row.append(numberCell, domainCell, drCell, statusCell);
   return row;
 }
@@ -192,7 +225,36 @@ function updateSummary() {
   totalCount.textContent = String(allResults.length);
   successCount.textContent = String(successful);
   failedCount.textContent = String(failed);
-  averageDr.textContent = average === null ? "—" : average.toFixed(1);
+  animateAverageDr(average);
+}
+
+function animateAverageDr(value) {
+  if (value === null) {
+    averageDr.textContent = "—";
+    return;
+  }
+
+  const finalValue = Number(value.toFixed(1));
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduceMotion) {
+    averageDr.textContent = finalValue.toFixed(1);
+    return;
+  }
+
+  const start = performance.now();
+  const duration = 650;
+
+  function frame(now) {
+    const progress = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = finalValue * eased;
+    averageDr.textContent = current.toFixed(1);
+    if (progress < 1) requestAnimationFrame(frame);
+    else averageDr.textContent = finalValue.toFixed(1);
+  }
+
+  requestAnimationFrame(frame);
 }
 
 function applyFilterAndSort() {
