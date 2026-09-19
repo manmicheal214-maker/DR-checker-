@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Look up A, AAAA, MX, TXT, and NS DNS records for domains in bulk."><title>DNS Lookup Tool — Signal Board</title>
+<link rel="canonical" href="https://checkdr.net/tools/dns-lookup.html">
+<meta property="og:type" content="website"><meta property="og:title" content="DNS Lookup Tool — Signal Board"><meta property="og:description" content="Look up A, AAAA, MX, TXT, and NS DNS records for domains in bulk."><meta property="og:url" content="https://checkdr.net/tools/dns-lookup.html"><meta property="og:site_name" content="Signal Board">
+<meta name="twitter:card" content="summary"><meta name="twitter:title" content="DNS Lookup Tool — Signal Board"><meta name="twitter:description" content="Look up A, AAAA, MX, TXT, and NS DNS records for domains in bulk.">
+<link rel="stylesheet" href="/style.css">
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "DNS Lookup Tool",
+      "url": "https://checkdr.net/tools/dns-lookup.html",
+      "applicationCategory": "SEO Tool",
+      "operatingSystem": "Any (web-based)",
+      "description": "Bulk DNS lookup for common A, AAAA, MX, TXT, and NS records.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What are DNS records?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "DNS records publish information that helps systems locate services for a domain, such as web servers, mail servers, authoritative name servers, and text records."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which record types are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "This tool supports A, AAAA, MX, TXT, and NS records. ANY queries are intentionally not supported."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How many DNS lookups can I run?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each request can contain at most 40 domain/type lookups. The tool also runs up to five DNS requests concurrently."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+</head><body><main class="container tools-page"><nav class="tools-nav"><a href="/">← DR Checker</a><a href="/tools/">Tools</a><span class="tool-links"><a href="/tools/redirect-checker.html">Redirect checker</a><a href="/tools/meta-preview.html">Meta preview</a><a href="/tools/dns-lookup.html">DNS lookup</a></span></nav>
+<header class="tool-hero"><div class="live-status"><span class="live-dot"></span><span>LIVE</span></div><div class="hero-brand">Signal Board / DNS lookup</div><h1>DNS lookup</h1><p>Query common DNS record types for multiple domains in one pass.</p></header>
+<section class="panel tool-input"><label for="dnsDomains">Domains</label><textarea id="dnsDomains" placeholder="example.com&#10;example.org"></textarea><label class="tool-label">Record types</label><div class="check-grid"><label><input type="checkbox" name="dnsType" value="A" checked> A</label><label><input type="checkbox" name="dnsType" value="AAAA" checked> AAAA</label><label><input type="checkbox" name="dnsType" value="MX" checked> MX</label><label><input type="checkbox" name="dnsType" value="TXT" checked> TXT</label><label><input type="checkbox" name="dnsType" value="NS" checked> NS</label></div><div id="dnsError" class="error-message hidden"></div><div class="actions"><button id="dnsRun" class="btn btn-primary">Look up DNS</button><button id="dnsClear" class="btn btn-secondary">Clear</button></div></section>
+<section id="dnsLoading" class="panel loading-panel hidden"><div class="spinner"></div><strong>Querying DNS</strong></section><section id="dnsResults" class="panel tool-results hidden"></section>
+<section class="panel content-panel"><h2>What are DNS records?</h2><p>DNS records publish information that helps systems locate services for a domain. A and AAAA records map names to IPv4 and IPv6 addresses; MX records identify mail servers; NS records identify authoritative name servers; and TXT records carry text used for verification and other configuration.</p></section>
+<section class="panel content-panel"><h2>Why and when to use DNS lookup</h2><p>Use DNS lookups when troubleshooting a domain, checking mail routing, validating a migration, reviewing nameserver configuration, or confirming that verification records are published.</p></section>
+<section class="panel content-panel"><h2>How it works</h2><p>The tool sends fixed, trusted DNS-over-HTTPS queries to Cloudflare's resolver. You can select A, AAAA, MX, TXT, and NS records, with a maximum of 40 domain/type lookups per request. ANY queries are intentionally excluded.</p></section>
+<section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What are DNS records?</h3><p>DNS records publish information that helps systems locate services for a domain, such as web servers, mail servers, authoritative name servers, and text records.</p></div><div class="faq-item"><h3>Which record types are supported?</h3><p>This tool supports A, AAAA, MX, TXT, and NS records. ANY queries are intentionally not supported.</p></div><div class="faq-item"><h3>How many DNS lookups can I run?</h3><p>Each request can contain at most 40 domain/type lookups. The tool also runs up to five DNS requests concurrently.</p></div></section></main><script src="/tools/TOOL.js" defer></script></body></html>
