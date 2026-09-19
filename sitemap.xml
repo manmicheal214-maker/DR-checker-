@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://checkdr.net/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
+  <url><loc>https://checkdr.net/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://checkdr.net/tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/redirect-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/meta-preview.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/dns-lookup.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
