@@ -5,10 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Check Ahrefs Domain Rating for up to 100 domains at once.">
   <title>Bulk Domain Rating Checker — Signal Board</title>
+  <link rel="canonical" href="https://checkdr.net/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Bulk Domain Rating Checker — Signal Board">
+  <meta property="og:description" content="Check Ahrefs Domain Rating for up to 100 domains at once. Free bulk DR checker with sortable results and CSV export.">
+  <meta property="og:url" content="https://checkdr.net/">
+  <meta property="og:site_name" content="Signal Board">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Bulk Domain Rating Checker — Signal Board">
+  <meta name="twitter:description" content="Check Ahrefs Domain Rating for up to 100 domains at once. Free bulk DR checker with sortable results and CSV export.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Bulk Domain Rating Checker",
+        "url": "https://checkdr.net/",
+        "applicationCategory": "SEO Tool",
+        "operatingSystem": "Any (web-based)",
+        "description": "Check Ahrefs Domain Rating for up to 100 domains at once. Free, no account required.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is Domain Rating the same as Google's ranking algorithm?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. DR is an Ahrefs metric built from their own backlink index. Google does not publish or use a public authority score, and does not use Ahrefs' DR directly in ranking."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What counts as a good Domain Rating?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It depends on your niche and competitors — there is no universal cutoff. DR 40+ is often considered solid in competitive niches, while large mainstream sites often sit above 70."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How many domains can I check at once?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Up to 100 domains or URLs per check, one per line. Bare domains and full http(s) URLs are both accepted."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is this tool free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, it is free to use, with a fair-use rate limit per hour to keep the service available for everyone."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How current is the Domain Rating data?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Each check queries Ahrefs' API directly and returns their current Domain Rating at the moment you run the check."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <main class="container">
@@ -27,10 +105,8 @@
         </div>
         <span id="domainCounter" class="counter" aria-live="polite">0 / 100</span>
       </div>
-
       <textarea id="domainInput" placeholder="example.com&#10;ahrefs.com&#10;google.com&#10;hubspot.com" spellcheck="false" aria-label="Domain list" aria-describedby="inputError"></textarea>
       <div id="inputError" class="error-message hidden" role="status" aria-live="polite"></div>
-
       <div class="actions">
         <button id="checkButton" class="btn btn-primary" type="button">Check Signal</button>
         <button id="clearButton" class="btn btn-secondary" type="button">Clear</button>
@@ -39,60 +115,37 @@
 
     <section id="loading" class="panel loading-panel hidden" aria-live="polite" aria-busy="false">
       <div class="spinner" aria-hidden="true"></div>
-      <div>
-        <strong>Checking domain ratings</strong>
-        <p>Reading the signal from the checker.</p>
-      </div>
+      <div><strong>Checking domain ratings</strong><p>Reading the signal from the checker.</p></div>
     </section>
 
     <section id="errorCard" class="panel error-panel hidden" role="alert">
-      <strong>Signal error</strong>
-      <p id="serverError"></p>
+      <strong>Signal error</strong><p id="serverError"></p>
     </section>
 
     <section id="summary" class="summary-panel hidden" aria-label="Results summary">
-      <div class="summary-metric average-metric">
-        <span>Average DR</span>
-        <strong id="averageDr" aria-live="polite">—</strong>
-      </div>
-      <div class="summary-metric">
-        <span>Total</span>
-        <strong id="totalCount">0</strong>
-      </div>
-      <div class="summary-metric">
-        <span>Successful</span>
-        <strong id="successCount">0</strong>
-      </div>
-      <div class="summary-metric">
-        <span>Failed</span>
-        <strong id="failedCount">0</strong>
-      </div>
+      <div class="summary-metric average-metric"><span>Average DR</span><strong id="averageDr" aria-live="polite">—</strong></div>
+      <div class="summary-metric"><span>Total</span><strong id="totalCount">0</strong></div>
+      <div class="summary-metric"><span>Successful</span><strong id="successCount">0</strong></div>
+      <div class="summary-metric"><span>Failed</span><strong id="failedCount">0</strong></div>
     </section>
 
     <section id="resultsSection" class="panel results-panel hidden" aria-labelledby="results-heading">
       <div class="results-header">
-        <div>
-          <h2 id="results-heading">Signal results</h2>
-          <p>Sorted by Domain Rating. Select a column header to change the order.</p>
-        </div>
+        <div><h2 id="results-heading">Signal results</h2><p>Sorted by Domain Rating. Select a column header to change the order.</p></div>
         <button id="downloadButton" class="btn btn-secondary" type="button">Download CSV</button>
       </div>
-
       <div class="toolbar">
         <label class="search-label" for="searchInput">Filter domains</label>
         <input type="search" id="searchInput" class="search-input" placeholder="Search domains..." aria-label="Search results">
       </div>
-
       <div class="table-wrapper">
         <table>
-          <thead>
-            <tr>
-              <th scope="col" class="rank-heading">Rank</th>
-              <th scope="col" data-sort="domain" class="sortable">Domain</th>
-              <th scope="col" data-sort="domain_rating" class="sortable">Signal</th>
-              <th scope="col" data-sort="status" class="sortable">Status</th>
-            </tr>
-          </thead>
+          <thead><tr>
+            <th scope="col" class="rank-heading">Rank</th>
+            <th scope="col" data-sort="domain" class="sortable">Domain</th>
+            <th scope="col" data-sort="domain_rating" class="sortable">Signal</th>
+            <th scope="col" data-sort="status" class="sortable">Status</th>
+          </tr></thead>
           <tbody id="resultsBody"></tbody>
         </table>
       </div>
@@ -100,8 +153,40 @@
     </section>
 
     <footer><p>Domain Rating data provided through Ahrefs API.</p></footer>
-  </main>
 
+    <section class="panel content-panel" aria-labelledby="what-is-dr-heading">
+      <h2 id="what-is-dr-heading">What is Domain Rating (DR)?</h2>
+      <p>Domain Rating is a metric from Ahrefs, scored on a 0–100 logarithmic scale, that estimates the overall strength of a website's backlink profile relative to every other domain in Ahrefs' index. It's driven mainly by the number and quality of unique referring domains linking to a site — links from other well-linked-to domains carry more weight, and because the scale is logarithmic, each additional point gets harder to earn as DR climbs.</p>
+      <p>DR is an Ahrefs metric, not a Google ranking factor — Google doesn't publish or use a public authority score. It's still widely used across the SEO industry as a quick, comparable proxy for a domain's backlink authority when auditing sites, vetting link prospects, or sizing up competitors.</p>
+    </section>
+
+    <section class="panel content-panel" aria-labelledby="why-bulk-heading">
+      <h2 id="why-bulk-heading">Why check Domain Rating in bulk?</h2>
+      <p>Checking domains one at a time doesn't scale once you're auditing a site, vetting outreach targets, or comparing a handful of competitors. Common uses for a bulk checker:</p>
+      <ul>
+        <li><strong>SEO audits</strong> — pull DR for a client's domain and their top competitors in one pass.</li>
+        <li><strong>Backlink and guest-post vetting</strong> — filter out low-authority sites before you invest in outreach.</li>
+        <li><strong>Competitor research</strong> — compare authority across an entire competitive set at once.</li>
+        <li><strong>Portfolio monitoring</strong> — track DR across multiple domains you own or manage over time.</li>
+        <li><strong>Domain buying decisions</strong> — sanity-check a domain's backlink strength before purchasing.</li>
+      </ul>
+    </section>
+
+    <section class="panel content-panel" aria-labelledby="how-it-works-heading">
+      <h2 id="how-it-works-heading">How this tool works</h2>
+      <p>Paste up to 100 domains or URLs, one per line. The tool normalizes each entry (stripping protocols, "www", and trailing slashes), removes duplicates, and queries Ahrefs' public Domain Rating API for each unique domain in parallel. Results come back sortable by rank, domain, or DR score, with a live average across your batch, and can be exported to CSV.</p>
+      <p>To keep this a free, reliable tool for everyone, checks are limited to a fair-use rate per hour rather than a hard paywall. If you hit that limit, wait for the next hourly window and try again.</p>
+    </section>
+
+    <section class="panel content-panel" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-item"><h3>Is Domain Rating the same as Google's ranking algorithm?</h3><p>No. DR is an Ahrefs metric built from their own backlink index. Google does not publish or use a public "authority score," and does not use Ahrefs' DR directly in ranking. DR is best treated as an industry-standard proxy signal, not a Google ranking factor.</p></div>
+      <div class="faq-item"><h3>What counts as a "good" Domain Rating?</h3><p>It depends on your niche and who you're comparing against — there's no universal cutoff. In many competitive niches, DR 40+ is considered a solid, established site, and large mainstream publishers or platforms often sit well above 70. The most useful comparison is against your direct competitors, not an absolute number.</p></div>
+      <div class="faq-item"><h3>How many domains can I check at once?</h3><p>Up to 100 domains or URLs per check. Paste one per line — bare domains and full http(s) URLs are both accepted.</p></div>
+      <div class="faq-item"><h3>Is this tool free to use?</h3><p>Yes. It's free, with a fair-use rate limit per hour so the service stays available and fast for everyone.</p></div>
+      <div class="faq-item"><h3>How current is the Domain Rating data?</h3><p>Each check queries Ahrefs' API directly and returns their current DR for that domain, so results reflect Ahrefs' live index at the moment you run the check rather than a cached or delayed snapshot.</p></div>
+    </section>
+  </main>
   <script src="script.js" defer></script>
 </body>
 </html>
