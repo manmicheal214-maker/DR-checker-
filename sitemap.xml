@@ -11,4 +11,6 @@
   <url><loc>https://checkdr.net/tools/title-length-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://checkdr.net/tools/readability-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://checkdr.net/tools/writing-clarity-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/schema-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/sitemap-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
