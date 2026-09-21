@@ -20,6 +20,13 @@ const STATUS_MAX_URLS = 10;
 const META_MAX_URLS = 8;
 const DNS_MAX_QUERIES = 40;
 const DNS_TYPES = new Set(["A", "AAAA", "MX", "TXT", "NS"]);
+const LINKS_MAX_LINKS = 15;
+const HEADERS_MAX_URLS = 10;
+const SSL_MAX_DOMAINS = 10;
+const LINKS_RATE_LIMIT = 15;
+const HEADERS_RATE_LIMIT = 15;
+const SSL_RATE_LIMIT = 20;
+const SSL_TIMEOUT_MS = 15000;
 
 const DR_PER_IP_LIMIT = 10; // requests/hour/IP
 const DR_GLOBAL_DOMAIN_BUDGET = 2000; // domain lookups/hour, shared across all callers
@@ -625,6 +632,193 @@ async function handleDnsLookup(request, env) {
   return jsonResponse({ success: true, results, subrequests_used: TOOL_SUBREQUEST_LIMIT - budget.remaining() }, 200, request, env);
 }
 
+async function handleCheckLinks(request, env) {
+  const limited = await enforceRateLimit(request, env, "links", LINKS_RATE_LIMIT);
+  if (limited) return limited;
+
+  let body;
+  try { body = await request.json(); } catch { return jsonResponse({ success: false, error: "Invalid JSON request." }, 400, request, env); }
+
+  const pageUrl = normalizeToolUrl(body?.url);
+  if (!pageUrl) return jsonResponse({ success: false, error: "url must be a valid http/https URL or a bare domain." }, 400, request, env);
+
+  const budget = createBudget(TOOL_SUBREQUEST_LIMIT);
+  const cache = new Map();
+  const r = await ssrfSafeFetch(pageUrl, { method: "GET", maxHops: 3 }, budget, cache);
+  if (!r.ok) return jsonResponse({ success: false, error: r.error }, 200, request, env);
+
+  const html = await readBodyCap(r.response, 500 * 1024);
+  const tags = html.match(/<a\b[^>]*>/gi) || [];
+  const links = [];
+  const seen = new Set();
+
+  for (const tag of tags) {
+    const href = getAttr(tag, "href");
+    if (!href) continue;
+    const trimmed = href.trim();
+    if (!trimmed || /^(mailto:|tel:|javascript:)/i.test(trimmed) || trimmed.startsWith("#")) continue;
+    let resolved;
+    try { resolved = new URL(trimmed, r.finalUrl).toString(); } catch { continue; }
+    if (resolved.startsWith("http:") || resolved.startsWith("https:")) {
+      if (!seen.has(resolved)) {
+        seen.add(resolved);
+        links.push(resolved);
+      }
+    }
+  }
+
+  const totalLinksFound = links.length;
+  const checkedLinks = links.slice(0, LINKS_MAX_LINKS);
+  const results = await processPool(checkedLinks, async (link) => {
+    if (budget.remaining() <= 0) {
+      return { url: link, ok: false, final_status: null, error: "Not processed — subrequest budget exceeded.", skipped: true };
+    }
+    const result = await ssrfSafeFetch(link, { method: "GET", maxHops: 2 }, budget, cache);
+    if (result.skipped) {
+      return { url: link, ok: false, final_status: null, error: "Not processed — subrequest budget exceeded.", skipped: true };
+    }
+    return {
+      url: link,
+      ok: result.ok,
+      final_status: result.finalStatus || null,
+      error: result.error || null,
+    };
+  });
+
+  return jsonResponse({
+    success: true,
+    page_url: pageUrl,
+    final_page_url: r.finalUrl,
+    total_links_found: totalLinksFound,
+    checked_count: results.length,
+    results,
+    subrequests_used: TOOL_SUBREQUEST_LIMIT - budget.remaining(),
+  }, 200, request, env);
+}
+
+async function handleCheckHeaders(request, env) {
+  const limited = await enforceRateLimit(request, env, "headers", HEADERS_RATE_LIMIT);
+  if (limited) return limited;
+
+  let body;
+  try { body = await request.json(); } catch { return jsonResponse({ success: false, error: "Invalid JSON request." }, 400, request, env); }
+
+  const v = validateUrlBatch(body, HEADERS_MAX_URLS);
+  if (v.error) return jsonResponse({ success: false, error: v.error }, 400, request, env);
+
+  const budget = createBudget(TOOL_SUBREQUEST_LIMIT);
+  const cache = new Map();
+  const headerNames = {
+    csp: "content-security-policy",
+    hsts: "strict-transport-security",
+    x_content_type_options: "x-content-type-options",
+    x_frame_options: "x-frame-options",
+    referrer_policy: "referrer-policy",
+    permissions_policy: "permissions-policy",
+  };
+
+  const results = await processPool(v.urls, async (url) => {
+    if (budget.remaining() <= 0) {
+      return { url, final_url: null, headers: Object.fromEntries(Object.keys(headerNames).map((key) => [key, null])), score: 0, error: "Not processed — reduce batch size and try again.", skipped: true };
+    }
+    const r = await ssrfSafeFetch(url, { method: "GET", maxHops: 3 }, budget, cache);
+    if (r.skipped) {
+      return { url, final_url: null, headers: Object.fromEntries(Object.keys(headerNames).map((key) => [key, null])), score: 0, error: "Not processed — reduce batch size and try again.", skipped: true };
+    }
+    if (!r.ok || !r.response) {
+      return {
+        url,
+        final_url: r.finalUrl || null,
+        headers: Object.fromEntries(Object.keys(headerNames).map((key) => [key, null])),
+        score: 0,
+        error: r.error || "Unable to fetch page.",
+      };
+    }
+
+    const headers = {};
+    for (const [key, headerName] of Object.entries(headerNames)) headers[key] = r.response.headers.get(headerName);
+    try { r.response.body?.cancel(); } catch {}
+    const score = Object.values(headers).filter((value) => value !== null && value !== "").length;
+
+    return { url, final_url: r.finalUrl || url, headers, score, error: null };
+  });
+
+  return jsonResponse({ success: true, results, subrequests_used: TOOL_SUBREQUEST_LIMIT - budget.remaining() }, 200, request, env);
+}
+
+async function handleCheckSsl(request, env) {
+  const limited = await enforceRateLimit(request, env, "ssl", SSL_RATE_LIMIT);
+  if (limited) return limited;
+
+  let body;
+  try { body = await request.json(); } catch { return jsonResponse({ success: false, error: "Invalid JSON request." }, 400, request, env); }
+  if (!body || !Array.isArray(body.domains)) return jsonResponse({ success: false, error: "domains must be an array." }, 400, request, env);
+  if (!body.domains.length) return jsonResponse({ success: false, error: "Please provide at least one domain." }, 400, request, env);
+  if (body.domains.length > SSL_MAX_DOMAINS) return jsonResponse({ success: false, error: `Maximum ${SSL_MAX_DOMAINS} domains are allowed per request.` }, 400, request, env);
+
+  const domains = [];
+  for (const raw of body.domains) {
+    const domain = normalizeDomain(raw);
+    if (!domain || !isValidDomain(domain)) {
+      return jsonResponse({ success: false, error: `Invalid domain: ${String(raw)}` }, 400, request, env);
+    }
+    if (!domains.includes(domain)) domains.push(domain);
+  }
+
+  const results = [];
+  for (let start = 0; start < domains.length; start += 3) {
+    const batch = domains.slice(start, start + 3);
+    const batchResults = await processPool(batch, async (domain) => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), SSL_TIMEOUT_MS);
+      try {
+        const response = await fetch(
+          `https://crt.sh/?q=${encodeURIComponent(domain)}&output=json`,
+          { headers: { Accept: "application/json" }, signal: controller.signal }
+        );
+        if (!response.ok) {
+          return { domain, error: "Certificate Transparency lookup failed. crt.sh may be temporarily unavailable." };
+        }
+        let entries;
+        try { entries = await response.json(); } catch {
+          return { domain, error: "Certificate Transparency lookup failed. crt.sh may be temporarily unavailable." };
+        }
+        if (!Array.isArray(entries)) {
+          return { domain, error: "Certificate Transparency lookup failed. crt.sh may be temporarily unavailable." };
+        }
+        if (!entries.length) {
+          return { domain, error: "No certificates found in Certificate Transparency logs for this domain." };
+        }
+
+        const validEntries = entries.filter((entry) => Number.isFinite(new Date(entry?.not_before).getTime()));
+        if (!validEntries.length) {
+          return { domain, error: "Certificate Transparency lookup failed. crt.sh may be temporarily unavailable." };
+        }
+        const entry = validEntries.reduce((latest, current) =>
+          new Date(current.not_before).getTime() > new Date(latest.not_before).getTime() ? current : latest
+        );
+        const daysRemaining = Math.ceil((new Date(entry.not_after).getTime() - Date.now()) / 86400000);
+        return {
+          domain,
+          issuer: entry.issuer_name || null,
+          common_name: entry.common_name || null,
+          not_after: entry.not_after || null,
+          days_remaining: daysRemaining,
+          expired: daysRemaining < 0,
+          error: null,
+        };
+      } catch {
+        return { domain, error: "Certificate Transparency lookup failed. crt.sh may be temporarily unavailable." };
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    });
+    results.push(...batchResults);
+  }
+
+  return jsonResponse({ success: true, results }, 200, request, env);
+}
+
 async function handleCheck(request, env) {
   if (!env.AHREFS_API_KEY) {
     return jsonResponse({ success: false, error: "AHREFS_API_KEY is not configured in Cloudflare Workers.", version: VERSION }, 500, request, env);
@@ -697,6 +891,9 @@ export default {
     if (url.pathname === "/check-status" && request.method === "POST") return handleCheckStatus(request, env);
     if (url.pathname === "/check-meta" && request.method === "POST") return handleCheckMeta(request, env);
     if (url.pathname === "/dns-lookup" && request.method === "POST") return handleDnsLookup(request, env);
+    if (url.pathname === "/check-links" && request.method === "POST") return handleCheckLinks(request, env);
+    if (url.pathname === "/check-headers" && request.method === "POST") return handleCheckHeaders(request, env);
+    if (url.pathname === "/check-ssl" && request.method === "POST") return handleCheckSsl(request, env);
 
     return jsonResponse({ success: false, error: "Not Found", version: VERSION }, 404, request, env);
   },
