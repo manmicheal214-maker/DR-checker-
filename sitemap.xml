@@ -5,4 +5,8 @@
   <url><loc>https://checkdr.net/tools/redirect-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://checkdr.net/tools/meta-preview.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://checkdr.net/tools/dns-lookup.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/broken-links.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/security-headers.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/ssl-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/title-length-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
