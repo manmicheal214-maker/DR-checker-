@@ -13,4 +13,7 @@
   <url><loc>https://checkdr.net/tools/writing-clarity-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://checkdr.net/tools/schema-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://checkdr.net/tools/sitemap-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/robots-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/social-preview-builder.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/hreflang-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
