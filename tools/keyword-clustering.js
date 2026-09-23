@@ -296,6 +296,8 @@ function render() {
           <label>Primary
             <select class="primary-select" data-c="\${c.id}">\${opts}</select>
           </label>
+
+          <span class="cluster-actions">\${renderMemberControls(c.id, c.primaryIndex)}</span>
         </div>
         <div class="cluster-tags">\${tags}</div>
         <p class="cohesion">Cohesion \${cohesion}% <span class="bar"><span style="width:\${cohesion}%"></span></span></p>
