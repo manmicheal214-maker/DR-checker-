@@ -88,7 +88,7 @@ function buildCandidatePairs(tokenSets) {
   for (const ids of index.values()) {
     for (let a = 0; a < ids.length; a++) {
       for (let b = a + 1; b < ids.length; b++) {
-        const key = ids[a] < ids[b] ? \`\${ids[a]},\${ids[b]}\` : \`\${ids[b]},\${ids[a]}\`;
+        const key = ids[a] < ids[b] ? `${ids[a]},${ids[b]}` : `${ids[b]},${ids[a]}`;
         if (!seen.has(key)) {
           seen.add(key);
           pairs.push([ids[a], ids[b]]);
@@ -150,9 +150,9 @@ function getKeywords() {
   const raw = input.value.split(/\r?\n/).map((x) => x.trim()).filter(Boolean);
   const unique = [...new Set(raw)];
   if (raw.length > 1000) {
-    limit.textContent = \`\${raw.length} lines entered. Only the first 1000 unique keywords are processed.\`;
+    limit.textContent = `${raw.length} lines entered. Only the first 1000 unique keywords are processed.`;
   } else {
-    limit.textContent = \`\${unique.length} unique keyword\${unique.length === 1 ? "" : "s"} ready. Maximum 1000.\`;
+    limit.textContent = `${unique.length} unique keyword${unique.length === 1 ? "" : "s"} ready. Maximum 1000.`;
   }
   return unique.slice(0, 1000);
 }
@@ -242,19 +242,19 @@ function modifierLabel(value) {
 function moveOptions(currentId) {
   return state.clusters
     .filter((c) => c.id !== currentId)
-    .map((c) => \`<option value="\${c.id}">Cluster \${c.id}</option>\`)
+    .map((c) => `<option value="${c.id}">Cluster ${c.id}</option>`)
     .join("");
 }
 
 function renderMemberControls(clusterId, memberIndex) {
-  return \`
-    <select class="move-select" aria-label="Move keyword to another cluster" data-c="\${clusterId}" data-i="\${memberIndex}">
+  return `
+    <select class="move-select" aria-label="Move keyword to another cluster" data-c="${clusterId}" data-i="${memberIndex}">
       <option value="">Move to…</option>
-      \${moveOptions(clusterId)}
+      ${moveOptions(clusterId)}
     </select>
-    <button type="button" class="move-keyword" data-c="\${clusterId}" data-i="\${memberIndex}">Move</button>
-    <button type="button" class="remove-keyword" data-c="\${clusterId}" data-i="\${memberIndex}">Remove</button>
-  \`;
+    <button type="button" class="move-keyword" data-c="${clusterId}" data-i="${memberIndex}">Move</button>
+    <button type="button" class="remove-keyword" data-c="${clusterId}" data-i="${memberIndex}">Remove</button>
+  `;
 }
 
 function render() {
@@ -265,46 +265,46 @@ function render() {
       (token) => c.members.every((x) => x.coreTokens.includes(token))
     );
     const tags = c.modifiers.length
-      ? c.modifiers.map((m) => \`<span class="tag">\${esc(modifierLabel(m))}</span>\`).join(" ")
+      ? c.modifiers.map((m) => `<span class="tag">${esc(modifierLabel(m))}</span>`).join(" ")
       : '<span class="cluster-muted">No pattern-based modifier signal</span>';
     const opts = c.members.map((m, i) =>
-      \`<option value="\${i}" \${i === c.primaryIndex ? "selected" : ""}>\${esc(m.original)}</option>\`
+      `<option value="${i}" ${i === c.primaryIndex ? "selected" : ""}>${esc(m.original)}</option>`
     ).join("");
 
     const supporting = c.members.map((m, i) => {
       if (i === c.primaryIndex) return "";
-      return \`
+      return `
         <li>
-          <span>\${esc(m.original)}</span>
-          <span class="cluster-actions">\${renderMemberControls(c.id, i)}</span>
+          <span>${esc(m.original)}</span>
+          <span class="cluster-actions">${renderMemberControls(c.id, i)}</span>
         </li>
-      \`;
+      `;
     }).join("");
 
     const cohesion = Math.round(c.cohesion * 100);
     const reason = shared.length
-      ? \`Shared core terms: \${shared.map((x) => esc(x)).join(", ")}\`
+      ? `Shared core terms: ${shared.map((x) => esc(x)).join(", ")}`
       : "Related lexical terms across members.";
 
-    return \`
+    return `
       <article class="cluster-card panel">
         <div class="cluster-head">
           <div>
-            <span class="cluster-label">Cluster \${c.id}</span>
-            <h2>\${esc(primary.original)}</h2>
+            <span class="cluster-label">Cluster ${c.id}</span>
+            <h2>${esc(primary.original)}</h2>
           </div>
           <label>Primary
-            <select class="primary-select" data-c="\${c.id}">\${opts}</select>
+            <select class="primary-select" data-c="${c.id}">${opts}</select>
           </label>
 
-          <span class="cluster-actions">\${renderMemberControls(c.id, c.primaryIndex)}</span>
+          <span class="cluster-actions">${renderMemberControls(c.id, c.primaryIndex)}</span>
         </div>
-        <div class="cluster-tags">\${tags}</div>
-        <p class="cohesion">Cohesion \${cohesion}% <span class="bar"><span style="width:\${cohesion}%"></span></span></p>
-        <p class="cluster-reason">\${reason}</p>
-        <ul>\${supporting}</ul>
+        <div class="cluster-tags">${tags}</div>
+        <p class="cohesion">Cohesion ${cohesion}% <span class="bar"><span style="width:${cohesion}%"></span></span></p>
+        <p class="cluster-reason">${reason}</p>
+        <ul>${supporting}</ul>
       </article>
-    \`;
+    `;
   }).join("");
 
   const warnings = [];
@@ -314,47 +314,47 @@ function render() {
       const y = real[b].members[real[b].primaryIndex];
       const score = similarity(x.coreTokens, y.coreTokens, state.idf);
       if (score >= 0.35) {
-        warnings.push(\`
+        warnings.push(`
           <div class="warning">
             These clusters may overlap — consider merging or differentiating them:
-            <strong>\${esc(x.original)}</strong> ↔ <strong>\${esc(y.original)}</strong>
-            (\${score.toFixed(2)})
+            <strong>${esc(x.original)}</strong> ↔ <strong>${esc(y.original)}</strong>
+            (${score.toFixed(2)})
           </div>
-        \`);
+        `);
       }
     }
   }
 
   if (warnings.length) {
-    html = \`<section class="cluster-warnings"><h2>Cannibalization warnings</h2>\${warnings.join("")}</section>\` + html;
+    html = `<section class="cluster-warnings"><h2>Cannibalization warnings</h2>${warnings.join("")}</section>` + html;
   }
 
   if (state.orphans.length) {
-    const orphanItems = state.orphans.map((m, i) => \`
+    const orphanItems = state.orphans.map((m, i) => `
       <li>
-        <span>\${esc(m.original)}</span>
+        <span>${esc(m.original)}</span>
         <span class="cluster-actions">
-          <select class="orphan-target" data-i="\${i}" aria-label="Move orphan to a cluster">
+          <select class="orphan-target" data-i="${i}" aria-label="Move orphan to a cluster">
             <option value="">Move to…</option>
-            \${state.clusters.map((c) => \`<option value="\${c.id}">Cluster \${c.id}</option>\`).join("")}
+            ${state.clusters.map((c) => `<option value="${c.id}">Cluster ${c.id}</option>`).join("")}
           </select>
-          <button type="button" class="move-orphan" data-i="\${i}">Move</button>
+          <button type="button" class="move-orphan" data-i="${i}">Move</button>
         </span>
       </li>
-    \`).join("");
+    `).join("");
 
-    html += \`
+    html += `
       <section class="panel orphan-panel">
         <h2>Orphans</h2>
         <p>No strong lexical match found. Review these separately or move one into a cluster if your subject knowledge supports it.</p>
-        <ul>\${orphanItems}</ul>
+        <ul>${orphanItems}</ul>
       </section>
-    \`;
+    `;
   }
 
   results.innerHTML = html || '<p class="tool-note">Paste keywords above to build a content map.</p>';
   summary.textContent =
-    \`\${real.length} cluster\${real.length === 1 ? "" : "s"}, \${state.orphans.length} orphan\${state.orphans.length === 1 ? "" : "s"} · threshold \${state.threshold.toFixed(2)}\`;
+    `${real.length} cluster${real.length === 1 ? "" : "s"}, ${state.orphans.length} orphan${state.orphans.length === 1 ? "" : "s"} · threshold ${state.threshold.toFixed(2)}`;
   csvBtn.disabled = !(real.length || state.orphans.length);
   mdBtn.disabled = csvBtn.disabled;
 }
@@ -456,7 +456,7 @@ function download(filename, type, content) {
 }
 
 function csvCell(value) {
-  return \`"\${String(value).replace(/"/g, '""')}"\`;
+  return `"${String(value).replace(/"/g, '""')}"`;
 }
 
 csvBtn.addEventListener("click", () => {
@@ -478,9 +478,9 @@ mdBtn.addEventListener("click", () => {
     const primary = cluster.members[cluster.primaryIndex];
     const supporting = cluster.members
       .filter((_, index) => index !== cluster.primaryIndex)
-      .map((member) => \`- \${member.original}\`)
+      .map((member) => `- ${member.original}`)
       .join("\n");
-    return \`# \${primary.original}\nIntent signals: \${cluster.modifiers.length ? cluster.modifiers.map(modifierLabel).join(", ") : "None detected"}\nSupporting keywords:\n\${supporting || "- None"}\`;
+    return `# ${primary.original}\nIntent signals: ${cluster.modifiers.length ? cluster.modifiers.map(modifierLabel).join(", ") : "None detected"}\nSupporting keywords:\n${supporting || "- None"}`;
   });
   download("keyword-content-map.md", "text/markdown;charset=utf-8", sections.join("\n\n"));
 });
