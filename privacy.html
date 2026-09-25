@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Privacy Policy for CheckDR and the Signal Board SEO tools.">
+  <title>Privacy Policy | CheckDR</title>
+  <link rel="canonical" href="https://checkdr.net/privacy.html">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta property="og:type" content="website"><meta property="og:title" content="Privacy Policy | CheckDR"><meta property="og:description" content="Privacy Policy for CheckDR and the Signal Board SEO tools."><meta property="og:url" content="https://checkdr.net/privacy.html"><meta property="og:site_name" content="Signal Board">
+  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="Privacy Policy | CheckDR"><meta name="twitter:description" content="Privacy Policy for CheckDR and the Signal Board SEO tools.">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="container tools-page">
+  <nav class="tools-nav"><a href="/">← DR Checker</a><a href="/tools/">Tools</a></nav>
+  <header class="tool-hero"><div class="hero-brand">Signal Board / Privacy</div><h1>Privacy Policy</h1><p>What CheckDR processes, what it does not store, and which analytics providers operate on the site.</p></header>
+  <section class="panel content-panel">
+    <h2>What the tools receive</h2>
+    <p>The site does not require an account, login, API key, or credentials for Ahrefs, Google, hosting, FTP, analytics, or any other account. Depending on the tool, visitors can submit domains, URLs, or keywords for processing.</p>
+    <p>Submitted domains, URLs, and keywords are not written to a database. There is no database in this stack.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Rate-limit information</h2>
+    <p>For tools that use the backend, an IP address is used to enforce hourly rate limits. The persistent-ish Cloudflare KV value is a request count keyed for the relevant IP, tool, and hourly window. It does not contain the domain, URL, or keyword that was checked.</p>
+    <p>Those rate-limit counters automatically expire after roughly one hour. They are not sold, shared, or used for another purpose by CheckDR.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Analytics</h2>
+    <p>The site currently uses two third-party analytics scripts: Google Analytics (<code>G-4KD6RD6N91</code>) and Ahrefs Analytics. These services are separate from the tool backend and may process visitor and usage information such as page views, approximate location, device/browser information, and related analytics identifiers under their own practices.</p>
+    <p>For Google's practices, see <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google's Privacy Policy</a>. For Ahrefs' practices, see <a href="https://ahrefs.com/privacy-policy" rel="noopener noreferrer">Ahrefs' Privacy Policy</a>. CheckDR does not control the data practices or retention periods of those providers.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Cookies and retention</h2>
+    <p>Google Analytics can use cookies and similar identifiers. Ahrefs Analytics may use its own analytics technologies according to Ahrefs' documentation and policy. Because these services operate independently, their retention periods are governed by their own policies rather than by CheckDR's rate-limit storage.</p>
+    <p>CheckDR's rate-limit counters expire after roughly one hour. CheckDR does not retain submitted domains, URLs, or keywords in a database.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Third-party sharing</h2>
+    <p>CheckDR does not sell or share the temporary rate-limit data with third parties. The disclosed exception is that Google Analytics and Ahrefs Analytics process their own visitor/usage data when their scripts run on the site, subject to their respective privacy practices.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Domain Rating data</h2>
+    <p>Domain Rating data comes from Ahrefs' public Domain Rating API. CheckDR retrieves and displays that metric; it does not calculate Domain Rating itself.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Changes to this policy</h2>
+    <p>This page may be updated when the site's data practices or analytics configuration changes. The current version published at this URL is the version visitors should rely on for the site's stated practices.</p>
+  </section>
+  <div id="site-footer"></div>
+</main>
+<script src="/footer.js" defer></script>
+</body>
+</html>
