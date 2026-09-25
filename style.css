@@ -319,7 +319,7 @@ table {
 }
 
 th, td {
-  padding: 13px 12px;
+  padding: 17px 14px;
   text-align: left;
   border-bottom: 1px solid var(--hairline);
 }
@@ -327,13 +327,13 @@ th, td {
 th {
   color: var(--text-muted);
   font: 700 11px/1.2 var(--chrome);
-  letter-spacing: .04em;
+  letter-spacing: .06em;
+  padding-bottom: 14px;
 }
 
-th:nth-child(1) { width: 76px; }
-th:nth-child(2) { width: 34%; }
-th:nth-child(3) { width: 44%; }
-th:nth-child(4) { width: 130px; }
+th:nth-child(1) { width: 64px; }
+th:nth-child(3) { width: 100px; }
+th:nth-child(4) { width: 100px; }
 
 .sortable {
   cursor: pointer;
@@ -364,59 +364,40 @@ tbody tr:hover::before { background: var(--signal); }
   color: #606872;
   font-size: 13px;
   font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
 
 .domain-cell {
   color: var(--text);
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 14.5px;
+  font-weight: 600;
 }
 
 .signal-cell {
-  min-width: 310px;
+  width: 100px;
+  text-align: right;
 }
-
-.signal {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  width: 100%;
-}
-
-.signal-track {
-  display: block;
-  flex: 1;
-  height: 9px;
-  padding: 1px;
-  border: 1px solid #343A42;
-  background: #0B0D10;
-}
-
-.signal-fill {
-  display: block;
-  height: 100%;
-  background: var(--signal);
-  box-shadow: 0 0 8px rgba(255, 182, 39, .3);
-  transform-origin: left center;
-}
-
-.signal-empty .signal-track {
-  background: repeating-linear-gradient(90deg, #242930 0 5px, transparent 5px 9px);
-}
-
-.signal-empty .signal-fill { display: none; }
 
 .signal-value {
-  min-width: 30px;
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 700;
+  display: inline-block;
+  min-width: 34px;
+  color: var(--signal);
+  font: 700 16px/1 var(--mono);
+  font-variant-numeric: tabular-nums;
   text-align: right;
+  letter-spacing: .01em;
+}
+
+.signal-value-empty {
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .status {
   font: 700 11px/1 var(--chrome);
   letter-spacing: .04em;
+  text-align: right;
+  display: block;
 }
 
 .status-success { color: var(--signal); }
