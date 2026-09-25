@@ -26,6 +26,7 @@ const totalCount = document.getElementById("totalCount");
 const successCount = document.getElementById("successCount");
 const failedCount = document.getElementById("failedCount");
 const averageDr = document.getElementById("averageDr");
+const checkedAt = document.getElementById("checkedAt");
 
 let allResults = [];
 let filteredResults = [];
@@ -295,6 +296,7 @@ async function checkDomains() {
     if (!response.ok) throw new Error(data?.error || `Request failed with HTTP ${response.status}.`);
     if (!data.success || !Array.isArray(data.results)) throw new Error("The server returned an unexpected response.");
     allResults = data.results;
+    if (checkedAt) checkedAt.textContent = `Checked: ${new Date().toLocaleString()} — your local time`;
     updateSummary();
     applyFilterAndSort();
     summary.classList.remove("hidden");
@@ -324,6 +326,7 @@ function clearAll() {
   hideServerError();
   resultsBody.replaceChildren();
   paginationContainer.replaceChildren();
+  if (checkedAt) checkedAt.textContent = "";
   updateCounter();
 }
 
