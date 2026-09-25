@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="How CheckDR works, what Domain Rating measures, and the limitations of using DR as an SEO comparison metric.">
+  <title>How It Works & Domain Rating Limitations | CheckDR</title>
+  <link rel="canonical" href="https://checkdr.net/how-it-works.html">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta property="og:type" content="website"><meta property="og:title" content="How It Works & Domain Rating Limitations | CheckDR"><meta property="og:description" content="How CheckDR works, what Domain Rating measures, and the limitations of using DR as an SEO comparison metric."><meta property="og:url" content="https://checkdr.net/how-it-works.html"><meta property="og:site_name" content="Signal Board">
+  <meta name="twitter:card" content="summary"><meta name="twitter:title" content="How It Works & Domain Rating Limitations | CheckDR"><meta name="twitter:description" content="How CheckDR works, what Domain Rating measures, and the limitations of using DR as an SEO comparison metric.">
+  <link rel="stylesheet" href="/style.css">
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@graph":[
+      {"@type":"WebApplication","name":"CheckDR","url":"https://checkdr.net/","applicationCategory":"SEO Tool","operatingSystem":"Any (web-based)","description":"Bulk Domain Rating checker and SEO utilities."},
+      {"@type":"FAQPage","mainEntity":[
+        {"@type":"Question","name":"What is Domain Rating?","acceptedAnswer":{"@type":"Answer","text":"Domain Rating is an Ahrefs metric scored on a logarithmic 0–100 scale that estimates the strength of a website's backlink profile relative to other domains in Ahrefs' index."}},
+        {"@type":"Question","name":"Is Domain Rating a Google ranking signal?","acceptedAnswer":{"@type":"Answer","text":"No. Domain Rating is an Ahrefs metric and is not a Google ranking signal."}},
+        {"@type":"Question","name":"Does CheckDR need an Ahrefs account or API key?","acceptedAnswer":{"@type":"Answer","text":"No. Visitors do not need an Ahrefs account, login, API key, or other credentials to use CheckDR."}},
+        {"@type":"Question","name":"Does CheckDR store the domains I check?","acceptedAnswer":{"@type":"Answer","text":"No. Submitted domains are not written to a database. The backend uses temporary IP-based request counters for rate limiting."}},
+        {"@type":"Question","name":"Can different SEO tools show different DR-like numbers?","acceptedAnswer":{"@type":"Answer","text":"Yes. Different tools may use different indexes, datasets, and methodologies, so their numbers are not necessarily directly comparable."}}
+      ]
+    ]
+  }
+  </script>
+</head>
+<body>
+<main class="container tools-page">
+  <nav class="tools-nav"><a href="/">← DR Checker</a><a href="/tools/">Tools</a></nav>
+  <header class="tool-hero"><div class="hero-brand">Signal Board / How It Works</div><h1>How it works</h1><p>What CheckDR measures, how the DR check is delivered, and where the metric has limits.</p></header>
+  <section class="panel content-panel">
+    <h2>What happens when you run a DR check?</h2>
+    <p>You enter up to 100 domains or URLs. The browser sends those normalized domains to the CheckDR backend, which retrieves Domain Rating data through Ahrefs' public Domain Rating API and returns the results for display. CheckDR does not calculate the DR score itself.</p>
+    <p>The result table is a snapshot of the data returned when you run the check. The page also records a client-side “Checked” timestamp so you can tell when that result set was displayed.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>What Domain Rating measures</h2>
+    <p>DR is an Ahrefs metric on a 0–100 logarithmic scale intended to estimate the relative strength of a site's backlink profile within Ahrefs' index. Because the scale is logarithmic, moving upward at higher DR levels generally represents a larger increase in the underlying relative strength than an equal-looking move at the low end.</p>
+    <p>A higher DR does not mean better content, higher legitimacy, or a more trustworthy organization. It is a backlink-profile metric, not a general quality score.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>DR is not a Google ranking signal</h2>
+    <p>Domain Rating is an Ahrefs metric. It is not a Google ranking signal, and a DR number should not be treated as a direct prediction of search rankings.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Why numbers can differ between tools</h2>
+    <p>Different SEO tools can have different indexes, crawl coverage, update schedules, formulas, and methodologies. As a result, authority-style numbers from different sources will not always match. Compare like with like when using a metric for a repeated workflow.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>What is DR?</h3><p>DR is Ahrefs' Domain Rating metric, a logarithmic 0–100 estimate of relative backlink-profile strength within Ahrefs' index.</p></div>
+    <div class="faq-item"><h3>How is DR calculated?</h3><p>CheckDR does not calculate DR. It retrieves the metric from Ahrefs' public Domain Rating API.</p></div>
+    <div class="faq-item"><h3>Does CheckDR need an Ahrefs account, API key, or login?</h3><p>No. Visitors only enter domains; no Ahrefs account, login, API key, or other credentials are required.</p></div>
+    <div class="faq-item"><h3>Does CheckDR store the domains I check?</h3><p>No. Submitted domains are not written to a database. Temporary IP-based request counters are used for hourly rate limiting.</p></div>
+    <div class="faq-item"><h3>Is CheckDR affiliated with Ahrefs?</h3><p>CheckDR retrieves Domain Rating data through Ahrefs' public API. The site should publish an affiliation/endorsement statement only after the site owner confirms the exact relationship wording.</p></div>
+    <div class="faq-item"><h3>How often does DR change?</h3><p>DR can change as Ahrefs' backlink index and its calculations change. There is no fixed interval at which every domain must change.</p></div>
+    <div class="faq-item"><h3>Why might two SEO tools show different numbers?</h3><p>Different tools can use different indexes, datasets, update schedules, and methodologies, so their authority-style numbers may not match.</p></div>
+    <div class="faq-item"><h3>Does a high DR mean a site is trustworthy?</h3><p>No. DR measures backlink-profile strength within Ahrefs' system; it is not a general trust, legitimacy, or content-quality score.</p></div>
+    <div class="faq-item"><h3>Can I check multiple domains at once?</h3><p>Yes. The bulk checker accepts up to 100 domains or URLs per check.</p></div>
+    <div class="faq-item"><h3>Is CheckDR free?</h3><p>Yes. The public checker is free, subject to fair-use rate limits.</p></div>
+  </section>
+  <div id="site-footer"></div>
+</main>
+<script src="/footer.js" defer></script>
+</body>
+</html>
