@@ -118,7 +118,7 @@ function getStatusClass(status) {
   return "status-failed";
 }
 function displayStatus(status) {
-  if (status === "success") return "ONLINE";
+  if (status === "success") return "";
   if (status === "not_found") return "NOT FOUND";
   if (status === "failed") return "FAILED";
   return String(status || "UNKNOWN").toUpperCase();
@@ -136,39 +136,16 @@ function createResultRow(result, index) {
 
   const drCell = document.createElement("td");
   drCell.className = "signal-cell";
+  const value = document.createElement("span");
+  value.className = "signal-value";
   if (typeof result.domain_rating === "number") {
-    const signal = document.createElement("div");
-    signal.className = "signal";
-    signal.setAttribute("aria-label", `Domain Rating ${result.domain_rating} out of 100`);
-
-    const track = document.createElement("span");
-    track.className = "signal-track";
-    track.setAttribute("aria-hidden", "true");
-
-    const fill = document.createElement("span");
-    fill.className = "signal-fill";
-    fill.style.width = `${Math.max(0, Math.min(100, result.domain_rating))}%`;
-    track.appendChild(fill);
-
-    const value = document.createElement("span");
-    value.className = "signal-value";
     value.textContent = String(result.domain_rating);
-
-    signal.append(track, value);
-    drCell.appendChild(signal);
+    value.setAttribute("aria-label", `Domain Rating ${result.domain_rating} out of 100`);
   } else {
-    drCell.classList.add("signal-empty");
-    const signal = document.createElement("div");
-    signal.className = "signal";
-    const track = document.createElement("span");
-    track.className = "signal-track";
-    track.setAttribute("aria-hidden", "true");
-    const value = document.createElement("span");
-    value.className = "signal-value";
     value.textContent = "—";
-    signal.append(track, value);
-    drCell.appendChild(signal);
+    value.classList.add("signal-value-empty");
   }
+  drCell.appendChild(value);
 
   const statusCell = document.createElement("td");
   const status = document.createElement("span");
