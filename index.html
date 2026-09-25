@@ -118,6 +118,7 @@
         <span id="domainCounter" class="counter" aria-live="polite">0 / 100</span>
       </div>
       <textarea id="domainInput" placeholder="example.com&#10;ahrefs.com&#10;google.com&#10;hubspot.com" spellcheck="false" aria-label="Domain list" aria-describedby="inputError"></textarea>
+      <div class="tool-note trust-callout">No account required. No Ahrefs login. No API key. No website access. You only need to enter a domain.</div>
       <div id="inputError" class="error-message hidden" role="status" aria-live="polite"></div>
       <div class="actions">
         <button id="checkButton" class="btn btn-primary" type="button">Check Signal</button>
@@ -143,7 +144,7 @@
 
     <section id="resultsSection" class="panel results-panel hidden" aria-labelledby="results-heading">
       <div class="results-header">
-        <div><h2 id="results-heading">Signal results</h2><p>Sorted by Domain Rating. Select a column header to change the order.</p></div>
+        <div><h2 id="results-heading">Signal results</h2><p>Sorted by Domain Rating. Select a column header to change the order.</p><p id="checkedAt" class="checked-at" aria-live="polite"></p></div>
         <button id="downloadButton" class="btn btn-secondary" type="button">Download CSV</button>
       </div>
       <div class="toolbar">
@@ -167,7 +168,7 @@
         <section class="panel content-panel" aria-labelledby="what-is-dr-heading">
       <h2 id="what-is-dr-heading">What is Domain Rating (DR)?</h2>
       <p>Domain Rating is a metric from Ahrefs, scored on a 0–100 logarithmic scale, that estimates the overall strength of a website's backlink profile relative to every other domain in Ahrefs' index. It's driven mainly by the number and quality of unique referring domains linking to a site — links from other well-linked-to domains carry more weight, and because the scale is logarithmic, each additional point gets harder to earn as DR climbs.</p>
-      <p>DR is an Ahrefs metric, not a Google ranking factor — Google doesn't publish or use a public authority score. It's still widely used across the SEO industry as a quick, comparable proxy for a domain's backlink authority when auditing sites, vetting link prospects, or sizing up competitors.</p>
+      <p>DR is an Ahrefs metric, not a Google ranking factor — Google doesn't publish or use a public authority score. A higher DR does not mean better content, higher legitimacy, or greater trustworthiness; it is specifically a backlink-profile metric.</p><p>The DR scale is logarithmic, so increases at the higher end represent progressively more relative backlink strength. DR numbers also should not be compared blindly with authority metrics from other tools: different indexes, crawl coverage, update schedules, and methodologies can produce different values.</p>
     </section>
 
     <section class="panel content-panel" aria-labelledby="why-bulk-heading">
@@ -195,7 +196,7 @@
       <div class="faq-item"><h3>What counts as a "good" Domain Rating?</h3><p>It depends on your niche and who you're comparing against — there's no universal cutoff. In many competitive niches, DR 40+ is considered a solid, established site, and large mainstream publishers or platforms often sit well above 70. The most useful comparison is against your direct competitors, not an absolute number.</p></div>
       <div class="faq-item"><h3>How many domains can I check at once?</h3><p>Up to 100 domains or URLs per check. Paste one per line — bare domains and full http(s) URLs are both accepted.</p></div>
       <div class="faq-item"><h3>Is this tool free to use?</h3><p>Yes. It's free, with a fair-use rate limit per hour so the service stays available and fast for everyone.</p></div>
-      <div class="faq-item"><h3>How current is the Domain Rating data?</h3><p>Each check queries Ahrefs' API directly and returns their current DR for that domain, so results reflect Ahrefs' live index at the moment you run the check rather than a cached or delayed snapshot.</p></div>
+      <div class="faq-item"><h3>How is DR calculated?</h3><p>CheckDR does not calculate DR. It retrieves the metric from Ahrefs' public Domain Rating API.</p></div><div class="faq-item"><h3>Does CheckDR need an Ahrefs account, API key, or login?</h3><p>No. Visitors only enter domains; no Ahrefs account, login, API key, or other credentials are required.</p></div><div class="faq-item"><h3>Does CheckDR store the domains I check?</h3><p>No. Submitted domains are not written to a database. Temporary IP-based request counters are used for hourly rate limiting.</p></div><div class="faq-item"><h3>Is CheckDR affiliated with Ahrefs?</h3><p>CheckDR retrieves Domain Rating data through Ahrefs' public API. The site owner should confirm the exact affiliation or endorsement wording before publishing a definitive statement.</p></div><div class="faq-item"><h3>How often does DR change?</h3><p>DR can change as Ahrefs' backlink index and calculations change; there is no fixed interval at which every domain must change.</p></div><div class="faq-item"><h3>Why might two SEO tools show different numbers?</h3><p>Different tools can use different indexes, datasets, update schedules, and methodologies, so their authority-style numbers may not match.</p></div><div class="faq-item"><h3>Does a high DR mean a site is trustworthy?</h3><p>No. DR is a backlink-profile metric, not a general trust, legitimacy, or content-quality score.</p></div><div class="faq-item"><h3>How current is the Domain Rating data?</h3><p>Each check queries Ahrefs' API directly and returns their current DR for that domain, so results reflect Ahrefs' live index at the moment you run the check rather than a cached or delayed snapshot.</p></div>
     </section>
 
     <section class="panel content-panel" aria-labelledby="more-tools-heading">
@@ -217,8 +218,9 @@
               <li><a href="/tools/hreflang-generator.html">Hreflang generator</a> — generate complete language and regional alternate tags.</li>
       </ul>
     </section>
-<footer><p>Domain Rating data provided through Ahrefs API.</p></footer>
+<div id="site-footer"></div>
   </main>
   <script src="script.js" defer></script>
+<script src="/footer.js" defer></script>
 </body>
 </html>
