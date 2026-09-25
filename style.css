@@ -332,8 +332,8 @@ th {
 }
 
 th:nth-child(1) { width: 64px; }
-th:nth-child(3) { width: 100px; }
-th:nth-child(4) { width: 100px; }
+th:nth-child(3) { width: 100px; text-align: right; }
+th:nth-child(4) { width: 100px; text-align: right; }
 
 .sortable {
   cursor: pointer;
