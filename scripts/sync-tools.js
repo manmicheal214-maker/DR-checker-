@@ -48,10 +48,13 @@ function replaceOrFail(source, re, replacement, label) {
 
 function syncToolPage(source, file) {
   const nav = '<span class="tool-links">' + navBlock() + "</span>";
+  if (/<span class="tool-links">[\s\S]*?<\/span>/.test(source)) {
+    return source.replace(/<span class="tool-links">[\s\S]*?<\/span>/, nav);
+  }
   return replaceOrFail(
     source,
-    /<span class="tool-links">[\s\S]*?<\/span>/,
-    nav,
+    /<nav class="tools-nav">[\s\S]*?<\/nav>/,
+    '<nav class="tools-nav"><a href="/">← DR Checker</a><a href="/tools/">Tools</a>' + nav + "</nav>",
     file + " nav"
   );
 }
