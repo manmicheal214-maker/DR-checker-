@@ -5,7 +5,8 @@ const path = require("path");
 const root = path.resolve(__dirname, "..");
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "tools", "tools-manifest.json"), "utf8"));
 const tools = manifest.tools;
-const htmlFiles = fs.readdirSync(path.join(root, "tools"))
+const toolDir = path.join(root, "tools");
+const htmlFiles = fs.readdirSync(toolDir)
   .filter((name) => name.endsWith(".html") && name !== "index.html")
   .sort();
 
@@ -45,39 +46,44 @@ function replaceOrFail(source, re, replacement, label) {
   return source.replace(re, replacement);
 }
 
-function sync(source, file) {
-  let out = source;
+function syncToolPage(source, file) {
   const nav = '<span class="tool-links">' + navBlock() + "</span>";
-  out = replaceOrFail(out, /<span class="tool-links">[\\s\\S]*?<\\/span>/, nav, file + " nav");
+  return replaceOrFail(
+    source,
+    /<span class="tool-links">[\s\S]*?<\/span>/,
+    nav,
+    file + " nav"
+  );
+}
 
-  if (file === "tools/index.html") {
-    out = replaceOrFail(
-      out,
-      /<section class="tools-grid">[\\s\\S]*?<\\/section>/,
-      '<section class="tools-grid">\\n<!-- TOOLS-MANIFEST:START -->\\n' + hubGrid() +
-      '\\n<!-- TOOLS-MANIFEST:END -->\\n</section>',
-      file + " hub"
-    );
-  }
+function syncHub(source) {
+  let out = syncToolPage(source, "tools/index.html");
+  return replaceOrFail(
+    out,
+    /<section class="tools-grid">[\s\S]*?<\/section>/,
+    '<section class="tools-grid">\n<!-- TOOLS-MANIFEST:START -->\n' + hubGrid() +
+    '\n<!-- TOOLS-MANIFEST:END -->\n</section>',
+    "tools/index.html hub"
+  );
+}
 
-  if (file === "index.html") {
-    out = replaceOrFail(
-      out,
-      /(<h2 id="more-tools-heading">More free SEO tools<\\/h2>\\s*<ul>)[\\s\\S]*?(<\\/ul>)/,
-      "$1\\n<!-- TOOLS-MANIFEST:START -->\\n" + homeList() + "\\n<!-- TOOLS-MANIFEST:END -->\\n      $2",
-      file + " homepage tool list"
-    );
-  }
-
-  return out;
+function syncHome(source) {
+  return replaceOrFail(
+    source,
+    /(<h2 id="more-tools-heading">More free SEO tools<\/h2>\s*<ul>)[\s\S]*?(<\/ul>)/,
+    "$1\n<!-- TOOLS-MANIFEST:START -->\n" + homeList() +
+    "\n<!-- TOOLS-MANIFEST:END -->\n      $2",
+    "index.html homepage tool list"
+  );
 }
 
 function syncSitemap(source) {
-  const block = "<!-- TOOLS-MANIFEST:START -->\\n" + sitemapTools() + "\\n  <!-- TOOLS-MANIFEST:END -->";
-  const re = /<!-- TOOLS-MANIFEST:START -->[\\s\\S]*?<!-- TOOLS-MANIFEST:END -->/;
+  const block = "<!-- TOOLS-MANIFEST:START -->\n" + sitemapTools() + "\n  <!-- TOOLS-MANIFEST:END -->";
+  const re = /<!-- TOOLS-MANIFEST:START -->[\s\S]*?<!-- TOOLS-MANIFEST:END -->/;
   if (re.test(source)) return source.replace(re, block);
-  const marker = "  <url><loc>https://checkdr.net/tools/redirect-checker.html</loc>";
-  const start = source.indexOf(marker);
+
+  const startMarker = "  <url><loc>https://checkdr.net/tools/redirect-checker.html</loc>";
+  const start = source.indexOf(startMarker);
   if (start === -1) throw new Error("Could not find sitemap tool region");
   const end = source.indexOf("  <url><loc>https://checkdr.net/about.html</loc>", start);
   if (end === -1) throw new Error("Could not find sitemap static-page boundary");
@@ -85,32 +91,36 @@ function syncSitemap(source) {
 }
 
 function writeOrCheck(file, next) {
-  const current = fs.readFileSync(path.join(root, file), "utf8");
+  const fullPath = path.join(root, file);
+  const current = fs.readFileSync(fullPath, "utf8");
   if (current === next) return false;
-  if (process.argv.includes("--check")) throw new Error(file + " is out of sync with tools/tools-manifest.json");
-  fs.writeFileSync(path.join(root, file), next);
+  if (process.argv.includes("--check")) {
+    throw new Error(file + " is out of sync with tools/tools-manifest.json");
+  }
+  fs.writeFileSync(fullPath, next);
   return true;
+}
+
+for (const tool of tools) {
+  const expected = path.join(toolDir, tool.slug + ".html");
+  if (!fs.existsSync(expected)) throw new Error("Manifest tool is missing: " + tool.slug + ".html");
 }
 
 let changed = 0;
 for (const file of htmlFiles) {
   const rel = "tools/" + file;
   const current = fs.readFileSync(path.join(root, rel), "utf8");
-  changed += writeOrCheck(rel, sync(current, file)) ? 1 : 0;
+  const next = syncToolPage(current, file);
+  changed += writeOrCheck(rel, next) ? 1 : 0;
 }
 
-for (const required of tools) {
-  const expected = path.join(root, "tools", required.slug + ".html");
-  if (!fs.existsSync(expected)) throw new Error("Manifest tool is missing: " + required.slug + ".html");
-}
+const hub = fs.readFileSync(path.join(toolDir, "index.html"), "utf8");
+changed += writeOrCheck("tools/index.html", syncHub(hub)) ? 1 : 0;
+
+const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
+changed += writeOrCheck("index.html", syncHome(home)) ? 1 : 0;
 
 const sitemap = fs.readFileSync(path.join(root, "sitemap.xml"), "utf8");
 changed += writeOrCheck("sitemap.xml", syncSitemap(sitemap)) ? 1 : 0;
-
-const hub = fs.readFileSync(path.join(root, "tools", "index.html"), "utf8");
-changed += writeOrCheck("tools/index.html", sync(hub, "index.html")) ? 1 : 0;
-
-const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
-changed += writeOrCheck("index.html", sync(home, "index.html")) ? 1 : 0;
 
 console.log((process.argv.includes("--check") ? "Checked" : "Synchronized") + " tool manifest; " + changed + " file(s) changed.");
