@@ -1,0 +1,94 @@
+{
+  "tools": [
+    {
+      "slug": "redirect-checker",
+      "title": "Redirect checker",
+      "description": "Trace a URL's redirect chain and inspect the final HTTP status.",
+      "navLabel": "Redirect checker"
+    },
+    {
+      "slug": "meta-preview",
+      "title": "Meta preview",
+      "description": "Inspect a page's title, description, canonical tag, Open Graph/Twitter tags, robots meta, and H1 count.",
+      "navLabel": "Meta preview"
+    },
+    {
+      "slug": "dns-lookup",
+      "title": "DNS lookup",
+      "description": "Look up A, AAAA, MX, TXT, and NS records for domains.",
+      "navLabel": "DNS lookup"
+    },
+    {
+      "slug": "broken-links",
+      "title": "Broken link checker",
+      "description": "Find broken links on a single page.",
+      "navLabel": "Broken links"
+    },
+    {
+      "slug": "security-headers",
+      "title": "Security headers",
+      "description": "Check common HTTP security response headers.",
+      "navLabel": "Security headers"
+    },
+    {
+      "slug": "ssl-checker",
+      "title": "SSL certificate checker",
+      "description": "Look up a domain's certificate history via public Certificate Transparency logs.",
+      "navLabel": "SSL checker"
+    },
+    {
+      "slug": "title-length-checker",
+      "title": "Title & meta length",
+      "description": "Check title and meta description length and approximate search-result pixel width.",
+      "navLabel": "Title/meta length"
+    },
+    {
+      "slug": "readability-checker",
+      "title": "Readability checker",
+      "description": "Analyze pasted content for readability scores and keyword usage.",
+      "navLabel": "Readability"
+    },
+    {
+      "slug": "writing-clarity-checker",
+      "title": "Writing clarity checker",
+      "description": "Highlight filler words and possible passive-voice patterns.",
+      "navLabel": "Writing clarity"
+    },
+    {
+      "slug": "schema-generator",
+      "title": "Schema markup generator",
+      "description": "Generate paste-ready JSON-LD structured data.",
+      "navLabel": "Schema generator"
+    },
+    {
+      "slug": "sitemap-generator",
+      "title": "XML sitemap generator",
+      "description": "Build and validate a sitemap.xml locally.",
+      "navLabel": "Sitemap generator"
+    },
+    {
+      "slug": "robots-generator",
+      "title": "Robots.txt generator",
+      "description": "Build crawler rules, AI bot controls, and sitemap directives.",
+      "navLabel": "Robots.txt generator"
+    },
+    {
+      "slug": "social-preview-builder",
+      "title": "Social preview builder",
+      "description": "Preview Google SERP and social metadata presentations.",
+      "navLabel": "Social preview"
+    },
+    {
+      "slug": "hreflang-generator",
+      "title": "Hreflang generator",
+      "description": "Generate language and regional alternate tags.",
+      "navLabel": "Hreflang"
+    },
+    {
+      "slug": "keyword-clustering",
+      "title": "Keyword clustering & content map",
+      "description": "Cluster keywords by lexical similarity and build a reviewable SEO content map.",
+      "navLabel": "Keyword clustering"
+    }
+  ]
+}
