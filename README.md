@@ -417,3 +417,24 @@ Possible future features:
 This project is provided as a starter implementation.
 
 Review Ahrefs API terms, licensing requirements, and attribution requirements before using the application commercially.
+
+# SEO tool maintenance
+
+The SEO tool surfaces are generated from `tools/tools-manifest.json`. The manifest is the single source of truth for the 15 public tools.
+
+To add a new tool:
+
+1. Add one entry to `tools/tools-manifest.json`.
+2. Create the matching `tools/<slug>.html` page.
+3. Push to `main`.
+
+The GitHub Actions workflow in `.github/workflows/seo-sync.yml` runs `scripts/sync-tools.js` on pushes and pull requests. It synchronizes the tool navigation, `tools/index.html`, the homepage's "More free SEO tools" list, and `sitemap.xml`. Pull requests fail when the generated surfaces are out of sync; pushes regenerate and commit them automatically.
+
+Run the same check locally with:
+
+```bash
+node scripts/sync-tools.js --check
+```
+
+No framework or build step is required.
+
