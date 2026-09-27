@@ -1,0 +1,48 @@
+# CheckDR
+
+> CheckDR is a free, browser-based suite of SEO and content-writing tools. The flagship tool checks Ahrefs Domain Rating for up to 100 domains at once. The suite also includes technical SEO auditing tools, on-page checks, content-writing analysis, and generators for schema markup, XML sitemaps, robots.txt, social previews, and hreflang tags.
+
+## Domain & Technical SEO
+
+- [Bulk Domain Rating Checker](https://checkdr.net/): Check Ahrefs Domain Rating for up to 100 domains at once, with sorting and CSV export.
+- [Redirect Checker](https://checkdr.net/tools/redirect-checker.html): Trace a URL's redirect chain and inspect the final HTTP status.
+- [Meta Preview](https://checkdr.net/tools/meta-preview.html): Inspect a page's title, description, canonical tag, Open Graph/Twitter tags, robots meta, and H1 count.
+- [DNS Lookup](https://checkdr.net/tools/dns-lookup.html): Look up A, AAAA, MX, TXT, and NS records for domains.
+- [Broken Links Checker](https://checkdr.net/tools/broken-links.html): Find broken links on a page.
+- [Security Headers Checker](https://checkdr.net/tools/security-headers.html): Check CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and Permissions-Policy headers.
+- [SSL Certificate Checker](https://checkdr.net/tools/ssl-checker.html): Look up domain certificate history through public Certificate Transparency logs.
+
+## Content & Writing
+
+- [Title & Meta Length Checker](https://checkdr.net/tools/title-length-checker.html): Check title and meta description length and approximate Google SERP pixel width.
+- [Readability & Keyword Density Checker](https://checkdr.net/tools/readability-checker.html): Analyze pasted content for readability and keyword density.
+- [Writing Clarity Checker](https://checkdr.net/tools/writing-clarity-checker.html): Analyze pasted text for passive voice and filler words.
+- [Keyword Clustering](https://checkdr.net/tools/keyword-clustering.html): Cluster a pasted keyword list by lexical similarity and generate a content map.
+
+## Generators
+
+- [Schema Markup Generator](https://checkdr.net/tools/schema-generator.html): Generate JSON-LD for Article, FAQPage, Product, HowTo, LocalBusiness, and BreadcrumbList schema.
+- [XML Sitemap Generator](https://checkdr.net/tools/sitemap-generator.html): Build a sitemap.xml from a pasted list of URLs.
+- [Robots.txt Generator](https://checkdr.net/tools/robots-generator.html): Generate robots.txt files, including presets for AI crawlers such as GPTBot, ClaudeBot, and CCBot.
+- [Social & SERP Preview Builder](https://checkdr.net/tools/social-preview-builder.html): Preview how titles, descriptions, and images can appear in search and social results.
+- [Hreflang Generator](https://checkdr.net/tools/hreflang-generator.html): Generate hreflang tags for multilingual pages.
+
+## About CheckDR
+
+- [About CheckDR](https://checkdr.net/about.html): Information about CheckDR, what it does, and what it does not do.
+- [How It Works](https://checkdr.net/how-it-works.html): Information about Domain Rating data and limitations of the metric.
+- [Privacy Policy](https://checkdr.net/privacy.html): Information about data collection, retention, analytics, and privacy practices.
+- [Terms of Service](https://checkdr.net/terms.html): Service terms and acceptable-use provisions.
+- [Contact](https://checkdr.net/contact.html): Contact information for the CheckDR team.
+
+## Tools Index
+
+- [All Tools](https://checkdr.net/tools/): Full index of CheckDR's available SEO, technical, content, writing, and generator tools.
+
+## General Information
+
+- CheckDR does not require an account, login, or API key to use its tools.
+- The Bulk Domain Rating Checker accepts up to 100 domains at once.
+- Domain Rating data is provided through the Ahrefs Domain Rating API; CheckDR does not calculate Domain Rating itself.
+- Client-side tools process pasted input in the browser and do not require a Cloudflare Worker.
+- Tool-specific behavior, limitations, privacy practices, and acceptable use are documented on the relevant pages above.
