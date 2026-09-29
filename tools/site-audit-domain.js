@@ -137,7 +137,7 @@ discoverButton.addEventListener("click", async () => {
   resetError(); discoveryPanel.classList.add("hidden"); reportPanel.classList.add("hidden");
   const domain = domainInput.value.trim();
   if (!domain) return showError("Enter a domain such as example.com.");
-  if (/^https?:\/\//i.test(domain) || domain.includes("/")) return showError("Enter a domain only, without a protocol, path, or query string.");
+  if (/^https?:\/\//i.test(domain) || /[/?#]/.test(domain)) return showError("Enter a domain only, without a protocol, path, query, or fragment.");
   setLoading(true, "Discovering sitemap", "Checking robots.txt and sitemap XML server-side.");
   try {
     const data = await post("/discover-sitemap", { domain });
