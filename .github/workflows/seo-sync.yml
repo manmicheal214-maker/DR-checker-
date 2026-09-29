@@ -21,12 +21,12 @@ jobs:
           node-version: 20
       - name: Check Worker syntax on pull requests
         if: github.event_name == 'pull_request'
-        run: node --check worker.js
+        run: node --check worker.js && node --check tools/site-audit-domain.js
       - name: Check generated surfaces on pull requests
         if: github.event_name == 'pull_request'
         run: node scripts/sync-tools.js --check
       - name: Check Worker syntax
-        run: node --check worker.js
+        run: node --check worker.js && node --check tools/site-audit-domain.js
       - name: Regenerate tool surfaces on main
         if: github.event_name == 'push'
         run: node scripts/sync-tools.js
