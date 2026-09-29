@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Audit a domain's sitemap-listed pages for metadata, reachability, security headers, Domain Rating, and certificate history.">
+<title>Domain-Wide Site Audit — Signal Board</title>
+<link rel="canonical" href="https://checkdr.net/tools/site-audit-domain.html">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Domain-Wide Site Audit — Signal Board">
+<meta property="og:description" content="Audit sitemap-listed pages for metadata, reachability, security headers, Domain Rating, and certificate history.">
+<meta property="og:url" content="https://checkdr.net/tools/site-audit-domain.html">
+<meta property="og:site_name" content="Signal Board">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Domain-Wide Site Audit — Signal Board">
+<meta name="twitter:description" content="Audit sitemap-listed pages for metadata, reachability, security headers, Domain Rating, and certificate history.">
+<link rel="stylesheet" href="/style.css">
+<script type="application/ld+json">{
+  "@context":"https://schema.org",
+  "@graph":[
+    {"@type":"WebApplication","name":"Domain-Wide Site Audit","url":"https://checkdr.net/tools/site-audit-domain.html","applicationCategory":"SEO Tool","operatingSystem":"Any (web-based)","description":"Audit a selected set of sitemap-listed pages for metadata, reachability, security headers, Domain Rating, and certificate history.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@type":"FAQPage","mainEntity":[
+      {"@type":"Question","name":"Does this audit every page on a website?","acceptedAnswer":{"@type":"Answer","text":"No. The tool audits URLs listed in the sitemap it discovers. Sites with a missing or incomplete sitemap may produce a smaller audit or no audit. Discovery returns up to 50 URLs, and the default audit selection is the first 15 pages; pages not selected are not included."}},
+      {"@type":"Question","name":"Why is broken-link checking limited to one page?","acceptedAnswer":{"@type":"Answer","text":"The standalone broken-link endpoint has its own hourly request limit and checks one page per request, so the domain audit runs it only against the domain homepage."}},
+      {"@type":"Question","name":"Does the SSL result confirm the live certificate?","acceptedAnswer":{"@type":"Answer","text":"No. The SSL check uses public Certificate Transparency data via crt.sh and does not perform a live TLS handshake."}},
+      {"@type":"Question","name":"Are all checks guaranteed to succeed?","acceptedAnswer":{"@type":"Answer","text":"No. Individual checks can fail because of rate limits, network errors, unavailable endpoints, blocked destinations, or site responses. Other checks continue and their errors are shown separately."}}
+    ]}
+  ]
+}</script>
+</head>
+<body>
+<main class="container tools-page">
+<nav class="tools-nav"><a href="/">← DR Checker</a><a href="/tools/">Tools</a><span class="tool-links"><a href="/tools/site-audit-domain.html">Domain audit</a><a href="/tools/broken-links.html">Broken links</a><a href="/tools/security-headers.html">Security headers</a><a href="/tools/meta-preview.html">Meta preview</a></span></nav>
+<header class="tool-hero"><div class="hero-brand">Signal Board</div><h1>Domain-wide site audit</h1><p>Discover pages from a site's sitemap, then check metadata, response reachability, security headers, Domain Rating, and certificate history.</p><p class="tool-note">Want to audit just one page instead? Use the <a href="/tools/broken-links.html">standalone Broken Links tool</a> for a focused individual-page check. A separate single-page site audit page is not currently listed in this repository.</p></header>
+<section class="panel tool-input">
+<label for="auditDomain">Domain (not a full URL)</label>
+<input class="search-input" id="auditDomain" type="text" placeholder="example.com" autocomplete="url" spellcheck="false">
+<div class="actions"><button class="btn btn-primary" id="discoverRun">Discover sitemap</button><button class="btn btn-secondary" id="auditClear">Clear</button></div>
+<p class="tool-note">Discovery reads robots.txt and sitemap XML server-side. It returns at most 50 page URLs. The default selection is 15 pages to stay within the existing endpoints' hourly request limits.</p>
+</section>
+<section class="panel loading-panel hidden" id="auditLoading" aria-live="polite"><div class="spinner"></div><div><strong id="auditLoadingTitle">Working…</strong><p id="auditLoadingText">Contacting the Worker.</p></div></section>
+<section class="panel error-panel hidden" id="auditError" role="alert"><strong>Audit step failed</strong><p id="auditErrorText"></p></section>
+<section class="panel tool-results hidden" id="discoveryPanel">
+<div class="section-header"><div><h2>Sitemap discovery</h2><p id="discoverySummary"></p></div><button class="btn btn-primary" id="runAudit">Audit selected pages</button></div>
+<p class="tool-note" id="sitemapNote"></p>
+<div id="pageChoices" class="page-choices"></div>
+<div class="actions"><button class="btn btn-secondary" id="selectFirst15">Select first 15</button><button class="btn btn-secondary" id="selectAll">Select all discovered</button><button class="btn btn-secondary" id="selectNone">Clear selection</button></div>
+<p class="tool-note">Broken-link checking is limited to the homepage to respect this check's own rate limit — use the standalone <a href="/tools/broken-links.html">Broken Links tool</a> to check other individual pages.</p>
+</section>
+<section class="panel tool-results hidden" id="reportPanel">
+<div class="section-header"><div><h2>Site-wide summary</h2><p id="reportContext"></p></div><button class="btn btn-secondary" id="exportAudit">Export page table CSV</button></div>
+<div id="summaryMetrics" class="audit-summary"></div>
+<div class="audit-issues"><h3>Issue tally</h3><p id="issueTally"></p><ul id="issueList"></ul></div>
+<div class="section-header"><div><h2>Per-page results</h2><p>Only selected pages are included. Individual check errors are shown rather than stopping the report.</p></div></div>
+<div class="tool-table"><table><thead><tr><th>Page URL</th><th>Title length</th><th>Description length</th><th>Headers</th><th>H1 count</th><th>Reachability</th><th>Canonical</th><th>Check notes</th></tr></thead><tbody id="auditRows"></tbody></table></div>
+<div class="audit-issues"><h3>Domain-level checks</h3><div id="domainChecks"></div></div>
+</section>
+<section class="panel content-panel"><h2>How this domain audit works</h2><p>The Worker discovers sitemap URLs server-side to avoid browser CORS restrictions. The report then batches the existing metadata, security-header, and status endpoints within their current per-request URL caps. Domain Rating is supplied by Ahrefs, while certificate information comes from public Certificate Transparency logs.</p><p>This is a bounded audit, not a full crawler. It only sees URLs listed in the discovered sitemap, returns up to 50 discovered URLs, and audits only the pages you select. The default selection is 15 pages. Broken-link checking runs against the domain homepage only.</p>
+<h2>Frequently asked questions</h2>
+<div class="faq-item"><h3>What if a sitemap is missing or incomplete?</h3><p>The audit analyzes only URLs discovered in the sitemap. If the sitemap is missing, inaccessible, or incomplete, discovery may return an error or fewer pages than the site actually contains.</p></div>
+<div class="faq-item"><h3>Why are only 15 pages selected by default?</h3><p>The selection is capped by default to keep multiple endpoint requests within their separate hourly limits. You can select from the discovered list, up to the 50 URLs returned by discovery.</p></div>
+<div class="faq-item"><h3>Does it check broken links on every page?</h3><p>No. Broken-link checking runs on the homepage only because that endpoint checks one URL per request and has its own hourly rate limit. Use the standalone Broken Links tool for other pages.</p></div>
+<div class="faq-item"><h3>Is the certificate status a live SSL check?</h3><p>No. Certificate data is taken from public Certificate Transparency logs via crt.sh, not a live TLS handshake.</p></div>
+</section>
+<div id="site-footer"></div>
+</main>
+<script src="/tools/site-audit-domain.js" defer></script>
+<script src="/footer.js" defer></script>
+</body></html>
