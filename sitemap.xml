@@ -4,6 +4,7 @@
   <url><loc>https://checkdr.net/tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 <!-- TOOLS-MANIFEST:START -->
   <url><loc>https://checkdr.net/tools/redirect-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://checkdr.net/tools/site-audit.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://checkdr.net/tools/site-audit-domain.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://checkdr.net/tools/meta-preview.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://checkdr.net/tools/dns-lookup.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
