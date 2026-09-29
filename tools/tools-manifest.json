@@ -7,6 +7,12 @@
       "navLabel": "Redirect checker"
     },
     {
+      "slug": "site-audit",
+      "title": "Single-page site audit",
+      "description": "Combine metadata, security headers, HTTP reachability, and broken-link checks for one page.",
+      "navLabel": "Single-page audit"
+    },
+    {
       "slug": "site-audit-domain",
       "title": "Domain-wide site audit",
       "description": "Audit sitemap-listed pages for metadata, reachability, security headers, Domain Rating, and certificate history.",
