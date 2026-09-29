@@ -51,6 +51,7 @@ async function post(endpoint, body) {
   if (!response.ok || data.success === false) throw new Error(data.error || endpoint + " request failed.");
   return data;
 }
+function urlKey(value) { try { return new URL(value).toString(); } catch { return String(value); } }
 function chunks(items, size) {
   const result = [];
   for (let i = 0; i < items.length; i += size) result.push(items.slice(i, i + size));
@@ -125,7 +126,7 @@ function renderReport(rows, drResult, sslResult, linksResult, discovery) {
   }
   issueTally.textContent = issues.length + " individually identified issue(s). This is a count, not a composite score.";
   issueList.innerHTML = issues.length ? issues.map(issue).join("") : "<li>No issues were identified by the checks that completed.</li>";
-  auditRows.innerHTML = rows.map(r => `<tr><td>${esc(r.url)}</td><td>${esc(r.titleLength)}</td><td>${esc(r.descriptionLength)}</td><td>${esc(r.headerScore == null ? "N/A" : r.headerScore + "/6")}</td><td>${esc(r.h1Count == null ? "N/A" : r.h1Count)}</td><td>${esc(r.reachability)}</td><td>${r.canonical == null ? "N/A" : r.canonical ? "Present" : "Missing"}</td><td>${esc(r.notes.join(" · ") || "—")}</td></tr>`).join("");
+  auditRows.innerHTML = rows.map(r => `<tr><td>${esc(r.url)}</td><td>${esc(r.titleLength == null ? "N/A" : r.titleLength)}</td><td>${esc(r.descriptionLength == null ? "N/A" : r.descriptionLength)}</td><td>${esc(r.headerScore == null ? "N/A" : r.headerScore + "/6")}</td><td>${esc(r.h1Count == null ? "N/A" : r.h1Count)}</td><td>${esc(r.reachability)}</td><td>${r.canonical == null ? "N/A" : r.canonical ? "Present" : "Missing"}</td><td>${esc(r.notes.join(" · ") || "—")}</td></tr>`).join("");
   reportContext.textContent = rows.length + " of " + discovery.total_urls_found + " sitemap-listed URLs audited for " + lastDomain + ".";
   domainChecks.innerHTML = `<p><strong>Domain Rating:</strong> ${esc(drResult?.domain_rating ?? "Unavailable")} — ${esc(drResult?.error || drResult?.status || "No result")}</p>
 <p><strong>Certificate history:</strong> ${esc(sslResult?.error || (sslResult?.days_remaining != null ? (sslResult.days_remaining + " days remaining on latest CT entry") : "Unavailable"))}</p>
@@ -167,20 +168,20 @@ runAuditButton.addEventListener("click", async () => {
     for (const batch of chunks(urls, 8)) {
       const r = await safePost("/check-meta", { urls: batch });
       if (r.error) errors.push("Metadata: " + r.error);
-      (r.data?.results || []).forEach(x => metaMap.set(x.url, x));
+      (r.data?.results || []).forEach(x => metaMap.set(urlKey(x.url), x));
     }
     for (const batch of chunks(urls, 10)) {
       const r = await safePost("/check-headers", { urls: batch });
       if (r.error) errors.push("Security headers: " + r.error);
-      (r.data?.results || []).forEach(x => headersMap.set(x.url, x));
+      (r.data?.results || []).forEach(x => headersMap.set(urlKey(x.url), x));
     }
     for (const batch of chunks(urls, 10)) {
       const r = await safePost("/check-status", { urls: batch });
       if (r.error) errors.push("Reachability: " + r.error);
-      (r.data?.results || []).forEach(x => statusMap.set(x.url, x));
+      (r.data?.results || []).forEach(x => statusMap.set(urlKey(x.url), x));
     }
     const rows = urls.map(url => {
-      const meta = metaMap.get(url), headers = headersMap.get(url), status = statusMap.get(url);
+      const meta = metaMap.get(urlKey(url)), headers = headersMap.get(urlKey(url)), status = statusMap.get(urlKey(url));
       const notes = [];
       if (!meta) notes.push("Metadata request unavailable");
       else if (meta.error) notes.push("Metadata: " + meta.error);
@@ -192,7 +193,7 @@ runAuditButton.addEventListener("click", async () => {
         url,
         titleLength: !meta || meta.error ? null : (meta.title ? meta.title.length : 0),
         descriptionLength: !meta || meta.error ? null : (meta.description ? meta.description.length : 0),
-        headerScore: typeof headers?.score === "number" ? headers.score : null,
+        headerScore: !headers || headers.error || headers.skipped ? null : (typeof headers.score === "number" ? headers.score : null),
         h1Count: !meta || meta.error ? null : (typeof meta.h1_count === "number" ? meta.h1_count : null),
         reachability: status?.ok ? ("Reachable" + (status.final_status ? " (" + status.final_status + ")" : "")) : status?.skipped ? "Skipped" : status ? ("Unreachable" + (status.final_status ? " (" + status.final_status + ")" : "")) : "Unavailable",
         canonical: !meta || meta.error ? null : (meta.canonical || ""),
