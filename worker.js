@@ -26,6 +26,7 @@ const SSL_MAX_DOMAINS = 10;
 const LINKS_RATE_LIMIT = 15;
 const HEADERS_RATE_LIMIT = 15;
 const SSL_RATE_LIMIT = 20;
+const SITEMAP_RATE_LIMIT = 15;
 const SSL_TIMEOUT_MS = 15000;
 
 const DR_PER_IP_LIMIT = 10; // requests/hour/IP
@@ -819,6 +820,88 @@ async function handleCheckSsl(request, env) {
   return jsonResponse({ success: true, results }, 200, request, env);
 }
 
+
+async function handleDiscoverSitemap(request, env) {
+  const limited = await enforceRateLimit(request, env, "sitemap-discovery", SITEMAP_RATE_LIMIT);
+  if (limited) return limited;
+
+  let body;
+  try { body = await request.json(); } catch {
+    return jsonResponse({ success: false, error: "Invalid JSON request." }, 400, request, env);
+  }
+
+  const domain = normalizeDomain(body?.domain);
+  if (!domain || !isValidDomain(domain)) {
+    return jsonResponse({ success: false, error: "Please provide a valid domain, not a full URL with a path." }, 400, request, env);
+  }
+
+  const budget = createBudget(TOOL_SUBREQUEST_LIMIT);
+  const cache = new Map();
+  const fetchText = async (url, maxBytes) => {
+    const result = await ssrfSafeFetch(url, { method: "GET", maxHops: 3 }, budget, cache);
+    if (!result.ok || !result.response || result.finalStatus < 200 || result.finalStatus >= 400) {
+      try { result.response?.body?.cancel(); } catch {}
+      return { ok: false, url: result.finalUrl || url, text: "", error: result.error || "Could not fetch resource." };
+    }
+    return { ok: true, url: result.finalUrl || url, text: await readBodyCap(result.response, maxBytes), error: null };
+  };
+  const extractLocs = (xml) => (xml.match(/<loc>[^<]*<\/loc>/gi) || [])
+    .map((tag) => decodeBasicEntities(tag.replace(/^<loc>|<\/loc>$/gi, "").trim()))
+    .filter(Boolean);
+
+  let robots = await fetchText(`https://${domain}/robots.txt`, 100 * 1024);
+  let sitemapCandidates = robots.ok
+    ? (robots.text.match(/^sitemap:\s*\S+/gim) || []).map((line) => line.replace(/^sitemap:\s*/i, "").trim())
+    : [];
+  sitemapCandidates = [...new Set(sitemapCandidates)].slice(0, 3);
+
+  if (!sitemapCandidates.length) sitemapCandidates = [`https://${domain}/sitemap.xml`];
+
+  const allUrls = [];
+  const usedSitemaps = [];
+  let foundAnySitemap = false;
+
+  for (const sitemapUrl of sitemapCandidates.slice(0, 3)) {
+    if (budget.remaining() <= 0) break;
+    const fetched = await fetchText(sitemapUrl, 1024 * 1024);
+    if (!fetched.ok) continue;
+    const xml = fetched.text;
+    if (!/<(?:sitemapindex|urlset)\b/i.test(xml) && !/<(?:sitemap|url)\b/i.test(xml)) continue;
+    foundAnySitemap = true;
+    usedSitemaps.push(fetched.url);
+
+    if (/<sitemapindex\b/i.test(xml)) {
+      const children = extractLocs(xml).slice(0, 3);
+      for (const childUrl of children) {
+        if (budget.remaining() <= 0) break;
+        const child = await fetchText(childUrl, 1024 * 1024);
+        if (!child.ok) continue;
+        usedSitemaps.push(child.url);
+        allUrls.push(...extractLocs(child.text));
+      }
+    } else {
+      allUrls.push(...extractLocs(xml));
+    }
+  }
+
+  const uniqueUrls = [...new Set(allUrls)];
+  if (!foundAnySitemap || !uniqueUrls.length) {
+    return jsonResponse({ success: false, error: "No sitemap could be found for this domain." }, 200, request, env);
+  }
+
+  const urls = uniqueUrls.slice(0, 50);
+  return jsonResponse({
+    success: true,
+    domain,
+    sitemap_url: usedSitemaps[0],
+    sitemap_urls_used: [...new Set(usedSitemaps)],
+    total_urls_found: uniqueUrls.length,
+    urls,
+    truncated: uniqueUrls.length > urls.length,
+    subrequests_used: TOOL_SUBREQUEST_LIMIT - budget.remaining(),
+  }, 200, request, env);
+}
+
 async function handleCheck(request, env) {
   if (!env.AHREFS_API_KEY) {
     return jsonResponse({ success: false, error: "AHREFS_API_KEY is not configured in Cloudflare Workers.", version: VERSION }, 500, request, env);
@@ -894,6 +977,7 @@ export default {
     if (url.pathname === "/check-links" && request.method === "POST") return handleCheckLinks(request, env);
     if (url.pathname === "/check-headers" && request.method === "POST") return handleCheckHeaders(request, env);
     if (url.pathname === "/check-ssl" && request.method === "POST") return handleCheckSsl(request, env);
+    if (url.pathname === "/discover-sitemap" && request.method === "POST") return handleDiscoverSitemap(request, env);
 
     return jsonResponse({ success: false, error: "Not Found", version: VERSION }, 404, request, env);
   },
