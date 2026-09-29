@@ -21,6 +21,7 @@ const auditRows = $("auditRows");
 const reportContext = $("reportContext");
 const domainChecks = $("domainChecks");
 let discovered = [];
+let discoveredTotal = 0;
 let lastRows = [];
 let lastDomain = "";
 
@@ -89,10 +90,10 @@ function renderReport(rows, drResult, sslResult, linksResult, discovery) {
   lastRows = rows;
   const validHeaders = rows.filter(r => typeof r.headerScore === "number");
   const avgHeader = validHeaders.length ? (validHeaders.reduce((sum, r) => sum + r.headerScore, 0) / validHeaders.length).toFixed(1) + "/6" : "N/A";
-  const titleIssues = rows.filter(r => r.titleLength === 0 || r.titleLength > 60).length;
-  const descIssues = rows.filter(r => r.descriptionLength === 0 || r.descriptionLength > 160).length;
-  const h1Issues = rows.filter(r => r.h1Count === 0 || r.h1Count > 1).length;
-  const canonicalIssues = rows.filter(r => !r.canonical).length;
+  const titleIssues = rows.filter(r => typeof r.titleLength === "number" && (r.titleLength === 0 || r.titleLength > 60)).length;
+  const descIssues = rows.filter(r => typeof r.descriptionLength === "number" && (r.descriptionLength === 0 || r.descriptionLength > 160)).length;
+  const h1Issues = rows.filter(r => typeof r.h1Count === "number" && (r.h1Count === 0 || r.h1Count > 1)).length;
+  const canonicalIssues = rows.filter(r => r.canonical === "").length;
   const dr = drResult?.domain_rating ?? "N/A";
   const ssl = sslResult?.error ? "Unavailable" : sslResult?.expired ? "Expired CT entry" : sslResult?.days_remaining != null ? (sslResult.days_remaining + " days in latest CT entry") : "N/A";
   summaryMetrics.innerHTML = metric("Domain Rating", dr, drResult?.status || drResult?.error || "") +
@@ -104,15 +105,16 @@ function renderReport(rows, drResult, sslResult, linksResult, discovery) {
     metric("Missing canonical", canonicalIssues, "Selected pages without canonical tags");
   const issues = [];
   rows.forEach(r => {
-    if (!r.titleLength) issues.push(r.url + ": missing title.");
-    else if (r.titleLength > 60) issues.push(r.url + ": title exceeds 60 characters.");
-    if (!r.descriptionLength) issues.push(r.url + ": missing meta description.");
-    else if (r.descriptionLength > 160) issues.push(r.url + ": meta description exceeds 160 characters.");
+    if (typeof r.titleLength === "number" && r.titleLength === 0) issues.push(r.url + ": missing title.");
+    else if (typeof r.titleLength === "number" && r.titleLength > 60) issues.push(r.url + ": title exceeds 60 characters.");
+    if (typeof r.descriptionLength === "number" && r.descriptionLength === 0) issues.push(r.url + ": missing meta description.");
+    else if (typeof r.descriptionLength === "number" && r.descriptionLength > 160) issues.push(r.url + ": meta description exceeds 160 characters.");
     if (r.h1Count === 0) issues.push(r.url + ": no H1 heading found.");
-    else if (r.h1Count > 1) issues.push(r.url + ": multiple H1 headings found (" + r.h1Count + ").");
-    if (!r.canonical) issues.push(r.url + ": missing canonical tag.");
+    else if (typeof r.h1Count === "number" && r.h1Count > 1) issues.push(r.url + ": multiple H1 headings found (" + r.h1Count + ").");
+    if (r.canonical === "") issues.push(r.url + ": missing canonical tag.");
     if (typeof r.headerScore === "number" && r.headerScore < 6) issues.push(r.url + ": " + (6 - r.headerScore) + " checked security header(s) missing.");
-    if (r.reachability !== "Reachable") issues.push(r.url + ": reachability is " + r.reachability + ".");
+    if (r.reachability !== "Reachable" && !r.reachability.startsWith("Reachable (")) issues.push(r.url + ": reachability is " + r.reachability + ".");
+    if (typeof r.httpStatus === "number" && r.httpStatus >= 400) issues.push(r.url + ": returned HTTP " + r.httpStatus + ".");
   });
   if (drResult?.error || drResult?.status !== "success") issues.push("Domain Rating check: " + (drResult?.error || drResult?.status || "unavailable") + ".");
   if (sslResult?.error) issues.push("Certificate history check: " + sslResult.error);
@@ -123,7 +125,7 @@ function renderReport(rows, drResult, sslResult, linksResult, discovery) {
   }
   issueTally.textContent = issues.length + " individually identified issue(s). This is a count, not a composite score.";
   issueList.innerHTML = issues.length ? issues.map(issue).join("") : "<li>No issues were identified by the checks that completed.</li>";
-  auditRows.innerHTML = rows.map(r => `<tr><td>${esc(r.url)}</td><td>${esc(r.titleLength)}</td><td>${esc(r.descriptionLength)}</td><td>${esc(r.headerScore == null ? "N/A" : r.headerScore + "/6")}</td><td>${esc(r.h1Count == null ? "N/A" : r.h1Count)}</td><td>${esc(r.reachability)}</td><td>${r.canonical ? "Present" : "Missing"}</td><td>${esc(r.notes.join(" · ") || "—")}</td></tr>`).join("");
+  auditRows.innerHTML = rows.map(r => `<tr><td>${esc(r.url)}</td><td>${esc(r.titleLength)}</td><td>${esc(r.descriptionLength)}</td><td>${esc(r.headerScore == null ? "N/A" : r.headerScore + "/6")}</td><td>${esc(r.h1Count == null ? "N/A" : r.h1Count)}</td><td>${esc(r.reachability)}</td><td>${r.canonical == null ? "N/A" : r.canonical ? "Present" : "Missing"}</td><td>${esc(r.notes.join(" · ") || "—")}</td></tr>`).join("");
   reportContext.textContent = rows.length + " of " + discovery.total_urls_found + " sitemap-listed URLs audited for " + lastDomain + ".";
   domainChecks.innerHTML = `<p><strong>Domain Rating:</strong> ${esc(drResult?.domain_rating ?? "Unavailable")} — ${esc(drResult?.error || drResult?.status || "No result")}</p>
 <p><strong>Certificate history:</strong> ${esc(sslResult?.error || (sslResult?.days_remaining != null ? (sslResult.days_remaining + " days remaining on latest CT entry") : "Unavailable"))}</p>
@@ -141,7 +143,8 @@ discoverButton.addEventListener("click", async () => {
     discovered = data.urls || [];
     lastDomain = data.domain || domain;
     if (!discovered.length) throw new Error("No sitemap URLs were returned.");
-    discoverySummary.textContent = data.total_urls_found + " unique page URL(s) found. " + discovered.length + " shown for selection.";
+    discoveredTotal = data.total_urls_found || discovered.length;
+    discoverySummary.textContent = discoveredTotal + " unique page URL(s) found. " + discovered.length + " shown for selection.";
     sitemapNote.textContent = "Sitemap used: " + (data.sitemap_url || "not reported") + (data.truncated ? " · Discovery was capped at 50 URLs." : "") + " The audit only covers pages included in the discovered sitemap.";
     renderChoices();
     discoveryPanel.classList.remove("hidden");
@@ -187,12 +190,13 @@ runAuditButton.addEventListener("click", async () => {
       else if (status.error) notes.push("Status: " + status.error);
       return {
         url,
-        titleLength: meta?.title ? meta.title.length : 0,
-        descriptionLength: meta?.description ? meta.description.length : 0,
+        titleLength: !meta || meta.error ? null : (meta.title ? meta.title.length : 0),
+        descriptionLength: !meta || meta.error ? null : (meta.description ? meta.description.length : 0),
         headerScore: typeof headers?.score === "number" ? headers.score : null,
-        h1Count: typeof meta?.h1_count === "number" ? meta.h1_count : null,
+        h1Count: !meta || meta.error ? null : (typeof meta.h1_count === "number" ? meta.h1_count : null),
         reachability: status?.ok ? ("Reachable" + (status.final_status ? " (" + status.final_status + ")" : "")) : status?.skipped ? "Skipped" : status ? ("Unreachable" + (status.final_status ? " (" + status.final_status + ")" : "")) : "Unavailable",
-        canonical: meta?.canonical || "",
+        canonical: !meta || meta.error ? null : (meta.canonical || ""),
+        httpStatus: status?.final_status ?? null,
         notes
       };
     });
@@ -203,14 +207,14 @@ runAuditButton.addEventListener("click", async () => {
     if (errors.length) showError("Some batch requests failed; the report continues with partial results. " + errors.join(" · "));
     const drResult = drResponse.data?.results?.[0] || (drResponse.error ? { error: drResponse.error, status: "failed" } : null);
     const sslResult = sslResponse.data?.results?.[0] || (sslResponse.error ? { error: sslResponse.error } : null);
-    renderReport(rows, drResult, sslResult, linksResult, { total_urls_found: discovered.length });
+    renderReport(rows, drResult, sslResult, linksResult, { total_urls_found: discoveredTotal });
   } catch (error) {
     showError(error.message || "The audit could not be completed.");
   } finally { setLoading(false); }
 });
 $("exportAudit").addEventListener("click", downloadCsv);
 clearButton.addEventListener("click", () => {
-  domainInput.value = ""; discovered = []; lastRows = []; lastDomain = "";
+  domainInput.value = ""; discovered = []; discoveredTotal = 0; lastRows = []; lastDomain = "";
   discoveryPanel.classList.add("hidden"); reportPanel.classList.add("hidden"); resetError();
   pageChoices.replaceChildren(); domainInput.focus();
 });
