@@ -877,7 +877,9 @@ async function handleDiscoverSitemap(request, env) {
         const child = await fetchText(childUrl, 1024 * 1024);
         if (!child.ok) continue;
         usedSitemaps.push(child.url);
-        allUrls.push(...extractLocs(child.text));
+        if (!/<sitemapindex\b/i.test(child.text) && /<(?:urlset|url)\b/i.test(child.text)) {
+          allUrls.push(...extractLocs(child.text));
+        }
       }
     } else {
       allUrls.push(...extractLocs(xml));
