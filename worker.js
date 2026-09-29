@@ -847,7 +847,10 @@ async function handleDiscoverSitemap(request, env) {
   };
   const extractLocs = (xml) => (xml.match(/<loc>[^<]*<\/loc>/gi) || [])
     .map((tag) => decodeBasicEntities(tag.replace(/^<loc>|<\/loc>$/gi, "").trim()))
-    .filter(Boolean);
+    .filter((value) => {
+      try { const parsed = new URL(value); return parsed.protocol === "http:" || parsed.protocol === "https:"; }
+      catch { return false; }
+    });
 
   let robots = await fetchText(`https://${domain}/robots.txt`, 100 * 1024);
   let sitemapCandidates = robots.ok
