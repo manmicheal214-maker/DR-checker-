@@ -7,6 +7,12 @@
       "navLabel": "Redirect checker"
     },
     {
+      "slug": "site-audit-domain",
+      "title": "Domain-wide site audit",
+      "description": "Audit sitemap-listed pages for metadata, reachability, security headers, Domain Rating, and certificate history.",
+      "navLabel": "Domain audit"
+    },
+    {
       "slug": "meta-preview",
       "title": "Meta preview",
       "description": "Inspect a page's title, description, canonical tag, Open Graph/Twitter tags, robots meta, and H1 count.",
