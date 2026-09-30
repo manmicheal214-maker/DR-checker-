@@ -148,16 +148,17 @@ function createResultRow(result, index) {
   }
   drCell.appendChild(value);
 
-  const statusCell = document.createElement("td");
-  const status = document.createElement("span");
-  status.className = `status ${getStatusClass(result.status)}`;
-  status.textContent = displayStatus(result.status);
-  statusCell.appendChild(status);
+  const statusText = displayStatus(result.status);
+  if (statusText) {
+    const status = document.createElement("span");
+    status.className = `status ${getStatusClass(result.status)}`;
+    status.textContent = statusText;
+    drCell.appendChild(status);
+  }
 
-  row.append(numberCell, domainCell, drCell, statusCell);
+  row.append(numberCell, domainCell, drCell);
   return row;
 }
-
 function renderResults() {
   const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
   const pageResults = filteredResults.slice(startIndex, startIndex + RESULTS_PER_PAGE);
