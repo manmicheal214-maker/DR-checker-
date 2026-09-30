@@ -332,8 +332,7 @@ th {
 }
 
 th:nth-child(1) { width: 64px; }
-th:nth-child(3) { width: 100px; text-align: right; }
-th:nth-child(4) { width: 100px; text-align: right; }
+th:nth-child(3) { width: 130px; text-align: right; }
 
 .sortable {
   cursor: pointer;
@@ -375,13 +374,16 @@ tbody tr:hover::before { background: var(--signal); }
 }
 
 .signal-cell {
-  width: 100px;
+  width: 130px;
   text-align: right;
 }
 
+.signal-cell {
+  display: table-cell;
+}
+
 .signal-value {
-  display: inline-block;
-  min-width: 34px;
+  display: block;
   color: var(--signal);
   font: 700 16px/1 var(--mono);
   font-variant-numeric: tabular-nums;
@@ -399,6 +401,7 @@ tbody tr:hover::before { background: var(--signal); }
   letter-spacing: .04em;
   text-align: right;
   display: block;
+  margin-top: 4px;
 }
 
 .status-success { color: var(--signal); }
