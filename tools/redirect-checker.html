@@ -1,5 +1,13 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en"><head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PP972P5P');</script>
+<!-- End Google Tag Manager -->
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <meta name="description" content="Trace HTTP redirects for up to 10 URLs, see each hop, final status, and blocked/private destinations."><title>Redirect Checker — Signal Board</title>
 <link rel="canonical" href="https://checkdr.net/tools/redirect-checker.html">
@@ -53,7 +61,12 @@
     }
   ]
 }</script>
-</head><body><main class="container tools-page"><nav class="tools-nav"><a href="/">← DR Checker</a><a href="/tools/">Tools</a><span class="tool-links"><a href="/tools/redirect-checker.html">Redirect checker</a><a href="/tools/site-audit.html">Single-page audit</a><a href="/tools/site-audit-domain.html">Domain audit</a><a href="/tools/meta-preview.html">Meta preview</a><a href="/tools/dns-lookup.html">DNS lookup</a><a href="/tools/broken-links.html">Broken links</a><a href="/tools/security-headers.html">Security headers</a><a href="/tools/ssl-checker.html">SSL checker</a><a href="/tools/title-length-checker.html">Title/meta length</a><a href="/tools/readability-checker.html">Readability</a><a href="/tools/writing-clarity-checker.html">Writing clarity</a><a href="/tools/schema-generator.html">Schema generator</a><a href="/tools/sitemap-generator.html">Sitemap generator</a><a href="/tools/robots-generator.html">Robots.txt generator</a><a href="/tools/social-preview-builder.html">Social preview</a><a href="/tools/hreflang-generator.html">Hreflang</a><a href="/tools/keyword-clustering.html">Keyword clustering</a></span></nav>
+</head><body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PP972P5P"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<main class="container tools-page"><nav class="tools-nav"><a href="/">← DR Checker</a><a href="/tools/">Tools</a><span class="tool-links"><a href="/tools/redirect-checker.html">Redirect checker</a><a href="/tools/site-audit.html">Single-page audit</a><a href="/tools/site-audit-domain.html">Domain audit</a><a href="/tools/meta-preview.html">Meta preview</a><a href="/tools/dns-lookup.html">DNS lookup</a><a href="/tools/broken-links.html">Broken links</a><a href="/tools/security-headers.html">Security headers</a><a href="/tools/ssl-checker.html">SSL checker</a><a href="/tools/title-length-checker.html">Title/meta length</a><a href="/tools/readability-checker.html">Readability</a><a href="/tools/writing-clarity-checker.html">Writing clarity</a><a href="/tools/schema-generator.html">Schema generator</a><a href="/tools/sitemap-generator.html">Sitemap generator</a><a href="/tools/robots-generator.html">Robots.txt generator</a><a href="/tools/social-preview-builder.html">Social preview</a><a href="/tools/hreflang-generator.html">Hreflang</a><a href="/tools/keyword-clustering.html">Keyword clustering</a></span></nav>
 <header class="tool-hero"><div class="live-status"><span class="live-dot"></span><span>LIVE</span></div><div class="hero-brand">Signal Board / Redirect checker</div><h1>Redirect checker</h1><p>Trace HTTP redirects and inspect the final response without hiding the hops.</p></header>
 <section class="panel tool-input"><label for="redirectInput">Enter URLs</label><textarea id="redirectInput" placeholder="https://example.com"></textarea><div id="redirectError" class="error-message hidden"></div><div class="actions"><button id="redirectRun" class="btn btn-primary">Check redirects</button><button id="redirectClear" class="btn btn-secondary">Clear</button></div></section>
 <section id="redirectLoading" class="panel loading-panel hidden"><div class="spinner"></div><strong>Tracing redirects</strong></section><section id="redirectResults" class="panel tool-results hidden"></section>
