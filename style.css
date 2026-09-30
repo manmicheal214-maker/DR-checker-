@@ -331,8 +331,11 @@ th {
   padding-bottom: 14px;
 }
 
-th:nth-child(1) { width: 64px; }
-th:nth-child(3) { width: 100px; text-align: right; }
+.rank-column { width: 64px; }
+.domain-column { width: auto; }
+.dr-column { width: 100px; }
+
+th:nth-child(3) { text-align: right; }
 
 .sortable {
   cursor: pointer;
