@@ -342,6 +342,40 @@ th:nth-child(3), td:nth-child(3) { width: 100px; }
 th:nth-child(3) { text-align: right; }
 td:nth-child(3) { text-align: right; }
 
+/* Explicitly preserve native table layout for dynamically inserted result rows. */
+.results-panel .table-wrapper > table {
+  display: table;
+  width: 100%;
+  min-width: 640px;
+  table-layout: fixed;
+}
+.results-panel .table-wrapper > table > thead {
+  display: table-header-group;
+}
+.results-panel .table-wrapper > table > tbody {
+  display: table-row-group;
+  width: 100%;
+}
+.results-panel .table-wrapper > table > tbody > tr {
+  display: table-row;
+  width: 100%;
+}
+.results-panel .table-wrapper > table > thead > tr > th,
+.results-panel .table-wrapper > table > tbody > tr > td {
+  display: table-cell;
+  box-sizing: border-box;
+}
+.results-panel .table-wrapper > table > tbody > tr > td:nth-child(1) {
+  width: 64px;
+}
+.results-panel .table-wrapper > table > tbody > tr > td:nth-child(2) {
+  width: auto;
+}
+.results-panel .table-wrapper > table > tbody > tr > td:nth-child(3) {
+  width: 100px;
+  text-align: right;
+}
+
 .sortable {
   cursor: pointer;
   user-select: none;
