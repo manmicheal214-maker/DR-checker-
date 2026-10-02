@@ -347,22 +347,13 @@ th:nth-child(3),
 .sortable:hover { color: var(--signal); }
 
 tbody tr {
-  position: relative;
   transition: background-color .15s ease;
 }
 
-tbody tr::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: transparent;
-}
-
 tbody tr:hover { background: rgba(255, 255, 255, .018); }
-tbody tr:hover::before { background: var(--signal); }
+tbody tr:hover > td:first-child {
+  box-shadow: inset 2px 0 0 var(--signal);
+}
 
 .rank-cell {
   color: #606872;
