@@ -339,29 +339,6 @@ th {
 th:nth-child(3),
 .signal-cell { text-align: right; }
 
-/* Explicitly preserve native table layout for dynamically inserted result rows. */
-.results-panel .table-wrapper > table {
-  display: table;
-  width: 100%;
-  min-width: 640px;
-  table-layout: fixed;
-}
-.results-panel .table-wrapper > table > thead {
-  display: table-header-group;
-}
-.results-panel .table-wrapper > table > tbody {
-  display: table-row-group;
-  width: 100%;
-}
-.results-panel .table-wrapper > table > tbody > tr {
-  display: table-row;
-  width: 100%;
-}
-.results-panel .table-wrapper > table > thead > tr > th,
-.results-panel .table-wrapper > table > tbody > tr > td {
-  display: table-cell;
-  box-sizing: border-box;
-}
 .sortable {
   cursor: pointer;
   user-select: none;
