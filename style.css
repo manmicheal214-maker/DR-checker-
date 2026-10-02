@@ -335,12 +335,9 @@ th {
 .domain-column { width: auto; }
 .dr-column { width: 100px; }
 
-/* Keep header and body columns aligned even when result content is long. */
-th:nth-child(1), td:nth-child(1) { width: 64px; }
-th:nth-child(2), td:nth-child(2) { width: auto; }
-th:nth-child(3), td:nth-child(3) { width: 100px; }
-th:nth-child(3) { text-align: right; }
-td:nth-child(3) { text-align: right; }
+/* Column widths come from the table's colgroup; keep only alignment here. */
+th:nth-child(3),
+.signal-cell { text-align: right; }
 
 /* Explicitly preserve native table layout for dynamically inserted result rows. */
 .results-panel .table-wrapper > table {
@@ -365,17 +362,6 @@ td:nth-child(3) { text-align: right; }
   display: table-cell;
   box-sizing: border-box;
 }
-.results-panel .table-wrapper > table > tbody > tr > td:nth-child(1) {
-  width: 64px;
-}
-.results-panel .table-wrapper > table > tbody > tr > td:nth-child(2) {
-  width: auto;
-}
-.results-panel .table-wrapper > table > tbody > tr > td:nth-child(3) {
-  width: 100px;
-  text-align: right;
-}
-
 .sortable {
   cursor: pointer;
   user-select: none;
@@ -417,7 +403,6 @@ tbody tr:hover::before { background: var(--signal); }
 }
 
 .signal-cell {
-  width: 100px;
   text-align: right;
 }
 
