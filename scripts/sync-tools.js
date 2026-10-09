@@ -142,7 +142,7 @@ for (const file of htmlFiles) {
   changed += writeOrCheck(rel, next) ? 1 : 0;
 }
 
-const rootHtmlFiles = fs.readdirSync(root).filter((name) => name.endsWith(".html") && name !== "index.html").sort();
+const rootHtmlFiles = fs.readdirSync(root).filter((name) => name.endsWith(".html")).sort();
 for (const file of rootHtmlFiles) {
   const current = fs.readFileSync(path.join(root, file), "utf8");
   changed += writeOrCheck(file, syncFooter(current, file)) ? 1 : 0;
