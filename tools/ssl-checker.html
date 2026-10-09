@@ -8,10 +8,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<meta name="description" content="Check recent Certificate Transparency certificate data for up to 10 domains using crt.sh."><title>SSL Certificate Checker — Signal Board</title>
+<meta name="description" content="Check the latest SSL certificate for up to 10 domains using public Certificate Transparency logs: issuer, expiry date and days remaining."><title>SSL Certificate Checker — Signal Board</title>
 <link rel="canonical" href="https://checkdr.net/tools/ssl-checker.html">
-<meta property="og:type" content="website"><meta property="og:title" content="SSL Certificate Checker — Signal Board"><meta property="og:description" content="Check recent Certificate Transparency certificate data for up to 10 domains using crt.sh."><meta property="og:url" content="https://checkdr.net/tools/ssl-checker.html"><meta property="og:site_name" content="Signal Board">
-<meta name="twitter:card" content="summary"><meta name="twitter:title" content="SSL Certificate Checker — Signal Board"><meta name="twitter:description" content="Check recent Certificate Transparency certificate data for up to 10 domains using crt.sh.">
+<meta property="og:type" content="website"><meta property="og:title" content="SSL Certificate Checker — Signal Board"><meta property="og:description" content="Check the latest SSL certificate for up to 10 domains using public Certificate Transparency logs: issuer, expiry date and days remaining."><meta property="og:url" content="https://checkdr.net/tools/ssl-checker.html"><meta property="og:site_name" content="Signal Board">
+<meta property="og:image" content="https://checkdr.net/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CheckDR: free Bulk Domain Rating checker and SEO tools from Signal Board"><meta name="twitter:image" content="https://checkdr.net/og-image.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="SSL Certificate Checker — Signal Board"><meta name="twitter:description" content="Check the latest SSL certificate for up to 10 domains using public Certificate Transparency logs: issuer, expiry date and days remaining.">
 <link rel="stylesheet" href="/style.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"SSL Certificate Checker","url":"https://checkdr.net/tools/ssl-checker.html","applicationCategory":"SEO Tool","operatingSystem":"Any (web-based)","description":"Inspect recent certificates recorded in public Certificate Transparency logs.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does this SSL checker inspect?","acceptedAnswer":{"@type":"Answer","text":"It looks up certificates for a domain in public Certificate Transparency logs through crt.sh and selects the entry with the most recent not-before date."}},{"@type":"Question","name":"Does it perform a live TLS handshake?","acceptedAnswer":{"@type":"Answer","text":"No. Certificate Transparency data is often useful for understanding certificates associated with a domain, but it is not guaranteed to be identical to the certificate a server is presenting right now."}},{"@type":"Question","name":"What happens if no certificates are found?","acceptedAnswer":{"@type":"Answer","text":"The tool returns a clear no-certificates-found message for that domain instead of failing the whole batch."}}]}]}</script>
 </head><body>
@@ -26,6 +27,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="panel content-panel"><h2>What is an SSL certificate checker?</h2><p>This tool looks up certificates recorded in public Certificate Transparency logs through crt.sh and selects the certificate entry with the most recent not-before date.</p></section>
 <section class="panel content-panel"><h2>Why check certificates?</h2><p>Certificate records can help with expiry reviews, inventory work, and spotting recently logged certificates for a domain.</p></section>
 <section class="panel content-panel"><h2>How it works</h2><p>The checker validates each domain and queries the fixed crt.sh Certificate Transparency service. It does not perform a live TLS handshake, so its result can differ from the certificate a server is presenting right now.</p></section>
-<section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What does this SSL checker inspect?</h3><p>It looks up certificates for a domain in public Certificate Transparency logs through crt.sh and selects the entry with the most recent not-before date.</p></div><div class="faq-item"><h3>Does it perform a live TLS handshake?</h3><p>No. Certificate Transparency data is often useful for understanding certificates associated with a domain, but it is not guaranteed to be identical to the certificate a server is presenting right now.</p></div><div class="faq-item"><h3>What happens if no certificates are found?</h3><p>The tool returns a clear no-certificates-found message for that domain instead of failing the whole batch.</p></div></section>  <div id="site-footer"></div>
-</main><script src="/tools/ssl-checker.js" defer></script><script src="/footer.js" defer></script>
+<section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What does this SSL checker inspect?</h3><p>It looks up certificates for a domain in public Certificate Transparency logs through crt.sh and selects the entry with the most recent not-before date.</p></div><div class="faq-item"><h3>Does it perform a live TLS handshake?</h3><p>No. Certificate Transparency data is often useful for understanding certificates associated with a domain, but it is not guaranteed to be identical to the certificate a server is presenting right now.</p></div><div class="faq-item"><h3>What happens if no certificates are found?</h3><p>The tool returns a clear no-certificates-found message for that domain instead of failing the whole batch.</p></div></section>  <!-- footer:start -->
+<footer class="site-footer">
+  <p>Domain Rating data provided through Ahrefs API.</p>
+  <nav aria-label="Site footer">
+    <a href="/about.html">About</a><span aria-hidden="true">|</span>
+    <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
+    <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
+    <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
+    <a href="/contact.html">Contact</a>
+  </nav>
+</footer>
+<!-- footer:end -->
+</main><script src="/tools/ssl-checker.js" defer></script>
 </body></html>
