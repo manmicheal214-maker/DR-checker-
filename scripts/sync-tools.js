@@ -149,7 +149,7 @@ for (const file of rootHtmlFiles) {
 }
 
 const hub = fs.readFileSync(path.join(toolDir, "index.html"), "utf8");
-changed += writeOrCheck("tools/index.html", syncHub(hub)) ? 1 : 0;
+changed += writeOrCheck("tools/index.html", syncFooter(syncHub(hub), "tools/index.html")) ? 1 : 0;
 
 const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
 changed += writeOrCheck("index.html", syncHome(home)) ? 1 : 0;
