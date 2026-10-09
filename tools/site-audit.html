@@ -10,11 +10,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Audit one public page for title and description metadata, canonical, H1s, security headers, HTTP reachability, and broken links.">
+<meta name="description" content="Audit one public page for metadata, security headers, HTTP reachability, and broken links in a single report. Free, with no signup required.">
 <title>Single-Page Site Audit — Signal Board</title>
 <link rel="canonical" href="https://checkdr.net/tools/site-audit.html"><link rel="icon" href="/favicon.ico" type="image/x-icon">
-<meta property="og:type" content="website"><meta property="og:title" content="Single-Page Site Audit — Signal Board"><meta property="og:description" content="Audit one public page for metadata, security headers, HTTP reachability, and broken links."><meta property="og:url" content="https://checkdr.net/tools/site-audit.html"><meta property="og:site_name" content="Signal Board">
-<meta name="twitter:card" content="summary"><meta name="twitter:title" content="Single-Page Site Audit — Signal Board"><meta name="twitter:description" content="Audit one public page for metadata, security headers, HTTP reachability, and broken links.">
+<meta property="og:type" content="website"><meta property="og:title" content="Single-Page Site Audit — Signal Board"><meta property="og:description" content="Audit one public page for metadata, security headers, HTTP reachability, and broken links in a single report. Free, with no signup required."><meta property="og:url" content="https://checkdr.net/tools/site-audit.html"><meta property="og:site_name" content="Signal Board">
+<meta property="og:image" content="https://checkdr.net/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CheckDR: free Bulk Domain Rating checker and SEO tools from Signal Board"><meta name="twitter:image" content="https://checkdr.net/og-image.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Single-Page Site Audit — Signal Board"><meta name="twitter:description" content="Audit one public page for metadata, security headers, HTTP reachability, and broken links in a single report. Free, with no signup required.">
 <link rel="stylesheet" href="/style.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Single-Page Site Audit","url":"https://checkdr.net/tools/site-audit.html","applicationCategory":"SEO Tool","operatingSystem":"Any (web-based)","description":"Audit one public page using existing metadata, security-header, status, and broken-link checks.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does the single-page audit check?","acceptedAnswer":{"@type":"Answer","text":"It checks title and description metadata, canonical, H1 count, six response security headers, HTTP status, and a capped set of links found on the page."}},{"@type":"Question","name":"Can I audit an entire domain?","acceptedAnswer":{"@type":"Answer","text":"Use the Domain-wide Site Audit to discover sitemap-listed URLs and audit a selected set of pages."}}]}]}</script>
 </head>
@@ -31,4 +32,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="panel error-panel hidden" id="singleAuditError" role="alert"><strong>Audit step failed</strong><p id="singleAuditErrorText"></p></section>
 <section class="panel tool-results hidden" id="singleAuditResults"><div class="section-header"><div><h2>Page report</h2><p id="singleAuditContext"></p></div></div><div id="singleAuditSummary" class="audit-summary"></div><div class="audit-issues"><h3>Issues found</h3><p id="singleAuditIssueCount"></p><ul id="singleAuditIssues"></ul></div><div class="audit-issues"><h3>Security headers</h3><div id="singleAuditHeaders"></div></div><div class="audit-issues"><h3>Broken links</h3><div id="singleAuditLinks"></div></div></section>
 <section class="panel content-panel"><h2>What this audit checks</h2><p>The report combines existing Worker endpoints for page metadata, response security headers, HTTP status, and broken links. Each check can fail independently; available results are still shown.</p><h2>Frequently asked questions</h2><div class="faq-item"><h3>How many pages are checked?</h3><p>This tool checks one page. For sitemap-based multi-page checks, use the <a href="/tools/site-audit-domain.html">domain-wide audit</a>.</p></div><div class="faq-item"><h3>How many links are checked?</h3><p>The broken-link check tests up to 15 distinct links from the page, subject to the endpoint's own hourly limit and subrequest budget.</p></div></section>
-<div id="site-footer"></div></main><script src="/tools/site-audit.js" defer></script><script src="/footer.js" defer></script></body></html>
+<!-- footer:start -->
+<footer class="site-footer">
+  <p>Domain Rating data provided through Ahrefs API.</p>
+  <nav aria-label="Site footer">
+    <a href="/about.html">About</a><span aria-hidden="true">|</span>
+    <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
+    <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
+    <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
+    <a href="/contact.html">Contact</a>
+  </nav>
+</footer>
+<!-- footer:end --></main><script src="/tools/site-audit.js" defer></script></body></html>
