@@ -12,8 +12,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="description" content="Free client-side XML sitemap generator. Validate absolute URLs, apply global sitemap settings, preview XML, and download sitemap.xml.">
 <title>XML Sitemap Generator — Signal Board</title>
 <link rel="canonical" href="https://checkdr.net/tools/sitemap-generator.html">
-<meta property="og:type" content="website"><meta property="og:title" content="XML Sitemap Generator — Signal Board"><meta property="og:description" content="Generate and download an XML sitemap from absolute URLs directly in your browser."><meta property="og:url" content="https://checkdr.net/tools/sitemap-generator.html"><meta property="og:site_name" content="Signal Board">
-<meta name="twitter:card" content="summary"><meta name="twitter:title" content="XML Sitemap Generator — Signal Board"><meta name="twitter:description" content="Generate and download sitemap.xml locally in your browser.">
+<meta property="og:type" content="website"><meta property="og:title" content="XML Sitemap Generator — Signal Board"><meta property="og:description" content="Free client-side XML sitemap generator. Validate absolute URLs, apply global sitemap settings, preview XML, and download sitemap.xml."><meta property="og:url" content="https://checkdr.net/tools/sitemap-generator.html"><meta property="og:site_name" content="Signal Board">
+<meta property="og:image" content="https://checkdr.net/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CheckDR: free Bulk Domain Rating checker and SEO tools from Signal Board"><meta name="twitter:image" content="https://checkdr.net/og-image.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="XML Sitemap Generator — Signal Board"><meta name="twitter:description" content="Free client-side XML sitemap generator. Validate absolute URLs, apply global sitemap settings, preview XML, and download sitemap.xml.">
 <link rel="stylesheet" href="/style.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"XML Sitemap Generator","url":"https://checkdr.net/tools/sitemap-generator.html","applicationCategory":"SEO Tool","operatingSystem":"Any (web-based)","description":"Generate, validate, preview, and download XML sitemaps locally in the browser.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What URLs can I enter?","acceptedAnswer":{"@type":"Answer","text":"Each line must begin with http:// or https:// and must be accepted by the browser URL parser."}},{"@type":"Question","name":"Why is my ampersand changed to &amp;?","acceptedAnswer":{"@type":"Answer","text":"XML requires special characters such as ampersands to be escaped. A URL such as https://example.com/?a=1&b=2 is therefore written with &amp; in the XML document."}},{"@type":"Question","name":"What happens above 50,000 URLs?","acceptedAnswer":{"@type":"Answer","text":"The sitemap protocol limits a single sitemap file to 50,000 URLs, so a larger set needs multiple sitemap files and a sitemap index."}}]}]}</script>
 </head><body>
@@ -32,6 +33,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="panel content-panel"><h2>What does an XML sitemap generator do?</h2><p>This tool turns absolute URLs into an XML sitemap with one global change frequency, priority, and last-modified date. Validation happens locally, and invalid lines are reported rather than silently discarded.</p><p>URLs are XML-escaped before they are inserted into the document. That is especially important for query strings, where an ampersand such as <code>&amp;</code> must become <code>&amp;amp;</code> in the XML output.</p></section>
 <section class="panel content-panel"><h2>Sitemap limits</h2><p>A single sitemap file can contain at most 50,000 URLs. If your valid URL count exceeds that limit, this tool warns you to split the URLs across multiple sitemaps and create a sitemap index.</p></section>
 <section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What URLs can I enter?</h3><p>Each line must begin with http:// or https:// and must be accepted by the browser URL parser.</p></div><div class="faq-item"><h3>Why is my ampersand changed to &amp;?</h3><p>XML requires special characters such as ampersands to be escaped. A URL such as https://example.com/?a=1&amp;b=2 is therefore written with &amp;amp; in the XML document.</p></div><div class="faq-item"><h3>What happens above 50,000 URLs?</h3><p>The sitemap protocol limits a single sitemap file to 50,000 URLs, so a larger set needs multiple sitemap files and a sitemap index.</p></div></section>
-  <div id="site-footer"></div>
-</main><script src="/tools/sitemap-generator.js" defer></script><script src="/footer.js" defer></script>
+  <!-- footer:start -->
+<footer class="site-footer">
+  <p>Domain Rating data provided through Ahrefs API.</p>
+  <nav aria-label="Site footer">
+    <a href="/about.html">About</a><span aria-hidden="true">|</span>
+    <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
+    <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
+    <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
+    <a href="/contact.html">Contact</a>
+  </nav>
+</footer>
+<!-- footer:end -->
+</main><script src="/tools/sitemap-generator.js" defer></script>
 </body></html>
