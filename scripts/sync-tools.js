@@ -98,10 +98,10 @@ function footerBlock() {
     '<footer class="site-footer">\n' +
     '  <p>Domain Rating data provided through Ahrefs API.</p>\n' +
     '  <nav aria-label="Site footer">\n' +
-    '    <a href="/about.html">About</a> |\n' +
-    '    <a href="/how-it-works.html">How It Works</a> |\n' +
-    '    <a href="/privacy.html">Privacy</a> |\n' +
-    '    <a href="/terms.html">Terms</a> |\n' +
+    '    <a href="/about.html">About</a><span aria-hidden="true">|</span>\n' +
+    '    <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>\n' +
+    '    <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>\n' +
+    '    <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>\n' +
     '    <a href="/contact.html">Contact</a>\n' +
     '  </nav>\n' +
     '</footer>\n' +
@@ -110,12 +110,12 @@ function footerBlock() {
 
 function syncFooter(source, file) {
   const block = footerBlock();
-  const markerPattern = /<!-- footer:start -->[\\s\\S]*?<!-- footer:end -->/;
+  const markerPattern = /<!-- footer:start -->[\s\S]*?<!-- footer:end -->/;
   let out = source;
   if (markerPattern.test(out)) out = out.replace(markerPattern, block);
-  else if (/<div id="site-footer"><\\/div>/.test(out)) out = out.replace(/<div id="site-footer"><\\/div>/, block);
+  else if (/<div id="site-footer"><\/div>/.test(out)) out = out.replace(/<div id="site-footer"><\/div>/, block);
   else throw new Error(file + " is missing its footer placeholder or markers");
-  return out.replace(/\\s*<script src="\\/?footer\\.js" defer><\\/script>/g, "");
+  return out.replace(/\s*<script src="\/?footer\.js" defer><\/script>/g, "");
 }
 
 function writeOrCheck(file, next) {
