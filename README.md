@@ -438,3 +438,7 @@ node scripts/sync-tools.js --check
 
 No framework or build step is required.
 
+
+## Adding a tool
+
+To add a new tool, add one entry to `tools/tools-manifest.json` and create the tool's HTML file; nav, hub listing, and sitemap update automatically.
