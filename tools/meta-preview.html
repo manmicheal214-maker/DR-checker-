@@ -9,10 +9,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<meta name="description" content="Inspect title, meta description, canonical, Open Graph, Twitter, robots, and H1 signals for up to 8 URLs."><title>Meta Preview Tool — Signal Board</title>
+<meta name="description" content="Inspect the title, meta description, canonical, Open Graph, Twitter, robots and H1 signals of up to 8 public URLs at once. Free, no signup."><title>Meta Preview Tool — Signal Board</title>
 <link rel="canonical" href="https://checkdr.net/tools/meta-preview.html">
-<meta property="og:type" content="website"><meta property="og:title" content="Meta Preview Tool — Signal Board"><meta property="og:description" content="Inspect title, meta description, canonical, Open Graph, Twitter, robots, and H1 signals for up to 8 URLs."><meta property="og:url" content="https://checkdr.net/tools/meta-preview.html"><meta property="og:site_name" content="Signal Board">
-<meta name="twitter:card" content="summary"><meta name="twitter:title" content="Meta Preview Tool — Signal Board"><meta name="twitter:description" content="Inspect title, meta description, canonical, Open Graph, Twitter, robots, and H1 signals for up to 8 URLs.">
+<meta property="og:type" content="website"><meta property="og:title" content="Meta Preview Tool — Signal Board"><meta property="og:description" content="Inspect the title, meta description, canonical, Open Graph, Twitter, robots and H1 signals of up to 8 public URLs at once. Free, no signup."><meta property="og:url" content="https://checkdr.net/tools/meta-preview.html"><meta property="og:site_name" content="Signal Board">
+<meta property="og:image" content="https://checkdr.net/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CheckDR: free Bulk Domain Rating checker and SEO tools from Signal Board"><meta name="twitter:image" content="https://checkdr.net/og-image.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Meta Preview Tool — Signal Board"><meta name="twitter:description" content="Inspect the title, meta description, canonical, Open Graph, Twitter, robots and H1 signals of up to 8 public URLs at once. Free, no signup.">
 <link rel="stylesheet" href="/style.css">
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -73,6 +74,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="panel content-panel"><h2>What does a meta preview do?</h2><p>A meta preview surfaces the HTML signals that commonly describe a page to search engines and social platforms: title, description, canonical URL, Open Graph fields, Twitter fields, robots directives, and the number of H1 elements.</p></section>
 <section class="panel content-panel"><h2>Why and when to use it</h2><p>Use it during SEO audits, launches, migrations, and content reviews to spot missing or inconsistent metadata. A preview is especially useful when the page source is difficult to inspect quickly across several URLs.</p></section>
 <section class="panel content-panel"><h2>How it works</h2><p>The tool makes a read-only HTTP request, validates the target hostname and each redirect, then reads at most 300 KB of the response body. It parses metadata with lightweight patterns and never executes JavaScript from the target page.</p></section>
-<section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What is a meta preview?</h3><p>A meta preview shows the title, description, canonical URL, social metadata, robots directive, and H1 count detected near the top of a fetched HTML document.</p></div><div class="faq-item"><h3>Does this tool change my page?</h3><p>No. It makes a read-only request and parses the returned HTML. It does not execute scripts or modify the target site.</p></div><div class="faq-item"><h3>How many URLs can I check?</h3><p>Up to 8 URLs can be checked per request, with a 50-subrequest Worker budget shared across the batch.</p></div></section>  <div id="site-footer"></div>
-</main><script src="/tools/meta-preview.js" defer></script><script src="/footer.js" defer></script>
+<section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What is a meta preview?</h3><p>A meta preview shows the title, description, canonical URL, social metadata, robots directive, and H1 count detected near the top of a fetched HTML document.</p></div><div class="faq-item"><h3>Does this tool change my page?</h3><p>No. It makes a read-only request and parses the returned HTML. It does not execute scripts or modify the target site.</p></div><div class="faq-item"><h3>How many URLs can I check?</h3><p>Up to 8 URLs can be checked per request, with a 50-subrequest Worker budget shared across the batch.</p></div></section>  <!-- footer:start -->
+<footer class="site-footer">
+  <p>Domain Rating data provided through Ahrefs API.</p>
+  <nav aria-label="Site footer">
+    <a href="/about.html">About</a><span aria-hidden="true">|</span>
+    <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
+    <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
+    <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
+    <a href="/contact.html">Contact</a>
+  </nav>
+</footer>
+<!-- footer:end -->
+</main><script src="/tools/meta-preview.js" defer></script>
 </body></html>
