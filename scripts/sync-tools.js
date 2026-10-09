@@ -93,6 +93,31 @@ function syncSitemap(source) {
   return source.slice(0, start) + block + "\n" + source.slice(end);
 }
 
+function footerBlock() {
+  return '<!-- footer:start -->\n' +
+    '<footer class="site-footer">\n' +
+    '  <p>Domain Rating data provided through Ahrefs API.</p>\n' +
+    '  <nav aria-label="Site footer">\n' +
+    '    <a href="/about.html">About</a> |\n' +
+    '    <a href="/how-it-works.html">How It Works</a> |\n' +
+    '    <a href="/privacy.html">Privacy</a> |\n' +
+    '    <a href="/terms.html">Terms</a> |\n' +
+    '    <a href="/contact.html">Contact</a>\n' +
+    '  </nav>\n' +
+    '</footer>\n' +
+    '<!-- footer:end -->';
+}
+
+function syncFooter(source, file) {
+  const block = footerBlock();
+  const markerPattern = /<!-- footer:start -->[\\s\\S]*?<!-- footer:end -->/;
+  let out = source;
+  if (markerPattern.test(out)) out = out.replace(markerPattern, block);
+  else if (/<div id="site-footer"><\\/div>/.test(out)) out = out.replace(/<div id="site-footer"><\\/div>/, block);
+  else throw new Error(file + " is missing its footer placeholder or markers");
+  return out.replace(/\\s*<script src="\\/?footer\\.js" defer><\\/script>/g, "");
+}
+
 function writeOrCheck(file, next) {
   const fullPath = path.join(root, file);
   const current = fs.readFileSync(fullPath, "utf8");
@@ -113,8 +138,14 @@ let changed = 0;
 for (const file of htmlFiles) {
   const rel = "tools/" + file;
   const current = fs.readFileSync(path.join(root, rel), "utf8");
-  const next = syncToolPage(current, file);
+  const next = syncFooter(syncToolPage(current, file), rel);
   changed += writeOrCheck(rel, next) ? 1 : 0;
+}
+
+const rootHtmlFiles = fs.readdirSync(root).filter((name) => name.endsWith(".html") && name !== "index.html").sort();
+for (const file of rootHtmlFiles) {
+  const current = fs.readFileSync(path.join(root, file), "utf8");
+  changed += writeOrCheck(file, syncFooter(current, file)) ? 1 : 0;
 }
 
 const hub = fs.readFileSync(path.join(toolDir, "index.html"), "utf8");
