@@ -11,6 +11,8 @@ const FETCH_TIMEOUT_MS = 90000;
 const domainInput = document.getElementById("domainInput");
 const domainCounter = document.getElementById("domainCounter");
 const checkButton = document.getElementById("checkButton");
+const exampleButton = document.getElementById("exampleButton");
+const retryFailedButton = document.getElementById("retryFailedButton");
 const clearButton = document.getElementById("clearButton");
 const downloadButton = document.getElementById("downloadButton");
 const loading = document.getElementById("loading");
@@ -82,7 +84,7 @@ function updateCounter() {
 
 function showInputError(message) {
   inputError.textContent = message;
-  inputError.classList.remove("hidden");
+  inputError.classList.remove("hidden"); inputError.removeAttribute("hidden");
 }
 function hideInputError() {
   inputError.textContent = "";
@@ -90,7 +92,7 @@ function hideInputError() {
 }
 function showServerError(message) {
   serverError.textContent = message;
-  errorCard.classList.remove("hidden");
+  errorCard.classList.remove("hidden"); errorCard.removeAttribute("hidden");
 }
 function hideServerError() {
   serverError.textContent = "";
@@ -98,6 +100,7 @@ function hideServerError() {
 }
 function setLoading(value) {
   loading.classList.toggle("hidden", !value);
+  loading.toggleAttribute("hidden", !value);
   loading.setAttribute("aria-busy", String(value));
   checkButton.disabled = value;
   clearButton.disabled = value;
@@ -120,8 +123,9 @@ function getStatusClass(status) {
 }
 function displayStatus(status) {
   if (status === "success") return "";
-  if (status === "not_found") return "NOT FOUND";
-  if (status === "failed") return "FAILED";
+  if (status === "not_found") return "Lookup failed";
+  if (status === "failed") return "Lookup failed";
+  if (status === "rate_limited" || status === "rate-limited") return "Rate limited";
   return String(status || "UNKNOWN").toUpperCase();
 }
 
@@ -148,7 +152,7 @@ function createResultRow(result, index) {
   }
   drCell.appendChild(value);
 
-  const statusText = displayStatus(result.status);
+  const statusText = result.error ? (/rate limit|429/i.test(result.error) ? "Rate limited" : result.status === "failed" ? "Lookup failed" : displayStatus(result.status)) : displayStatus(result.status);
   if (statusText) {
     const status = document.createElement("span");
     status.className = `status ${getStatusClass(result.status)}`;
@@ -204,6 +208,7 @@ function updateSummary() {
   totalCount.textContent = String(allResults.length);
   successCount.textContent = String(successful);
   failedCount.textContent = String(failed);
+  if (retryFailedButton) retryFailedButton.hidden = failed === 0;
   animateAverageDr(average);
 }
 
@@ -281,7 +286,7 @@ async function checkDomains() {
   const { domains, invalid } = getDomainsFromInput();
   if (!domains.length) return showInputError("Please enter at least one valid domain.");
   if (domains.length > MAX_DOMAINS) return showInputError(`You can check a maximum of ${MAX_DOMAINS} domains.`);
-  if (invalid.length) showInputError(`${invalid.length} invalid domain(s) were skipped.`);
+  if (invalid.length) showInputError(`${invalid.length} entries were skipped: not valid domains.`);
   if (!API_URL || API_URL.includes("YOUR-WORKER")) return showServerError("Please configure your Cloudflare Worker URL in script.js.");
 
   setLoading(true);
@@ -305,7 +310,7 @@ async function checkDomains() {
     resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     console.error(error);
-    const message = error.message === "Failed to fetch"
+    const message = /429|rate.?limit/i.test(error.message) ? "Rate limit reached: 10 checks per hour per IP. Please try again after the hourly limit window resets." : error.message === "Failed to fetch"
       ? "Unable to reach the checker API. Please verify the Cloudflare Worker URL and ALLOWED_ORIGIN setting."
       : (error.message || "Unable to check the domains. Please try again.");
     showServerError(message);
@@ -315,6 +320,7 @@ async function checkDomains() {
 }
 
 function clearAll() {
+  if (retryFailedButton) retryFailedButton.hidden = true;
   if (activeController) activeController.abort();
   domainInput.value = "";
   searchInput.value = "";
@@ -351,6 +357,18 @@ function downloadCsv() {
   setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
+if (exampleButton) exampleButton.addEventListener("click", () => {
+  domainInput.value = ["wikipedia.org", "github.com", "nytimes.com", "shopify.com", "moz.com"].join("\\n");
+  updateCounter();
+  hideInputError();
+});
+if (retryFailedButton) retryFailedButton.addEventListener("click", async () => {
+  const failed = allResults.filter((result) => result.status !== "success").map((result) => result.domain).filter(Boolean);
+  if (!failed.length) return;
+  domainInput.value = failed.join("\\n");
+  updateCounter();
+  await checkDomains();
+});
 domainInput.addEventListener("input", updateCounter);
 checkButton.addEventListener("click", checkDomains);
 clearButton.addEventListener("click", clearAll);
@@ -365,6 +383,7 @@ document.querySelectorAll(".sortable").forEach((header) => {
       sortDirection = column === "domain_rating" ? "desc" : "asc";
     }
     applyFilterAndSort();
+    document.querySelectorAll(".sortable").forEach((item) => item.setAttribute("aria-sort", item === header ? (sortDirection === "asc" ? "ascending" : "descending") : "none"));
   });
 });
 updateCounter();

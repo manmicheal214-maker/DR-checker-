@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PP972P5P');</script>
-<!-- End Google Tag Manager -->
+<!-- Analytics is loaded by consent.js only after consent. -->
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<meta name="description" content="Inspect the title, meta description, canonical, Open Graph, Twitter, robots and H1 signals of up to 8 public URLs at once. Free, no signup."><title>Meta Preview Tool — Signal Board</title>
+<meta name="description" content="Inspect the title, meta description, canonical, Open Graph, Twitter, robots and H1 signals of up to 8 public URLs at once. Free, no signup."><title>Meta Preview Tool — CheckDR</title>
 <link rel="canonical" href="https://checkdr.net/tools/meta-preview.html">
-<meta property="og:type" content="website"><meta property="og:title" content="Meta Preview Tool — Signal Board"><meta property="og:description" content="Inspect the title, meta description, canonical, Open Graph, Twitter, robots and H1 signals of up to 8 public URLs at once. Free, no signup."><meta property="og:url" content="https://checkdr.net/tools/meta-preview.html"><meta property="og:site_name" content="Signal Board">
-<meta property="og:image" content="https://checkdr.net/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CheckDR: free Bulk Domain Rating checker and SEO tools from Signal Board"><meta name="twitter:image" content="https://checkdr.net/og-image.png">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Meta Preview Tool — Signal Board"><meta name="twitter:description" content="Inspect the title, meta description, canonical, Open Graph, Twitter, robots and H1 signals of up to 8 public URLs at once. Free, no signup.">
+<meta property="og:type" content="website"><meta property="og:title" content="Meta Preview Tool — CheckDR"><meta property="og:description" content="Inspect the title, meta description, canonical, Open Graph, Twitter, robots and H1 signals of up to 8 public URLs at once. Free, no signup."><meta property="og:url" content="https://checkdr.net/tools/meta-preview.html"><meta property="og:site_name" content="CheckDR">
+<meta property="og:image" content="https://checkdr.net/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CheckDR: free Bulk Domain Rating checker and SEO tools from CheckDR"><meta name="twitter:image" content="https://checkdr.net/og-image.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Meta Preview Tool — CheckDR"><meta name="twitter:description" content="Inspect the title, meta description, canonical, Open Graph, Twitter, robots and H1 signals of up to 8 public URLs at once. Free, no signup.">
 <link rel="stylesheet" href="/style.css">
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -63,12 +57,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   ]
 }</script>
 </head><body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PP972P5P"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+
 <main class="container tools-page"><nav class="tools-nav"><a href="/">← DR Checker</a><a href="/tools/">Tools</a><span class="tool-links"><a href="/tools/redirect-checker.html">Redirect checker</a><a href="/tools/site-audit.html">Single-page audit</a><a href="/tools/site-audit-domain.html">Domain audit</a><a href="/tools/meta-preview.html">Meta preview</a><a href="/tools/dns-lookup.html">DNS lookup</a><a href="/tools/broken-links.html">Broken links</a><a href="/tools/security-headers.html">Security headers</a><a href="/tools/ssl-checker.html">SSL checker</a><a href="/tools/title-length-checker.html">Title/meta length</a><a href="/tools/readability-checker.html">Readability</a><a href="/tools/writing-clarity-checker.html">Writing clarity</a><a href="/tools/schema-generator.html">Schema generator</a><a href="/tools/sitemap-generator.html">Sitemap generator</a><a href="/tools/robots-generator.html">Robots.txt generator</a><a href="/tools/social-preview-builder.html">Social preview</a><a href="/tools/hreflang-generator.html">Hreflang</a><a href="/tools/keyword-clustering.html">Keyword clustering</a></span></nav>
-<header class="tool-hero"><div class="live-status"><span class="live-dot"></span><span>LIVE</span></div><div class="hero-brand">Signal Board / Meta preview</div><h1>Meta preview</h1><p>Inspect search and social metadata before you publish or audit a page.</p></header>
+<header class="tool-hero"><div class="live-status"><span class="live-dot"></span><span>LIVE</span></div><div class="hero-brand">CheckDR / Meta preview</div><h1>Meta preview</h1><p>Inspect search and social metadata before you publish or audit a page.</p></header>
 <section class="panel tool-input"><label for="metaInput">Enter URLs</label><textarea id="metaInput" placeholder="https://example.com"></textarea><div id="metaError" class="error-message hidden"></div><div class="actions"><button id="metaRun" class="btn btn-primary">Preview metadata</button><button id="metaClear" class="btn btn-secondary">Clear</button></div></section>
 <section id="metaLoading" class="panel loading-panel hidden"><div class="spinner"></div><strong>Reading page metadata</strong></section><section id="metaResults" class="panel tool-results hidden"></section>
 <section class="panel content-panel"><h2>What does a meta preview do?</h2><p>A meta preview surfaces the HTML signals that commonly describe a page to search engines and social platforms: title, description, canonical URL, Open Graph fields, Twitter fields, robots directives, and the number of H1 elements.</p></section>
@@ -76,15 +67,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="panel content-panel"><h2>How it works</h2><p>The tool makes a read-only HTTP request, validates the target hostname and each redirect, then reads at most 300 KB of the response body. It parses metadata with lightweight patterns and never executes JavaScript from the target page.</p></section>
 <section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What is a meta preview?</h3><p>A meta preview shows the title, description, canonical URL, social metadata, robots directive, and H1 count detected near the top of a fetched HTML document.</p></div><div class="faq-item"><h3>Does this tool change my page?</h3><p>No. It makes a read-only request and parses the returned HTML. It does not execute scripts or modify the target site.</p></div><div class="faq-item"><h3>How many URLs can I check?</h3><p>Up to 8 URLs can be checked per request, with a 50-subrequest Worker budget shared across the batch.</p></div></section>  <!-- footer:start -->
 <footer class="site-footer">
-  <p>Domain Rating data provided through Ahrefs API.</p>
+  <p>CheckDR — free bulk Domain Rating checker.</p>
+  <p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>
   <nav aria-label="Site footer">
     <a href="/about.html">About</a><span aria-hidden="true">|</span>
     <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
     <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
     <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
-    <a href="/contact.html">Contact</a>
+    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span>
+    <a href="#" id="cookieSettingsLink">Cookie settings</a>
   </nav>
 </footer>
 <!-- footer:end -->
 </main><script src="/tools/meta-preview.js" defer></script>
+<script src="/consent.js" defer></script>
 </body></html>

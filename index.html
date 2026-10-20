@@ -1,31 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PP972P5P');</script>
-<!-- End Google Tag Manager -->
+<!-- Analytics is loaded by consent.js only after consent. -->
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="r1EWpNYe0xG5C9WveIEtuvJCEGdh5pkP9EjsDLMe21Y" />
-  <meta name="description" content="Free bulk DR checker: paste up to 100 domains and get Ahrefs Domain Rating for each, with sortable results, average DR and CSV export.">
-  <title>Bulk Domain Rating (DR) Checker | Signal Board</title>
+  <meta name="description" content="Free bulk Domain Rating checker for up to 100 domains. Check Ahrefs DR, sort results, filter domains, and export a CSV.">
+  <title>Free Bulk DR Checker - Check Ahrefs Domain Rating for 100 Domains | CheckDR</title>
   <link rel="canonical" href="https://checkdr.net/">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Bulk Domain Rating (DR) Checker | Signal Board">
+  <meta property="og:title" content="Free Bulk DR Checker - Check Ahrefs Domain Rating for 100 Domains | CheckDR">
   <meta property="og:description" content="Free bulk DR checker: paste up to 100 domains and get Ahrefs Domain Rating for each, with sortable results, average DR and CSV export.">
   <meta property="og:url" content="https://checkdr.net/">
-  <meta property="og:site_name" content="Signal Board">
-<meta property="og:image" content="https://checkdr.net/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CheckDR: free Bulk Domain Rating checker and SEO tools from Signal Board"><meta name="twitter:image" content="https://checkdr.net/og-image.png">
+  <meta property="og:site_name" content="CheckDR">
+<meta property="og:image" content="https://checkdr.net/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CheckDR: free Bulk Domain Rating checker and SEO tools from CheckDR"><meta name="twitter:image" content="https://checkdr.net/og-image.png">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Bulk Domain Rating (DR) Checker | Signal Board">
+  <meta name="twitter:title" content="Free Bulk DR Checker - Check Ahrefs Domain Rating for 100 Domains | CheckDR">
   <meta name="twitter:description" content="Free bulk DR checker: paste up to 100 domains and get Ahrefs Domain Rating for each, with sortable results, average DR and CSV export.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,91 +28,87 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <link rel="stylesheet" href="style.css?v=20261002-row-alignment">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        "name": "Bulk Domain Rating Checker",
-        "url": "https://checkdr.net/",
-        "applicationCategory": "SEO Tool",
-        "operatingSystem": "Any (web-based)",
-        "description": "Check Ahrefs Domain Rating for up to 100 domains at once. Free, no account required.",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Is Domain Rating the same as Google's ranking algorithm?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. DR is an Ahrefs metric built from their own backlink index. Google does not publish or use a public authority score, and does not use Ahrefs' DR directly in ranking."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What counts as a good Domain Rating?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "It depends on your niche and competitors — there is no universal cutoff. DR 40+ is often considered solid in competitive niches, while large mainstream sites often sit above 70."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How many domains can I check at once?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Up to 100 domains or URLs per check, one per line. Bare domains and full http(s) URLs are both accepted."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is this tool free to use?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes, it is free to use, with a fair-use rate limit per hour to keep the service available for everyone."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How current is the Domain Rating data?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Each check queries Ahrefs' API directly and returns their current Domain Rating at the moment you run the check."
-            }
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "CheckDR",
+      "url": "https://checkdr.net/",
+      "applicationCategory": "SEO tool",
+      "operatingSystem": "Any (web-based)",
+      "description": "Check Ahrefs Domain Rating for up to 100 domains at once. Free, no account required.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       }
-    ]
-  }
-  </script>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4KD6RD6N91"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is Domain Rating the same as Google's ranking algorithm?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. DR is an Ahrefs backlink metric, not a Google ranking factor; see the What is Domain Rating section."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What counts as a good Domain Rating?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It depends on your niche and competitors — there is no universal cutoff. DR 40+ is often considered solid in competitive niches, while large mainstream sites often sit above 70."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How many domains can I check at once?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Up to 100 domains or URLs per check, one per line. Bare domains and full http(s) URLs are both accepted."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this tool free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, it is free to use, with a fair-use rate limit per hour to keep the service available for everyone."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How current is the Domain Rating data?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each check queries Ahrefs' API directly and returns their current Domain Rating at the moment you run the check."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is CheckDR affiliated with Ahrefs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. CheckDR is an independent tool and is not affiliated with, endorsed by, or sponsored by Ahrefs. Domain Rating data is retrieved through Ahrefs' publicly available Domain Rating data."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
-    gtag('config', 'G-4KD6RD6N91');
-  </script>
-  <script src="https://analytics.ahrefs.com/analytics.js" data-key="JYJKjwBzSK4mcCZ4VELUEA" async></script>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PP972P5P"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+
 
   <main class="container">
     <header class="hero">
-      <div class="live-status"><span class="live-dot" aria-hidden="true"></span><span>LIVE</span></div>
-      <div class="hero-nav"><div class="hero-brand">Signal Board</div><a href="/tools/">Tools</a></div>
+      
+      <div class="hero-nav"><a class="hero-brand" href="/" aria-label="CheckDR home">CheckDR</a><nav class="hero-tool-links" aria-label="Top tools"><a href="/tools/redirect-checker.html">Redirect checker</a><a href="/tools/site-audit.html">Site audit</a><a href="/tools/meta-preview.html">Meta preview</a><a href="/tools/dns-lookup.html">DNS lookup</a><a href="/tools/security-headers.html">Security headers</a><a href="/tools/ssl-checker.html">SSL checker</a></nav></div>
       <h1>Bulk Domain Rating Checker</h1>
       <p>Check Ahrefs Domain Rating for up to 100 domains at once.</p>
     </header>
@@ -127,26 +117,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="section-header">
         <div>
           <h2 id="input-heading">Enter domains</h2>
-          <p>One domain per line</p>
+          <p>One domain per line. 10 checks per hour per IP.</p>
         </div>
         <span id="domainCounter" class="counter" aria-live="polite">0 / 100</span>
       </div>
-      <textarea id="domainInput" placeholder="example.com&#10;ahrefs.com&#10;google.com&#10;hubspot.com" spellcheck="false" aria-label="Domain list" aria-describedby="inputError"></textarea>
-      <div class="tool-note trust-callout">No account required. No Ahrefs login. No API key. No website access. You only need to enter a domain.</div>
-      <div id="inputError" class="error-message hidden" role="status" aria-live="polite"></div>
+      <label for="domainInput" class="field-label">Domains (up to 100, one per line)</label><textarea id="domainInput" placeholder="example.com&#10;ahrefs.com&#10;google.com&#10;hubspot.com" spellcheck="false" aria-label="Domain list" aria-describedby="inputError"></textarea>
+      <div class="tool-note trust-callout">No account required. No Ahrefs login or API key. You don\'t need to verify ownership of any domain.</div>
+      <div id="inputError" class="error-message hidden" hidden role="status" aria-live="polite"></div>
       <div class="actions">
-        <button id="checkButton" class="btn btn-primary" type="button">Check Signal</button>
+        <button id="checkButton" class="btn btn-primary" type="button">Check DR</button><button id="exampleButton" class="btn btn-secondary" type="button">Try example domains</button>
         <button id="clearButton" class="btn btn-secondary" type="button">Clear</button>
       </div>
     </section>
 
-    <section id="loading" class="panel loading-panel hidden" aria-live="polite" aria-busy="false">
+    <section id="loading" class="panel loading-panel hidden" hidden aria-live="polite" aria-busy="false">
       <div class="spinner" aria-hidden="true"></div>
-      <div><strong>Checking domain ratings</strong><p>Reading the signal from the checker.</p></div>
+      <div><strong>Checking domain ratings</strong><p>Fetching Domain Rating...</p></div>
     </section>
 
-    <section id="errorCard" class="panel error-panel hidden" role="alert">
-      <strong>Signal error</strong><p id="serverError"></p>
+    <section id="errorCard" class="panel error-panel hidden" hidden role="alert" aria-live>
+      <strong>Something went wrong</strong><p id="serverError"></p>
     </section>
 
     <section id="summary" class="summary-panel hidden" aria-label="Results summary">
@@ -158,8 +148,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <section id="resultsSection" class="panel results-panel hidden" aria-labelledby="results-heading">
       <div class="results-header">
-        <div><h2 id="results-heading">Signal results</h2><p>Sorted by Domain Rating. Select a column header to change the order.</p><p id="checkedAt" class="checked-at" aria-live="polite"></p></div>
-        <button id="downloadButton" class="btn btn-secondary" type="button">Download CSV</button>
+        <div><h2 id="results-heading">Results</h2><p>Sorted by Domain Rating. Select a column header to change the order.</p><p id="checkedAt" class="checked-at" aria-live="polite"></p></div>
+        <div class="actions"><button id="retryFailedButton" class="btn btn-secondary" type="button" hidden>Retry failed</button><button id="downloadButton" class="btn btn-secondary" type="button">Download CSV</button></div>
       </div>
       <div class="toolbar">
         <label class="search-label" for="searchInput">Filter domains</label>
@@ -174,8 +164,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </colgroup>
           <thead><tr>
             <th scope="col" class="rank-heading">Rank</th>
-            <th scope="col" data-sort="domain" class="sortable">Domain</th>
-            <th scope="col" data-sort="domain_rating" class="sortable">DR</th>
+            <th scope="col" data-sort="domain" class="sortable" aria-sort="none"><button type="button" class="sort-button">Domain</button></th>
+            <th scope="col" data-sort="domain_rating" class="sortable" aria-sort="descending"><button type="button" class="sort-button">DR</button></th>
           </tr></thead>
           <tbody id="resultsBody"></tbody>
         </table>
@@ -183,7 +173,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div id="paginationContainer" class="pagination-container" aria-live="polite"></div>
     </section>
 
-        <section class="panel content-panel" aria-labelledby="what-is-dr-heading">
+        <section class="panel content-panel" aria-labelledby="how-to-use-heading"><h2 id="how-to-use-heading">How to use CheckDR</h2><ol><li>Paste domains, one per line.</li><li>Click Check DR.</li><li>Sort or filter results and export to CSV.</li></ol></section><section class="panel content-panel" aria-labelledby="what-is-dr-heading">
       <h2 id="what-is-dr-heading">What is Domain Rating (DR)?</h2>
       <p>Domain Rating is a metric from Ahrefs, scored on a 0–100 logarithmic scale, that estimates the overall strength of a website's backlink profile relative to every other domain in Ahrefs' index. It's driven mainly by the number and quality of unique referring domains linking to a site — links from other well-linked-to domains carry more weight, and because the scale is logarithmic, each additional point gets harder to earn as DR climbs.</p>
       <p>DR is an Ahrefs metric, not a Google ranking factor — Google doesn't publish or use a public authority score. A higher DR does not mean better content, higher legitimacy, or greater trustworthiness; it is specifically a backlink-profile metric.</p><p>The DR scale is logarithmic, so increases at the higher end represent progressively more relative backlink strength. DR numbers also should not be compared blindly with authority metrics from other tools: different indexes, crawl coverage, update schedules, and methodologies can produce different values.</p>
@@ -193,12 +183,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h2 id="why-bulk-heading">Why check Domain Rating in bulk?</h2>
       <p>Checking domains one at a time doesn't scale once you're auditing a site, vetting outreach targets, or comparing a handful of competitors. Common uses for a bulk checker:</p>
       <ul>
-        <li><strong>SEO audits</strong> — pull DR for a client's domain and their top competitors in one pass.</li>
-        <li><strong>Backlink and guest-post vetting</strong> — filter out low-authority sites before you invest in outreach.</li>
+        <li><strong><a href="/tools/site-audit.html">SEO audits</a></strong> — pull DR for a client's domain and their top competitors in one pass.</li>
+        <li><strong><a href="/tools/redirect-checker.html">Redirect-related checks</a></strong> — inspect redirect chains while reviewing domains.</li><li><strong>Backlink and guest-post vetting</strong> — filter out low-authority sites before you invest in outreach.</li>
         <li><strong>Competitor research</strong> — compare authority across an entire competitive set at once.</li>
         <li><strong>Portfolio monitoring</strong> — track DR across multiple domains you own or manage over time.</li>
         <li><strong>Domain buying decisions</strong> — sanity-check a domain's backlink strength before purchasing.</li>
-              <li><a href="/tools/keyword-clustering.html">Keyword clustering &amp; content map</a> — cluster keywords into reviewable SEO topics and supporting terms.</li>
+      
       </ul>
     </section>
 
@@ -208,7 +198,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p>To keep this a free, reliable tool for everyone, checks are limited to a fair-use rate per hour rather than a hard paywall. If you hit that limit, wait for the next hourly window and try again.</p>
     </section>
 
-    <section class="panel content-panel" aria-labelledby="faq-heading">
+    <section class="panel content-panel" aria-labelledby="sample-results-heading"><h2 id="sample-results-heading">Sample results</h2><p>Illustrative layout only; ratings are placeholders, not live data.</p><table aria-label="Example bulk DR checker results"><caption>Example bulk DR checker results</caption><thead><tr><th>Domain</th><th>Domain Rating</th><th>Status</th></tr></thead><tbody><tr><td>wikipedia.org</td><td>[DR]</td><td>Example only</td></tr><tr><td>github.com</td><td>[DR]</td><td>Example only</td></tr></tbody></table></section><section class="panel content-panel" aria-labelledby="faq-heading">
       <h2 id="faq-heading">Frequently asked questions</h2>
       <div class="faq-item"><h3>Is Domain Rating the same as Google's ranking algorithm?</h3><p>No. DR is an Ahrefs metric built from their own backlink index. Google does not publish or use a public "authority score," and does not use Ahrefs' DR directly in ranking. DR is best treated as an industry-standard proxy signal, not a Google ranking factor.</p></div>
       <div class="faq-item"><h3>What counts as a "good" Domain Rating?</h3><p>It depends on your niche and who you're comparing against — there's no universal cutoff. In many competitive niches, DR 40+ is considered a solid, established site, and large mainstream publishers or platforms often sit well above 70. The most useful comparison is against your direct competitors, not an absolute number.</p></div>
@@ -217,7 +207,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="faq-item"><h3>How is DR calculated?</h3><p>CheckDR does not calculate DR. It retrieves the metric from Ahrefs' public Domain Rating API.</p></div><div class="faq-item"><h3>Does CheckDR need an Ahrefs account, API key, or login?</h3><p>No. Visitors only enter domains; no Ahrefs account, login, API key, or other credentials are required.</p></div><div class="faq-item"><h3>Does CheckDR store the domains I check?</h3><p>No. Submitted domains are not written to a database. Temporary IP-based request counters are used for hourly rate limiting.</p></div><div class="faq-item"><h3>Is CheckDR affiliated with Ahrefs?</h3><p>CheckDR retrieves Domain Rating data through Ahrefs' public Domain Rating API.</p></div><div class="faq-item"><h3>How often does DR change?</h3><p>DR can change as Ahrefs' backlink index and calculations change; there is no fixed interval at which every domain must change.</p></div><div class="faq-item"><h3>Why might two SEO tools show different numbers?</h3><p>Different tools can use different indexes, datasets, update schedules, and methodologies, so their authority-style numbers may not match.</p></div><div class="faq-item"><h3>Does a high DR mean a site is trustworthy?</h3><p>No. DR is a backlink-profile metric, not a general trust, legitimacy, or content-quality score.</p></div><div class="faq-item"><h3>How current is the Domain Rating data?</h3><p>Each check queries Ahrefs' API directly and returns their current DR for that domain, so results reflect Ahrefs' live index at the moment you run the check rather than a cached or delayed snapshot.</p></div>
     </section>
 
-    <section class="panel content-panel" aria-labelledby="more-tools-heading">
+    <section class="panel content-panel related-tools" aria-labelledby="related-tools-heading"><h2 id="related-tools-heading">Related tools</h2><ul><li><a href="/tools/redirect-checker.html">Redirect checker</a></li><li><a href="/tools/site-audit.html">Site audit</a></li><li><a href="/tools/meta-preview.html">Meta preview</a></li><li><a href="/tools/dns-lookup.html">DNS lookup</a></li><li><a href="/tools/security-headers.html">Security headers</a></li><li><a href="/tools/ssl-checker.html">SSL checker</a></li></ul></section><section class="panel content-panel" aria-labelledby="more-tools-heading">
       <h2 id="more-tools-heading">More free SEO tools</h2>
       <ul>
 <!-- TOOLS-MANIFEST:START -->
@@ -243,17 +233,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </section>
 <!-- footer:start -->
 <footer class="site-footer">
-  <p>Domain Rating data provided through Ahrefs API.</p>
+  <p>CheckDR — free bulk Domain Rating checker.</p>
+  <p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>
   <nav aria-label="Site footer">
     <a href="/about.html">About</a><span aria-hidden="true">|</span>
     <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
     <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
     <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
-    <a href="/contact.html">Contact</a>
+    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span>
+    <a href="#" id="cookieSettingsLink">Cookie settings</a>
   </nav>
 </footer>
 <!-- footer:end -->
   </main>
   <script src="script.js?v=20261001-table-alignment" defer></script>
+  <script src="/consent.js" defer></script>
 </body>
 </html>
