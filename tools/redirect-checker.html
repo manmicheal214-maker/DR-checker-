@@ -67,13 +67,15 @@
 <section class="panel content-panel"><h2>How it works</h2><p>Enter up to 10 public HTTP or HTTPS URLs. The Worker validates each hostname against private-address blocklists, follows up to three redirects manually, and records every response status. It never automatically follows an unvalidated redirect.</p></section>
 <section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What is a redirect chain?</h3><p>A redirect chain is a sequence of HTTP redirects where one URL sends the requester to another URL, which may redirect again before reaching the final page.</p></div><div class="faq-item"><h3>Why should I check redirects?</h3><p>Long or unexpected chains can add latency, complicate crawling, and make migrations harder to audit. A checker makes the hop sequence visible.</p></div><div class="faq-item"><h3>How many URLs can I check?</h3><p>This tool accepts up to 10 URLs per request. It follows up to three redirect hops and stops early when the Worker subrequest budget is reached.</p></div></section>  <!-- footer:start -->
 <footer class="site-footer">
-  <p>CheckDR — free bulk Domain Rating checker.</p><p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>
+  <p>CheckDR — free bulk Domain Rating checker.</p>
+  <p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>
   <nav aria-label="Site footer">
     <a href="/about.html">About</a><span aria-hidden="true">|</span>
     <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
     <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
     <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
-    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span><a href="#" id="cookieSettingsLink">Cookie settings</a>
+    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span>
+    <a href="#" id="cookieSettingsLink">Cookie settings</a>
   </nav>
 </footer>
 <!-- footer:end -->
