@@ -99,13 +99,13 @@ function footerBlock() {
     '<footer class="site-footer">\n' +
     '  <p>CheckDR — free bulk Domain Rating checker.</p>\n' +
     '  <p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>\n' +
-    '  <nav aria-label="Site footer">\\n' +
-    '    <a href="/about.html">About</a><span aria-hidden="true">|</span>\\n' +
-    '    <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>\\n' +
-    '    <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>\\n' +
-    '    <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>\\n' +
-    '    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span>\\n' +
-    '    <a href="#" id="cookieSettingsLink">Cookie settings</a>\\n' +
+    '  <nav aria-label="Site footer">\n' +
+    '    <a href="/about.html">About</a><span aria-hidden="true">|</span>\n' +
+    '    <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>\n' +
+    '    <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>\n' +
+    '    <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>\n' +
+    '    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span>\n' +
+    '    <a href="#" id="cookieSettingsLink">Cookie settings</a>\n' +
     '  </nav>\n' +
     '</footer>\n' +
     '<!-- footer:end -->';
