@@ -20,13 +20,15 @@
 <section class="panel content-panel"><h2>How it works</h2><p>The Worker validates the page and each destination against private-address protections, reads up to 500 KB of HTML, deduplicates links, and checks at most 15 destinations with a shared subrequest budget.</p></section>
 <section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What does a broken link checker do?</h3><p>It fetches a page, extracts its HTTP and HTTPS links, and tests a capped set of those destinations.</p></div><div class="faq-item"><h3>How many links are checked?</h3><p>The tool checks at most 15 distinct HTTP or HTTPS links per request and reports how many were found before the cap.</p></div><div class="faq-item"><h3>Does it follow redirects?</h3><p>Yes. Each checked link follows up to two redirects and reports the final HTTP status.</p></div></section>  <!-- footer:start -->
 <footer class="site-footer">
-  <p>CheckDR — free bulk Domain Rating checker.</p><p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>
+  <p>CheckDR — free bulk Domain Rating checker.</p>
+  <p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>
   <nav aria-label="Site footer">
     <a href="/about.html">About</a><span aria-hidden="true">|</span>
     <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
     <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
     <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
-    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span><a href="#" id="cookieSettingsLink">Cookie settings</a>
+    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span>
+    <a href="#" id="cookieSettingsLink">Cookie settings</a>
   </nav>
 </footer>
 <!-- footer:end -->
