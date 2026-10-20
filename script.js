@@ -152,7 +152,7 @@ function createResultRow(result, index) {
   }
   drCell.appendChild(value);
 
-  const statusText = displayStatus(result.status);
+  const statusText = result.error ? (/rate limit|429/i.test(result.error) ? "Rate limited" : result.status === "failed" ? "Lookup failed" : displayStatus(result.status)) : displayStatus(result.status);
   if (statusText) {
     const status = document.createElement("span");
     status.className = `status ${getStatusClass(result.status)}`;
@@ -208,6 +208,7 @@ function updateSummary() {
   totalCount.textContent = String(allResults.length);
   successCount.textContent = String(successful);
   failedCount.textContent = String(failed);
+  if (retryFailedButton) retryFailedButton.hidden = failed === 0;
   animateAverageDr(average);
 }
 
@@ -319,6 +320,7 @@ async function checkDomains() {
 }
 
 function clearAll() {
+  if (retryFailedButton) retryFailedButton.hidden = true;
   if (activeController) activeController.abort();
   domainInput.value = "";
   searchInput.value = "";
