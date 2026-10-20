@@ -2,6 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 
+// Generated HTML must stay aligned with the shared manifest and footer.
 const root = path.resolve(__dirname, "..");
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "tools", "tools-manifest.json"), "utf8"));
 const tools = manifest.tools;
