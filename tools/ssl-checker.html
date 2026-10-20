@@ -20,13 +20,15 @@
 <section class="panel content-panel"><h2>How it works</h2><p>The checker validates each domain and queries the fixed crt.sh Certificate Transparency service. It does not perform a live TLS handshake, so its result can differ from the certificate a server is presenting right now.</p></section>
 <section class="panel content-panel"><h2>Frequently asked questions</h2><div class="faq-item"><h3>What does this SSL checker inspect?</h3><p>It looks up certificates for a domain in public Certificate Transparency logs through crt.sh and selects the entry with the most recent not-before date.</p></div><div class="faq-item"><h3>Does it perform a live TLS handshake?</h3><p>No. Certificate Transparency data is often useful for understanding certificates associated with a domain, but it is not guaranteed to be identical to the certificate a server is presenting right now.</p></div><div class="faq-item"><h3>What happens if no certificates are found?</h3><p>The tool returns a clear no-certificates-found message for that domain instead of failing the whole batch.</p></div></section>  <!-- footer:start -->
 <footer class="site-footer">
-  <p>CheckDR — free bulk Domain Rating checker.</p><p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>
+  <p>CheckDR — free bulk Domain Rating checker.</p>
+  <p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>
   <nav aria-label="Site footer">
     <a href="/about.html">About</a><span aria-hidden="true">|</span>
     <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
     <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
     <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
-    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span><a href="#" id="cookieSettingsLink">Cookie settings</a>
+    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span>
+    <a href="#" id="cookieSettingsLink">Cookie settings</a>
   </nav>
 </footer>
 <!-- footer:end -->
