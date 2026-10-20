@@ -28,70 +28,78 @@
   <link rel="stylesheet" href="style.css?v=20261002-row-alignment">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        "name": "CheckDR",
-        "url": "https://checkdr.net/",
-        "applicationCategory": "SEO tool",
-        "operatingSystem": "Any (web-based)",
-        "description": "Check Ahrefs Domain Rating for up to 100 domains at once. Free, no account required.",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Is Domain Rating the same as Google's ranking algorithm?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. DR is an Ahrefs metric built from their own backlink index. Google does not publish or use a public authority score, and does not use Ahrefs' DR directly in ranking."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What counts as a good Domain Rating?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "It depends on your niche and competitors — there is no universal cutoff. DR 40+ is often considered solid in competitive niches, while large mainstream sites often sit above 70."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How many domains can I check at once?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Up to 100 domains or URLs per check, one per line. Bare domains and full http(s) URLs are both accepted."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is this tool free to use?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes, it is free to use, with a fair-use rate limit per hour to keep the service available for everyone."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How current is the Domain Rating data?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Each check queries Ahrefs' API directly and returns their current Domain Rating at the moment you run the check."
-            }
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "CheckDR",
+      "url": "https://checkdr.net/",
+      "applicationCategory": "SEO tool",
+      "operatingSystem": "Any (web-based)",
+      "description": "Check Ahrefs Domain Rating for up to 100 domains at once. Free, no account required.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
       }
-    ]
-  }
-  </script>
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is Domain Rating the same as Google's ranking algorithm?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. DR is an Ahrefs backlink metric, not a Google ranking factor; see the What is Domain Rating section."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What counts as a good Domain Rating?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It depends on your niche and competitors — there is no universal cutoff. DR 40+ is often considered solid in competitive niches, while large mainstream sites often sit above 70."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How many domains can I check at once?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Up to 100 domains or URLs per check, one per line. Bare domains and full http(s) URLs are both accepted."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this tool free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, it is free to use, with a fair-use rate limit per hour to keep the service available for everyone."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How current is the Domain Rating data?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each check queries Ahrefs' API directly and returns their current Domain Rating at the moment you run the check."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is CheckDR affiliated with Ahrefs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. CheckDR is an independent tool and is not affiliated with, endorsed by, or sponsored by Ahrefs. Domain Rating data is retrieved through Ahrefs' publicly available Domain Rating data."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
 </head>
 <body>
@@ -141,7 +149,7 @@
     <section id="resultsSection" class="panel results-panel hidden" aria-labelledby="results-heading">
       <div class="results-header">
         <div><h2 id="results-heading">Results</h2><p>Sorted by Domain Rating. Select a column header to change the order.</p><p id="checkedAt" class="checked-at" aria-live="polite"></p></div>
-        <div class="actions"><button id="retryFailedButton" class="btn btn-secondary" type="button">Retry failed</button><button id="downloadButton" class="btn btn-secondary" type="button">Download CSV</button></div>
+        <div class="actions"><button id="retryFailedButton" class="btn btn-secondary" type="button" hidden>Retry failed</button><button id="downloadButton" class="btn btn-secondary" type="button">Download CSV</button></div>
       </div>
       <div class="toolbar">
         <label class="search-label" for="searchInput">Filter domains</label>
