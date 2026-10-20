@@ -127,7 +127,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="section-header">
         <div>
           <h2 id="input-heading">Enter domains</h2>
-          <p>One domain per line. [X] checks per hour per IP.</p>
+          <p>One domain per line. 10 checks per hour per IP.</p>
         </div>
         <span id="domainCounter" class="counter" aria-live="polite">0 / 100</span>
       </div>
@@ -159,7 +159,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <section id="resultsSection" class="panel results-panel hidden" aria-labelledby="results-heading">
       <div class="results-header">
         <div><h2 id="results-heading">Results</h2><p>Sorted by Domain Rating. Select a column header to change the order.</p><p id="checkedAt" class="checked-at" aria-live="polite"></p></div>
-        <button id="downloadButton" class="btn btn-secondary" type="button">Download CSV</button>
+        <div class="actions"><button id="retryFailedButton" class="btn btn-secondary" type="button">Retry failed</button><button id="downloadButton" class="btn btn-secondary" type="button">Download CSV</button></div>
       </div>
       <div class="toolbar">
         <label class="search-label" for="searchInput">Filter domains</label>
