@@ -130,7 +130,9 @@ async function parseHtml(response, requestedUrl, finalUrl, target) {
     })
     .on("a img[alt]", { element(el) { if (currentAnchor && !currentAnchor.imageAlt) currentAnchor.imageAlt = el.getAttribute("alt") || ""; } });
   try {
-    const parsedResponse = rewriter.transform(response);\n    const reader = parsedResponse.body.getReader();\n    while (true) { const { done } = await reader.read(); if (done) break; }
+    const parsedResponse = rewriter.transform(response);
+    const reader = parsedResponse.body.getReader();
+    while (true) { const { done } = await reader.read(); if (done) break; }
   } catch (e) {
     if (String(e?.message || e).includes("too_large")) tooLarge = true;
     else if (e?.name === "TimeoutError" || e?.name === "AbortError") return errorResponse(requestedUrl, "timeout", response.status, finalUrl);
