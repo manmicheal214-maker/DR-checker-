@@ -23,7 +23,7 @@ function isPrivateIPv4(host) {
     (a[0] === 172 && a[1] >= 16 && a[1] <= 31) || (a[0] === 192 && a[1] === 168) ||
     (a[0] === 100 && a[1] >= 64 && a[1] <= 127) || (a[0] >= 224);
 }
-function isPrivateIPv6(host) {
+export function isPrivateIPv6(host) {
   const h = host.toLowerCase().replace(/^\[|\]$/g, "");
   return h === "::" || h === "::1" || h.startsWith("fc") || h.startsWith("fd") || /^fe[89ab]/.test(h) || h.startsWith("ff") || h.startsWith("::ffff:127.") || h.startsWith("::ffff:10.") || h.startsWith("::ffff:192.168.");
 }
