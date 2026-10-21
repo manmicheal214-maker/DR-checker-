@@ -1,3 +1,4 @@
+import { parseRel, linkTypes, targetMatches, normalizeHost, resolveLink } from "./parsing.js";
 const MAX_BYTES = 2 * 1024 * 1024;
 const MAX_REDIRECTS = 5;
 const CACHE_TTL = 300;
@@ -13,7 +14,6 @@ function allowedOrigin(origin, env) {
 function cors(origin) {
   return { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Methods": "GET, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Vary": "Origin" };
 }
-function normalizeHost(host) { return host.toLowerCase().replace(/^www\./, "").replace(/\.$/, ""); }
 function isPrivateIPv4(host) {
   const m = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
   if (!m) return false;
@@ -35,18 +35,6 @@ function validatePublicUrl(input) {
   if (!host || host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local") ||
       isPrivateIPv4(host) || host.includes(":") && isPrivateIPv6(host)) return { error: "invalid_url" };
   return { url: u };
-}
-function targetMatches(hostname, target) {
-  const host = normalizeHost(hostname);
-  const wanted = normalizeHost(target);
-  return !!wanted && (host === wanted || host.endsWith("." + wanted));
-}
-function parseRel(rel) {
-  return [...new Set(String(rel || "").toLowerCase().split(/\s+/).filter(x => TYPES.includes(x)))];
-}
-function linkTypes(rel) {
-  const tags = parseRel(rel);
-  return tags.length ? tags : ["dofollow"];
 }
 function errorResponse(url, error, status = 200, finalUrl = null) {
   return { url, finalUrl, status, robotsNofollow: false, links: [], matched: [], error };
@@ -129,11 +117,11 @@ async function parseHtml(response, requestedUrl, finalUrl, target) {
         let href = currentAnchor.rawHref.trim();
         if (href && !/^(#|javascript:|mailto:|tel:|data:)/i.test(href)) {
           try {
-            const resolved = new URL(href, baseHref ? new URL(baseHref, finalUrl) : finalUrl);
-            if (["http:", "https:"].includes(resolved.protocol)) {
+            const resolvedHref = resolveLink(href, finalUrl, baseHref);
+            if (resolvedHref) {
               const rel = parseRel(currentAnchor.rel);
-              const hostname = resolved.hostname;
-              links.push({ href: resolved.href, anchor: currentAnchor.hasText ? currentAnchor.anchor.trim() : (currentAnchor.imageAlt ? "[image] " + currentAnchor.imageAlt : "[no anchor text]"), rel, types: rel.length ? rel : ["dofollow"], scope: new URL(finalUrl).hostname === hostname ? "internal" : "external", _hostname: hostname });
+              const hostname = new URL(resolvedHref).hostname;
+              links.push({ href: resolvedHref, anchor: currentAnchor.hasText ? currentAnchor.anchor.trim() : (currentAnchor.imageAlt ? "[image] " + currentAnchor.imageAlt : "[no anchor text]"), rel, types: linkTypes(currentAnchor.rel), scope: new URL(finalUrl).hostname === hostname ? "internal" : "external", _hostname: hostname });
             }
           } catch {}
         }
