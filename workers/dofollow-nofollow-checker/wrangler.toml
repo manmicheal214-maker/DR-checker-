@@ -1,0 +1,16 @@
+name = "checkdr-dofollow-nofollow-checker"
+main = "src/index.js"
+compatibility_date = "2026-10-21"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://checkdr.net,https://www.checkdr.net"
+TURNSTILE_SITE_KEY = "[TURNSTILE_SITE_KEY]"
+
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 60, period = 600 }
+
+# Set the secret separately; never commit it:
+# npx wrangler secret put TURNSTILE_SECRET
