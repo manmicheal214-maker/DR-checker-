@@ -91,7 +91,7 @@ async function fetchHtml(initialUrl) {
   }
   return { error: "unreachable", finalUrl: current };
 }
-async function parseHtml(response, requestedUrl, finalUrl, target) {
+export async function parseHtml(response, requestedUrl, finalUrl, target) {
   const links = [];
   let robotsNofollow = false;
   let baseHref = null;
