@@ -24,3 +24,4 @@ jobs:
       - run: npm test
       - run: node --check src/index.js
       - run: node --check src/parsing.js
+      - run: node --check ../../tools/dofollow-nofollow-checker.js
