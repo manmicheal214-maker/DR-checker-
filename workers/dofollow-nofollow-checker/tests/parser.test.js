@@ -7,7 +7,8 @@ const fixture = name => fs.readFileSync(new URL("./fixtures/" + name, import.met
 
 test("rel is a case-insensitive space-separated set", () => {
   assert.deepEqual(parseRel("nofollow sponsored UGC"), ["nofollow", "sponsored", "ugc"]);
-  assert.deepEqual(linkTypes("NoFollow sponsored"), ["nofollow", "sponsored"]);
+  assert.deepEqual(parseRel("External NoFollow sponsored"), ["external", "nofollow", "sponsored"]);
+  assert.deepEqual(linkTypes("External NoFollow sponsored"), ["nofollow", "sponsored"]);
   assert.deepEqual(linkTypes(""), ["dofollow"]);
 });
 test("target matching ignores www and includes subdomains only", () => {
