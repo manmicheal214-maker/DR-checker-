@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { parseRel, linkTypes, targetMatches, resolveLink, robotsNoFollow } from "../src/parsing.js";
+import { isPrivateIPv6 } from "../src/index.js";
 const fixture = name => fs.readFileSync(new URL("./fixtures/" + name, import.meta.url), "utf8");
 
 test("rel is a case-insensitive space-separated set", () => {
@@ -67,4 +68,12 @@ test("parseHtml returns robotsNofollow for a robots nofollow meta tag without an
     if (previous === undefined) delete globalThis.HTMLRewriter;
     else globalThis.HTMLRewriter = previous;
   }
+});
+
+
+test("private IPv6 checks recognize loopback and IPv4-mapped private addresses", () => {
+  assert.equal(isPrivateIPv6("::1"), true);
+  assert.equal(isPrivateIPv6("::ffff:10.1.2.3"), true);
+  assert.equal(isPrivateIPv6("::ffff:192.168.1.10"), true);
+  assert.equal(isPrivateIPv6("2001:4860:4860::8888"), false);
 });
