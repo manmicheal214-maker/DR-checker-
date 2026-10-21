@@ -1,9 +1,9 @@
 export const TYPES = ["nofollow", "sponsored", "ugc"];
 export function parseRel(rel) {
-  return [...new Set(String(rel || "").toLowerCase().trim().split(/\s+/).filter(x => TYPES.includes(x)))];
+  return [...new Set(String(rel || "").toLowerCase().trim().split(/\s+/).filter(Boolean))];
 }
 export function linkTypes(rel) {
-  const tags = parseRel(rel);
+  const tags = parseRel(rel).filter(x => TYPES.includes(x));
   return tags.length ? tags : ["dofollow"];
 }
 export function normalizeHost(host) { return String(host || "").toLowerCase().replace(/^www\./, "").replace(/\.$/, ""); }
