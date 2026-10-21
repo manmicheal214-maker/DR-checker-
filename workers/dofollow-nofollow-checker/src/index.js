@@ -154,6 +154,7 @@ async function handle(request, env, ctx) {
     if (!success) return json({ error: "rate_limited" }, 429, corsHeaders);
   }
   const reqUrl = new URL(request.url);
+  if (reqUrl.pathname !== "/check") return json({ error: "not_found" }, 404, corsHeaders);
   const rawUrl = reqUrl.searchParams.get("url") || "";
   const targetRaw = (reqUrl.searchParams.get("target") || "").trim();
   const token = reqUrl.searchParams.get("token") || "";
@@ -168,7 +169,7 @@ async function handle(request, env, ctx) {
     } catch { return json(errorResponse(rawUrl, "invalid_url"), 400, corsHeaders); }
   }
   if (!(await verifyTurnstile(token, request, env))) return json({ error: "invalid_turnstile" }, 403, corsHeaders);
-  const cacheKey = new Request("https://checkdr-cache.invalid/" + btoa(unescape(encodeURIComponent(validation.url.href + "\n" + (target || "")))).replace(/[^a-zA-Z0-9_-]/g, ""), { method: "GET" });
+  const cacheKey = new Request("https://checkdr-cache.invalid/" + btoa(encodeURIComponent(validation.url.href + "\n" + (target || ""))).replace(/[^a-zA-Z0-9_-]/g, ""), { method: "GET" });
   const cache = caches.default;
   const cached = await cache.match(cacheKey);
   if (cached) return new Response(cached.body, { status: cached.status, headers: { ...Object.fromEntries(cached.headers), ...corsHeaders } });
