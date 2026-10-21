@@ -77,3 +77,53 @@ test("private IPv6 checks recognize loopback and IPv4-mapped private addresses",
   assert.equal(isPrivateIPv6("::ffff:192.168.1.10"), true);
   assert.equal(isPrivateIPv6("2001:4860:4860::8888"), false);
 });
+
+
+test("parseHtml collects both normal and nofollow links from an HTMLRewriter-style fixture", async () => {
+  const previous = globalThis.HTMLRewriter;
+  class FixtureHTMLRewriter {
+    handlers = [];
+    on(selector, handlers) { this.handlers.push({ selector, handlers }); return this; }
+    transform(response) {
+      const owner = this;
+      return {
+        body: new ReadableStream({
+          async start(controller) {
+            const html = await response.text();
+            for (const { selector, handlers } of owner.handlers) {
+              if (selector !== "a[href]") continue;
+              for (const match of html.matchAll(/<a\\b([^>]*)>([\\s\\S]*?)<\\/a>/gi)) {
+                const attrs = Object.fromEntries([...match[1].matchAll(/([\\w-]+)\\s*=\\s*["']([^"']*)["']/g)].map(m => [m[1].toLowerCase(), m[2]]));
+                if (attrs.href === undefined) continue;
+                handlers.element({ getAttribute: name => attrs[name] ?? null });
+                const text = match[2].replace(/<[^>]*>/g, "");
+                if (text) handlers.text({ text, lastInTextNode: true });
+                handlers.end();
+              }
+            }
+            controller.close();
+          }
+        })
+      };
+    }
+  }
+  globalThis.HTMLRewriter = FixtureHTMLRewriter;
+  try {
+    const { parseHtml } = await import("../src/index.js");
+    const html = fixture("two-links.html");
+    const result = await parseHtml(
+      new Response(html, { status: 200, headers: { "Content-Type": "text/html" } }),
+      "https://example.com/",
+      "https://example.com/",
+      null
+    );
+    assert.equal(result.error, null);
+    assert.equal(result.links.length, 2);
+    assert.deepEqual(result.links.map(link => link.types), [["dofollow"], ["nofollow"]]);
+    assert.equal(result.links[0].scope, "internal");
+    assert.equal(result.links[1].scope, "external");
+  } finally {
+    if (previous === undefined) delete globalThis.HTMLRewriter;
+    else globalThis.HTMLRewriter = previous;
+  }
+});
