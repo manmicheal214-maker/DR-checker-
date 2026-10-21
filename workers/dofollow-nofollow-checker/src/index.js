@@ -133,6 +133,7 @@ async function parseHtml(response, requestedUrl, finalUrl, target) {
     const parsedResponse = rewriter.transform(response);\n    const reader = parsedResponse.body.getReader();\n    while (true) { const { done } = await reader.read(); if (done) break; }
   } catch (e) {
     if (String(e?.message || e).includes("too_large")) tooLarge = true;
+    else if (e?.name === "TimeoutError" || e?.name === "AbortError") return errorResponse(requestedUrl, "timeout", response.status, finalUrl);
     else throw e;
   }
   if (tooLarge) return errorResponse(requestedUrl, "too_large", response.status, finalUrl);
