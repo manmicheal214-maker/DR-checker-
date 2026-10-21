@@ -4,14 +4,14 @@
 
 From this directory:
 
-1. Install Wrangler if needed: `npm install --save-dev wrangler` (or use `npx wrangler`).
+1. Install Wrangler 4.36.0 or later: `npm install --save-dev wrangler@^4.36.0` (or use `npx wrangler@^4.36.0`).
 2. Create a Cloudflare Turnstile widget for `checkdr.net` and `www.checkdr.net`. Set the public site key in `wrangler.toml` as `TURNSTILE_SITE_KEY` **and** replace `[TURNSTILE_SITE_KEY]` in `/tools/dofollow-nofollow-checker.js` with that same public key.
 3. Set the private secret interactively: `npx wrangler secret put TURNSTILE_SECRET`. Do not commit the secret.
 4. Deploy: `npx wrangler deploy`.
 5. Copy the deployed Worker URL into `WORKER_URL` in `/tools/dofollow-nofollow-checker.js`.
 6. Add the Worker URL to the tool page configuration and test from the production origin.
 
-The `RATE_LIMITER` binding uses Cloudflare's Rate Limiting API, configured for 60 requests per 10 minutes per client IP. Confirm your account supports Rate Limiting bindings on the selected plan before deploying.
+The `RATE_LIMITER` binding uses Cloudflare's native Rate Limiting API, configured for up to 30 requests per 60 seconds per client IP and Cloudflare location. This is a soft brake, not strict abuse prevention: limits are location-scoped and synchronization can lag briefly. The binding itself has no additional charge. Keep `namespace_id = "1001"` as the unique identifier for this native binding; a KV namespace is not used by this implementation. Confirm your account supports Rate Limiting bindings before deploying.
 
 ## Endpoint
 
