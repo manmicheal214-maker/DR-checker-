@@ -1,6 +1,6 @@
 (() => {
 "use strict";
-const WORKER_URL = "[WORKER_URL]";
+const WORKER_URL = "https://dofollow-nofollow-checker.manmicheal214.workers.dev";
 const TURNSTILE_SITE_KEY = "[TURNSTILE_SITE_KEY]";
 const MAX_URLS = 10, CONCURRENCY = 4;
 const $ = id => document.getElementById(id);
