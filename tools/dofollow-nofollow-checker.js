@@ -1,7 +1,7 @@
 (() => {
 "use strict";
 const WORKER_URL = "https://dofollow-nofollow-checker.manmicheal214.workers.dev";
-const TURNSTILE_SITE_KEY = "[TURNSTILE_SITE_KEY]";
+const TURNSTILE_SITE_KEY = "0x4AAAAAAFe5uKKDTdRNZx8w";
 const MAX_URLS = 10, CONCURRENCY = 4;
 const $ = id => document.getElementById(id);
 const urlsInput=$("dnUrls"), targetInput=$("dnTarget"), runButton=$("dnRun"), clearButton=$("dnClear"), csvButton=$("dnCsv");
