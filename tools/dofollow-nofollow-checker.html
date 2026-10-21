@@ -31,7 +31,20 @@
 <section class="panel content-panel"><h2>How it works</h2><ol><li>Paste up to 10 page URLs, one per line.</li><li>Optionally enter a target domain to show only links to that domain or its subdomains.</li><li>Review each link's rel attributes, filter results, and download a CSV.</li></ol><p><strong>Dofollow</strong> means the link's rel attribute contains none of <code>nofollow</code>, <code>sponsored</code>, or <code>ugc</code>. A robots nofollow directive is reported separately and does not rewrite individual link labels.</p><p>Pages that block automated requests or fail to load can be checked by pasting their HTML into the row's local fallback. Pasted HTML is parsed in your browser and is not sent to the Worker.</p></section>
 <section class="panel content-panel"><h2>Important limitations</h2><p>Only public HTTP and HTTPS pages are supported. The checker does not execute page JavaScript; it inspects the HTML returned by the server. Site access controls may prevent a page from being fetched.</p></section>
 <div id="dnTurnstileMount" class="dn-turnstile-mount" aria-hidden="true"></div>
-<div id="site-footer"></div>
+<!-- footer:start -->
+<footer class="site-footer">
+  <p>CheckDR — free bulk Domain Rating checker.</p>
+  <p>Ahrefs and Domain Rating are trademarks of their respective owners. CheckDR is not affiliated with Ahrefs.</p>
+  <nav aria-label="Site footer">
+    <a href="/about.html">About</a><span aria-hidden="true">|</span>
+    <a href="/how-it-works.html">How It Works</a><span aria-hidden="true">|</span>
+    <a href="/privacy.html">Privacy</a><span aria-hidden="true">|</span>
+    <a href="/terms.html">Terms</a><span aria-hidden="true">|</span>
+    <a href="/contact.html">Contact</a><span aria-hidden="true">|</span>
+    <a href="#" id="cookieSettingsLink">Cookie settings</a>
+  </nav>
+</footer>
+<!-- footer:end -->
 </main>
 <script src="/tools/dofollow-nofollow-checker.js" defer></script>
 <script src="/consent.js" defer></script>
