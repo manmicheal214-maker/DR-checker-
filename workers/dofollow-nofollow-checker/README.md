@@ -26,7 +26,7 @@ The Worker accepts only requests whose Origin exactly matches `ALLOWED_ORIGINS`,
 - The stream reader aborts at 2 MiB and returns `too_large`.
 - Set the site key and secret only in the intended Cloudflare configuration; never commit secrets.
 
-## Manual test checklist
+## Automated checks\n\nThe pull-request workflow runs `npm test`, checks the Worker and parser module syntax, and checks the frontend JavaScript syntax.\n\n## Manual test checklist
 
 - [ ] Check 10 URLs; rows should finish progressively, with no more than four active calls.
 - [ ] A `rel="nofollow sponsored"` link displays both type badges.
