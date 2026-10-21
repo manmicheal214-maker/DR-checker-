@@ -111,7 +111,7 @@ async function parseHtml(response, requestedUrl, finalUrl, target) {
       element(el) {
         currentAnchor = { rawHref: el.getAttribute("href") || "", anchor: "", rel: el.getAttribute("rel") || "", imageAlt: "", hasText: false };
       },
-      text(text) { if (currentAnchor && text.text.trim()) { currentAnchor.anchor += text.text; currentAnchor.hasText = true; } },
+      text(text) { if (currentAnchor) { currentAnchor.anchor += text.text; if (text.text.trim()) currentAnchor.hasText = true; } },
       end() {
         if (!currentAnchor) return;
         let href = currentAnchor.rawHref.trim();
