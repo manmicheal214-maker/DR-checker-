@@ -135,7 +135,7 @@ async function parseHtml(response, requestedUrl, finalUrl, target) {
     if (String(e?.message || e).includes("too_large")) tooLarge = true;
     else throw e;
   }
-  if (tooLarge) return { error: "too_large" };
+  if (tooLarge) return errorResponse(requestedUrl, "too_large", response.status, finalUrl);
   const clean = links.map(({ _hostname, ...link }) => link);
   const matched = target ? clean.filter(link => {
     try { return targetMatches(new URL(link.href).hostname, target); } catch { return false; }
