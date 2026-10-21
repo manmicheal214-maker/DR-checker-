@@ -36,7 +36,7 @@ function validatePublicUrl(input) {
       isPrivateIPv4(host) || host.includes(":") && isPrivateIPv6(host)) return { error: "invalid_url" };
   return { url: u };
 }
-function errorResponse(url, error, status = 200, finalUrl = null) {
+function errorResponse(url, error, status = null, finalUrl = null) {
   return { url, finalUrl, status, robotsNofollow: false, links: [], matched: [], error };
 }
 async function verifyTurnstile(token, request, env) {
@@ -61,7 +61,7 @@ function boundedBody(response) {
       controller.enqueue(chunk);
     }
   }));
-  return new Response(stream, { headers: response.headers });
+  return new Response(stream, { status: response.status, headers: response.headers });
 }
 async function fetchHtml(initialUrl) {
   let current = initialUrl;
@@ -121,7 +121,7 @@ async function parseHtml(response, requestedUrl, finalUrl, target) {
             if (resolvedHref) {
               const rel = parseRel(currentAnchor.rel);
               const hostname = new URL(resolvedHref).hostname;
-              links.push({ href: resolvedHref, anchor: currentAnchor.hasText ? currentAnchor.anchor.trim() : (currentAnchor.imageAlt ? "[image] " + currentAnchor.imageAlt : "[no anchor text]"), rel, types: linkTypes(currentAnchor.rel), scope: new URL(finalUrl).hostname === hostname ? "internal" : "external", _hostname: hostname });
+              links.push({ href: resolvedHref, anchor: currentAnchor.hasText ? currentAnchor.anchor.trim() : (currentAnchor.imageAlt ? "[image] " + currentAnchor.imageAlt : "[no anchor text]"), rel, types: linkTypes(currentAnchor.rel), scope: normalizeHost(new URL(finalUrl).hostname) === normalizeHost(hostname) ? "internal" : "external", _hostname: hostname });
             }
           } catch {}
         }
@@ -130,7 +130,7 @@ async function parseHtml(response, requestedUrl, finalUrl, target) {
     })
     .on("a img[alt]", { element(el) { if (currentAnchor && !currentAnchor.imageAlt) currentAnchor.imageAlt = el.getAttribute("alt") || ""; } });
   try {
-    await rewriter.transform(response).arrayBuffer();
+    const parsedResponse = rewriter.transform(response);\n    const reader = parsedResponse.body.getReader();\n    while (true) { const { done } = await reader.read(); if (done) break; }
   } catch (e) {
     if (String(e?.message || e).includes("too_large")) tooLarge = true;
     else throw e;
