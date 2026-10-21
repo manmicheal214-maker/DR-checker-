@@ -12,7 +12,7 @@ let results=[], running=false;
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function normalizeUrl(line){let s=line.trim();if(!s)return null;if(!/^https?:\/\//i.test(s))s="https://"+s;try{const u=new URL(s);if(!["http:","https:"].includes(u.protocol)||!u.hostname)return null;u.hash="";return u.href;}catch{return null;}}
 function normalizeTarget(value){let s=value.trim();if(!s)return "";if(!/^https?:\/\//i.test(s))s="https://"+s;try{const u=new URL(s);if(!["http:","https:"].includes(u.protocol))return null;return u.hostname.toLowerCase().replace(/^www\./,"").replace(/\.$/,"");}catch{return null;}}
-function getUrls(){const invalid=[];const all=urlsInput.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const valid=[];for(const line of all){const url=normalizeUrl(line);if(url)valid.push(url);else invalid.push(line);}return {urls:[...new Set(valid)],invalid,duplicates:valid.length-new Set(valid).size,tooMany:all.length>MAX_URLS};}
+function getUrls(){const invalid=[];const all=urlsInput.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const valid=[];for(const line of all){const url=normalizeUrl(line);if(url)valid.push(url);else invalid.push(line);}const unique=[...new Set(valid)];return {urls:unique,invalid,duplicates:valid.length-unique.length,tooMany:unique.length>MAX_URLS};}
 function showError(msg){inputError.textContent=msg;inputError.classList.remove("hidden");inputError.hidden=false;}
 function clearError(){inputError.textContent="";inputError.classList.add("hidden");inputError.hidden=true;}
 function setRunning(value){running=value;runButton.disabled=value;clearButton.disabled=value;urlsInput.disabled=value;targetInput.disabled=value;}
