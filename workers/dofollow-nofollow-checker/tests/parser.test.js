@@ -25,3 +25,45 @@ test("robots meta and googlebot none are page-level nofollow", () => {
   assert.equal(robotsNoFollow(fixture("googlebot-none.html")), true);
   assert.equal(robotsNoFollow("<meta name='robots' content='index,follow'>"), false);
 });
+
+
+test("parseHtml returns robotsNofollow for a robots nofollow meta tag without an error", async () => {
+  const previous = globalThis.HTMLRewriter;
+  class FakeHTMLRewriter {
+    handlers = [];
+    on(selector, handlers) { this.handlers.push({ selector, handlers }); return this; }
+    transform(response) {
+      return {
+        body: new ReadableStream({
+          async start(controller) {
+            const html = await response.text();
+            for (const { selector, handlers } of thisOwner.handlers) {
+              if (selector !== "meta[name]") continue;
+              for (const tag of html.match(/<meta\\b[^>]*>/gi) || []) {
+                const attrs = Object.fromEntries([...tag.matchAll(/([\\w-]+)\\s*=\\s*["']([^"']*)["']/g)].map(m => [m[1].toLowerCase(), m[2]]));
+                if (attrs.name !== undefined) handlers.element({ getAttribute: name => attrs[name] ?? null });
+              }
+            }
+            controller.close();
+          }
+        })
+      };
+      const thisOwner = this;
+    }
+  }
+  globalThis.HTMLRewriter = FakeHTMLRewriter;
+  try {
+    const { parseHtml } = await import("../src/index.js");
+    const result = await parseHtml(
+      new Response('<html><head><meta name="robots" content="nofollow"></head><body></body></html>', { status: 200 }),
+      "https://example.com/",
+      "https://example.com/",
+      null
+    );
+    assert.equal(result.robotsNofollow, true);
+    assert.equal(result.error, null);
+  } finally {
+    if (previous === undefined) delete globalThis.HTMLRewriter;
+    else globalThis.HTMLRewriter = previous;
+  }
+});
