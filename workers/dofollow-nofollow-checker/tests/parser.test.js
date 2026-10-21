@@ -27,20 +27,22 @@ test("robots meta and googlebot none are page-level nofollow", () => {
 });
 
 
+
 test("parseHtml returns robotsNofollow for a robots nofollow meta tag without an error", async () => {
   const previous = globalThis.HTMLRewriter;
   class FakeHTMLRewriter {
     handlers = [];
     on(selector, handlers) { this.handlers.push({ selector, handlers }); return this; }
     transform(response) {
+      const owner = this;
       return {
         body: new ReadableStream({
           async start(controller) {
             const html = await response.text();
-            for (const { selector, handlers } of thisOwner.handlers) {
+            for (const { selector, handlers } of owner.handlers) {
               if (selector !== "meta[name]") continue;
-              for (const tag of html.match(/<meta\\b[^>]*>/gi) || []) {
-                const attrs = Object.fromEntries([...tag.matchAll(/([\\w-]+)\\s*=\\s*["']([^"']*)["']/g)].map(m => [m[1].toLowerCase(), m[2]]));
+              for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
+                const attrs = Object.fromEntries([...tag.matchAll(/([\w-]+)\s*=\s*["']([^"']*)["']/g)].map(m => [m[1].toLowerCase(), m[2]]));
                 if (attrs.name !== undefined) handlers.element({ getAttribute: name => attrs[name] ?? null });
               }
             }
@@ -48,7 +50,6 @@ test("parseHtml returns robotsNofollow for a robots nofollow meta tag without an
           }
         })
       };
-      const thisOwner = this;
     }
   }
   globalThis.HTMLRewriter = FakeHTMLRewriter;
