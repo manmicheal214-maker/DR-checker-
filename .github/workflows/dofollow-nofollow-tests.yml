@@ -1,0 +1,27 @@
+name: Dofollow/nofollow checker tests
+
+on:
+  pull_request:
+    paths:
+      - "workers/dofollow-nofollow-checker/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "workers/dofollow-nofollow-checker/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: workers/dofollow-nofollow-checker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm test
+      - run: node --check src/index.js
+      - run: node --check src/parsing.js
+      - run: node --check ../../tools/dofollow-nofollow-checker.js

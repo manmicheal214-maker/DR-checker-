@@ -101,6 +101,12 @@
       "title": "Keyword clustering & content map",
       "description": "Cluster keywords by lexical similarity and build a reviewable SEO content map.",
       "navLabel": "Keyword clustering"
+    },
+    {
+      "slug": "dofollow-nofollow-checker",
+      "title": "Bulk dofollow/nofollow link checker",
+      "description": "Check up to 10 pages for dofollow, nofollow, sponsored and UGC links, with optional target-domain matching.",
+      "navLabel": "Dofollow/nofollow"
     }
   ]
 }
