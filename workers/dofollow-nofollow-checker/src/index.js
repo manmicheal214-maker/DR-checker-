@@ -31,7 +31,7 @@ function validatePublicUrl(input) {
   let u;
   try { u = new URL(input); } catch { return { error: "invalid_url" }; }
   if (!["http:", "https:"].includes(u.protocol) || u.username || u.password) return { error: "invalid_url" };
-  const host = u.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  const host = u.hostname.toLowerCase().replace(/^\[|\]$/g, "").replace(/\.$/, "");
   if (!host || host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local") ||
       isPrivateIPv4(host) || host.includes(":") && isPrivateIPv6(host)) return { error: "invalid_url" };
   return { url: u };
@@ -170,7 +170,7 @@ async function handle(request, env, ctx) {
     } catch { return json(errorResponse(rawUrl, "invalid_url"), 400, corsHeaders); }
   }
   if (!(await verifyTurnstile(token, request, env))) return json({ error: "invalid_turnstile" }, 403, corsHeaders);
-  const cacheKey = new Request("https://checkdr-cache.invalid/" + btoa(encodeURIComponent(validation.url.href + "\n" + (target || ""))).replace(/[^a-zA-Z0-9_-]/g, ""), { method: "GET" });
+  const cacheKey = new Request("https://checkdr-cache.invalid/" + btoa(encodeURIComponent(validation.url.href + "\n" + (target || ""))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, ""), { method: "GET" });
   const cache = caches.default;
   const cached = await cache.match(cacheKey);
   if (cached) return new Response(cached.body, { status: cached.status, headers: { ...Object.fromEntries(cached.headers), ...corsHeaders } });
