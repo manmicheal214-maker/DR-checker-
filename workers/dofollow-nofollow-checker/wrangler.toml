@@ -5,7 +5,7 @@ workers_dev = true
 
 [vars]
 ALLOWED_ORIGINS = "https://checkdr.net,https://www.checkdr.net"
-TURNSTILE_SITE_KEY = "[TURNSTILE_SITE_KEY]"
+TURNSTILE_SITE_KEY = "0x4AAAAAAFe5uKKDTdRNZx8w"
 
 [[ratelimits]]
 name = "RATE_LIMITER"
