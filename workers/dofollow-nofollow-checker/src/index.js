@@ -93,6 +93,7 @@ async function fetchHtml(initialUrl) {
 }
 export async function parseHtml(response, requestedUrl, finalUrl, target) {
   const links = [];
+  const parseErrors = [];
   let robotsNofollow = false;
   let baseHref = null;
   let currentAnchor = null;
@@ -123,7 +124,11 @@ export async function parseHtml(response, requestedUrl, finalUrl, target) {
               const hostname = new URL(resolvedHref).hostname;
               links.push({ href: resolvedHref, anchor: currentAnchor.hasText ? currentAnchor.anchor.trim() : (currentAnchor.imageAlt ? "[image] " + currentAnchor.imageAlt : "[no anchor text]"), rel, types: linkTypes(currentAnchor.rel), scope: normalizeHost(new URL(finalUrl).hostname) === normalizeHost(hostname) ? "internal" : "external", _hostname: hostname });
             }
-          } catch {}
+          } catch (error) {
+            const parseError = { href, message: String(error?.message || error) };
+            parseErrors.push(parseError);
+            console.warn("Failed to parse link", { href: parseError.href, error: parseError.message });
+          }
         }
         currentAnchor = null;
       }
@@ -140,7 +145,7 @@ export async function parseHtml(response, requestedUrl, finalUrl, target) {
   }
   if (tooLarge) return errorResponse(requestedUrl, "too_large", response.status, finalUrl);
   const clean = links.map(({ _hostname, ...link }) => link);
-  const result = { url: requestedUrl, finalUrl, status: response.status, robotsNofollow, links: clean, error: null };
+  const result = { url: requestedUrl, finalUrl, status: response.status, robotsNofollow, links: clean, parseErrors, error: null };
   if (target) result.matched = clean.filter(link => {
     try { return targetMatches(new URL(link.href).hostname, target); } catch { return false; }
   });
