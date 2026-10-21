@@ -140,10 +140,11 @@ async function parseHtml(response, requestedUrl, finalUrl, target) {
   }
   if (tooLarge) return errorResponse(requestedUrl, "too_large", response.status, finalUrl);
   const clean = links.map(({ _hostname, ...link }) => link);
-  const matched = target ? clean.filter(link => {
+  const result = { url: requestedUrl, finalUrl, status: response.status, robotsNofollow, links: clean, error: null };
+  if (target) result.matched = clean.filter(link => {
     try { return targetMatches(new URL(link.href).hostname, target); } catch { return false; }
-  }) : [];
-  return { url: requestedUrl, finalUrl, status: response.status, robotsNofollow, links: clean, matched, error: null };
+  });
+  return result;
 }
 async function handle(request, env, ctx) {
   const origin = request.headers.get("Origin") || "";
