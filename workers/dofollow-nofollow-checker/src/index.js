@@ -123,7 +123,9 @@ export async function parseHtml(response, requestedUrl, finalUrl, target) {
               const hostname = new URL(resolvedHref).hostname;
               links.push({ href: resolvedHref, anchor: currentAnchor.hasText ? currentAnchor.anchor.trim() : (currentAnchor.imageAlt ? "[image] " + currentAnchor.imageAlt : "[no anchor text]"), rel, types: linkTypes(currentAnchor.rel), scope: normalizeHost(new URL(finalUrl).hostname) === normalizeHost(hostname) ? "internal" : "external", _hostname: hostname });
             }
-          } catch {}
+          } catch (error) {
+            console.warn("Skipping invalid link while parsing HTML", { href, error: String(error?.message || error) });
+          }
         }
         currentAnchor = null;
       }
@@ -182,7 +184,10 @@ async function handle(request, env, ctx) {
   if (fetched.error) result = errorResponse(validation.url.href, fetched.error, fetched.status || null, fetched.finalUrl || null);
   else {
     try { result = await parseHtml(fetched.response, validation.url.href, fetched.finalUrl, target); }
-    catch { result = errorResponse(validation.url.href, "unreachable", fetched.status, fetched.finalUrl); }
+    catch (error) {
+      console.error("HTML parsing failed", { url: fetched.finalUrl, error: String(error?.message || error) });
+      result = errorResponse(validation.url.href, "parse_error", fetched.status, fetched.finalUrl);
+    }
   }
   const response = json(result, 200, corsHeaders);
   if (!result.error) {
