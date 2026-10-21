@@ -5,7 +5,7 @@
 From this directory:
 
 1. Install Wrangler if needed: `npm install --save-dev wrangler` (or use `npx wrangler`).
-2. Create a Cloudflare Turnstile widget for `checkdr.net` and `www.checkdr.net`. Put its public site key in `wrangler.toml` as `TURNSTILE_SITE_KEY`.
+2. Create a Cloudflare Turnstile widget for `checkdr.net` and `www.checkdr.net`. Set the public site key in `wrangler.toml` as `TURNSTILE_SITE_KEY` **and** replace `[TURNSTILE_SITE_KEY]` in `/tools/dofollow-nofollow-checker.js` with that same public key.
 3. Set the private secret interactively: `npx wrangler secret put TURNSTILE_SECRET`. Do not commit the secret.
 4. Deploy: `npx wrangler deploy`.
 5. Copy the deployed Worker URL into `WORKER_URL` in `/tools/dofollow-nofollow-checker.js`.
