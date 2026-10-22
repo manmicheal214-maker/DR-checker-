@@ -98,6 +98,23 @@ export async function parseHtml(response, requestedUrl, finalUrl, target) {
   let baseHref = null;
   let currentAnchor = null;
   let tooLarge = false;
+  const finishAnchor = () => {
+    if (!currentAnchor) return;
+    const anchor = currentAnchor;
+    currentAnchor = null;
+    const href = anchor.rawHref.trim();
+    if (!href || /^(#|javascript:|mailto:|tel:|data:)/i.test(href)) return;
+    try {
+      const resolvedHref = resolveLink(href, finalUrl, baseHref);
+      if (!resolvedHref) return;
+      const hostname = new URL(resolvedHref).hostname;
+      links.push({ href: resolvedHref, anchor: anchor.hasText ? anchor.anchor.trim() : (anchor.imageAlt ? "[image] " + anchor.imageAlt : "[no anchor text]"), rel: parseRel(anchor.rel), types: linkTypes(anchor.rel), scope: normalizeHost(new URL(finalUrl).hostname) === normalizeHost(hostname) ? "internal" : "external", _hostname: hostname });
+    } catch (error) {
+      const parseError = { href, message: String(error?.message || error) };
+      parseErrors.push(parseError);
+      console.warn("Failed to parse link", { href: parseError.href, error: parseError.message });
+    }
+  };
   const rewriter = new HTMLRewriter()
     .on("meta[name]", {
       element(el) {
@@ -111,33 +128,17 @@ export async function parseHtml(response, requestedUrl, finalUrl, target) {
     .on("a[href]", {
       element(el) {
         currentAnchor = { rawHref: el.getAttribute("href") || "", anchor: "", rel: el.getAttribute("rel") || "", imageAlt: "", hasText: false };
+        el.onEndTag(() => finishAnchor());
       },
-      text(text) { if (currentAnchor) { currentAnchor.anchor += text.text; if (text.text.trim()) currentAnchor.hasText = true; } },
-      end() {
-        if (!currentAnchor) return;
-        let href = currentAnchor.rawHref.trim();
-        if (href && !/^(#|javascript:|mailto:|tel:|data:)/i.test(href)) {
-          try {
-            const resolvedHref = resolveLink(href, finalUrl, baseHref);
-            if (resolvedHref) {
-              const rel = parseRel(currentAnchor.rel);
-              const hostname = new URL(resolvedHref).hostname;
-              links.push({ href: resolvedHref, anchor: currentAnchor.hasText ? currentAnchor.anchor.trim() : (currentAnchor.imageAlt ? "[image] " + currentAnchor.imageAlt : "[no anchor text]"), rel, types: linkTypes(currentAnchor.rel), scope: normalizeHost(new URL(finalUrl).hostname) === normalizeHost(hostname) ? "internal" : "external", _hostname: hostname });
-            }
-          } catch (error) {
-            const parseError = { href, message: String(error?.message || error) };
-            parseErrors.push(parseError);
-            console.warn("Failed to parse link", { href: parseError.href, error: parseError.message });
-          }
-        }
-        currentAnchor = null;
-      }
+      text(text) { if (currentAnchor) { currentAnchor.anchor += text.text; if (text.text.trim()) currentAnchor.hasText = true; } }
     })
     .on("a img[alt]", { element(el) { if (currentAnchor && !currentAnchor.imageAlt) currentAnchor.imageAlt = el.getAttribute("alt") || ""; } });
   try {
     const parsedResponse = rewriter.transform(response);
     const reader = parsedResponse.body.getReader();
     while (true) { const { done } = await reader.read(); if (done) break; }
+    // HTMLRewriter does not emit an end-tag callback for an unclosed anchor.
+    finishAnchor();
   } catch (e) {
     if (String(e?.message || e).includes("too_large")) tooLarge = true;
     else if (e?.name === "TimeoutError" || e?.name === "AbortError") return errorResponse(requestedUrl, "timeout", response.status, finalUrl);
