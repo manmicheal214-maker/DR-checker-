@@ -7,7 +7,7 @@ import { isPrivateIPv6 } from "../src/index.js";
 
 const fixture = name => fs.readFileSync(new URL("./fixtures/" + name, import.meta.url), "utf8");
 const workerScript = `
-import { parseHtml } from "./workers/dofollow-nofollow-checker/src/index.js";
+import { parseHtml } from "./src/index.js";
 export default {
   async fetch(request) {
     const html = await request.text();
@@ -25,7 +25,7 @@ export default {
 async function parseWithRealHtmlRewriter(html, { requestedUrl = "https://example.com/", finalUrl = requestedUrl } = {}) {
   const miniflare = new Miniflare({
     modules: true,
-    modulesRoot: new URL("../../../", import.meta.url).pathname,
+    modulesRoot: new URL("../", import.meta.url).pathname,
     script: workerScript,
     compatibilityDate: "2026-10-21"
   });
