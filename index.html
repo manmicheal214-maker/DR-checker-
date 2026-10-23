@@ -173,22 +173,32 @@
       <div id="paginationContainer" class="pagination-container" aria-live="polite"></div>
     </section>
 
-        <section class="panel content-panel" aria-labelledby="how-to-use-heading"><h2 id="how-to-use-heading">How to use CheckDR</h2><ol><li>Paste domains, one per line.</li><li>Click Check DR.</li><li>Sort or filter results and export to CSV.</li></ol></section><section class="panel content-panel" aria-labelledby="what-is-dr-heading">
+    <section class="panel content-panel" aria-labelledby="how-to-use-heading">
+      <h2 id="how-to-use-heading">How to use CheckDR</h2>
+      <ol>
+        <li>Paste domains, one per line.</li>
+        <li>Click Check DR.</li>
+        <li>Sort or filter results and export to CSV.</li>
+      </ol>
+    </section>
+
+    <section class="panel content-panel" aria-labelledby="what-is-dr-heading">
       <h2 id="what-is-dr-heading">What is Domain Rating (DR)?</h2>
-      <p>Domain Rating is a metric from Ahrefs, scored on a 0–100 logarithmic scale, that estimates the overall strength of a website's backlink profile relative to every other domain in Ahrefs' index. It's driven mainly by the number and quality of unique referring domains linking to a site — links from other well-linked-to domains carry more weight, and because the scale is logarithmic, each additional point gets harder to earn as DR climbs.</p>
-      <p>DR is an Ahrefs metric, not a Google ranking factor — Google doesn't publish or use a public authority score. A higher DR does not mean better content, higher legitimacy, or greater trustworthiness; it is specifically a backlink-profile metric.</p><p>The DR scale is logarithmic, so increases at the higher end represent progressively more relative backlink strength. DR numbers also should not be compared blindly with authority metrics from other tools: different indexes, crawl coverage, update schedules, and methodologies can produce different values.</p>
+      <p>Domain Rating is a metric from Ahrefs, scored on a 0–100 logarithmic scale, that estimates the overall strength of a website's backlink profile relative to every other domain in Ahrefs' index. It's driven mainly by the number and quality of unique referring domains and external backlinks pointing to a site — links from each reputable linking domain carry more weight, and because the scale is logarithmic, each additional point gets harder to earn as DR climbs.</p>
+      <p>DR is an Ahrefs metric, not a Google ranking factor — alongside site-level metrics like Ahrefs Rank and page-level metrics like URL Rating, Google doesn't publish or use a public authority score. A higher DR does not mean higher keyword rankings, more organic traffic, better content, higher legitimacy, or greater trustworthiness; it is specifically a backlink-profile metric.</p>
+      <p>The DR scale is logarithmic, so increases at the higher end represent progressively more relative backlink strength driven by high-quality backlinks. DR numbers also should not be compared blindly with domain authority metrics from other tools: different indexes, crawl coverage, update schedules, and methodologies can produce different values.</p>
     </section>
 
     <section class="panel content-panel" aria-labelledby="why-bulk-heading">
       <h2 id="why-bulk-heading">Why check Domain Rating in bulk?</h2>
       <p>Checking domains one at a time doesn't scale once you're auditing a site, vetting outreach targets, or comparing a handful of competitors. Common uses for a bulk checker:</p>
       <ul>
-        <li><strong><a href="/tools/site-audit.html">SEO audits</a></strong> — pull DR for a client's domain and their top competitors in one pass.</li>
-        <li><strong><a href="/tools/redirect-checker.html">Redirect-related checks</a></strong> — inspect redirect chains while reviewing domains.</li><li><strong>Backlink and guest-post vetting</strong> — filter out low-authority sites before you invest in outreach.</li>
-        <li><strong>Competitor research</strong> — compare authority across an entire competitive set at once.</li>
+        <li><strong><a href="https://checkdr.net/tools/site-audit.html">SEO audits</a></strong> — pull DR for a client's domain and their top competitors in one pass.</li>
+        <li><strong><a href="https://checkdr.net/tools/redirect-checker.html">Redirect-related checks</a></strong> — inspect redirect chains while reviewing domains.</li>
+        <li><strong>Backlink and guest-post vetting</strong> — evaluate guest posting prospects and filter out low-authority sites before you invest in link building outreach.</li>
+        <li><strong>Competitor research</strong> — compare authority across an entire competitive set at once and identify potential link building opportunities.</li>
         <li><strong>Portfolio monitoring</strong> — track DR across multiple domains you own or manage over time.</li>
         <li><strong>Domain buying decisions</strong> — sanity-check a domain's backlink strength before purchasing.</li>
-      
       </ul>
     </section>
 
@@ -198,38 +208,56 @@
       <p>To keep this a free, reliable tool for everyone, checks are limited to a fair-use rate per hour rather than a hard paywall. If you hit that limit, wait for the next hourly window and try again.</p>
     </section>
 
-    <section class="panel content-panel" aria-labelledby="sample-results-heading"><h2 id="sample-results-heading">Sample results</h2><p>Illustrative layout only; ratings are placeholders, not live data.</p><table aria-label="Example bulk DR checker results"><caption>Example bulk DR checker results</caption><thead><tr><th>Domain</th><th>Domain Rating</th><th>Status</th></tr></thead><tbody><tr><td>wikipedia.org</td><td>[DR]</td><td>Example only</td></tr><tr><td>github.com</td><td>[DR]</td><td>Example only</td></tr></tbody></table></section><section class="panel content-panel" aria-labelledby="faq-heading">
-      <h2 id="faq-heading">Frequently asked questions</h2>
-      <div class="faq-item"><h3>Is Domain Rating the same as Google's ranking algorithm?</h3><p>No. DR is an Ahrefs metric built from their own backlink index. Google does not publish or use a public "authority score," and does not use Ahrefs' DR directly in ranking. DR is best treated as an industry-standard proxy signal, not a Google ranking factor.</p></div>
-      <div class="faq-item"><h3>What counts as a "good" Domain Rating?</h3><p>It depends on your niche and who you're comparing against — there's no universal cutoff. In many competitive niches, DR 40+ is considered a solid, established site, and large mainstream publishers or platforms often sit well above 70. The most useful comparison is against your direct competitors, not an absolute number.</p></div>
-      <div class="faq-item"><h3>How many domains can I check at once?</h3><p>Up to 100 domains or URLs per check. Paste one per line — bare domains and full http(s) URLs are both accepted.</p></div>
-      <div class="faq-item"><h3>Is this tool free to use?</h3><p>Yes. It's free, with a fair-use rate limit per hour so the service stays available and fast for everyone.</p></div>
-      <div class="faq-item"><h3>How is DR calculated?</h3><p>CheckDR does not calculate DR. It retrieves the metric from Ahrefs' public Domain Rating API.</p></div><div class="faq-item"><h3>Does CheckDR need an Ahrefs account, API key, or login?</h3><p>No. Visitors only enter domains; no Ahrefs account, login, API key, or other credentials are required.</p></div><div class="faq-item"><h3>Does CheckDR store the domains I check?</h3><p>No. Submitted domains are not written to a database. Temporary IP-based request counters are used for hourly rate limiting.</p></div><div class="faq-item"><h3>Is CheckDR affiliated with Ahrefs?</h3><p>CheckDR retrieves Domain Rating data through Ahrefs' public Domain Rating API.</p></div><div class="faq-item"><h3>How often does DR change?</h3><p>DR can change as Ahrefs' backlink index and calculations change; there is no fixed interval at which every domain must change.</p></div><div class="faq-item"><h3>Why might two SEO tools show different numbers?</h3><p>Different tools can use different indexes, datasets, update schedules, and methodologies, so their authority-style numbers may not match.</p></div><div class="faq-item"><h3>Does a high DR mean a site is trustworthy?</h3><p>No. DR is a backlink-profile metric, not a general trust, legitimacy, or content-quality score.</p></div><div class="faq-item"><h3>How current is the Domain Rating data?</h3><p>Each check queries Ahrefs' API directly and returns their current DR for that domain, so results reflect Ahrefs' live index at the moment you run the check rather than a cached or delayed snapshot.</p></div>
+    <section class="panel content-panel" aria-labelledby="sample-results-heading">
+      <h2 id="sample-results-heading">Sample results</h2>
+      <p>Illustrative layout only; ratings are placeholders, not live data.</p>
+      <table aria-label="Example bulk DR checker results">
+        <caption>Example bulk DR checker results</caption>
+        <thead><tr><th>Domain</th><th>Domain Rating</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>wikipedia.org</td><td>[DR]</td><td>Example only</td></tr>
+          <tr><td>github.com</td><td>[DR]</td><td>Example only</td></tr>
+        </tbody>
+      </table>
     </section>
 
-    <section class="panel content-panel related-tools" aria-labelledby="related-tools-heading"><h2 id="related-tools-heading">Related tools</h2><ul><li><a href="/tools/redirect-checker.html">Redirect checker</a></li><li><a href="/tools/site-audit.html">Site audit</a></li><li><a href="/tools/meta-preview.html">Meta preview</a></li><li><a href="/tools/dns-lookup.html">DNS lookup</a></li><li><a href="/tools/security-headers.html">Security headers</a></li><li><a href="/tools/ssl-checker.html">SSL checker</a></li></ul></section><section class="panel content-panel" aria-labelledby="more-tools-heading">
+    <section class="panel content-panel" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-item"><h3>Is Domain Rating the same as Google's ranking algorithm?</h3><p>No. DR is an Ahrefs metric built from their own backlink index. Google does not publish or use a public "authority score," and does not use Ahrefs' DR directly in ranking. DR is best treated as an industry-standard proxy signal, not a Google ranking factor.</p></div>
+      <div class="faq-item"><h3>What counts as a "good" Domain Rating?</h3><p>It depends on your niche and who you're comparing against — there's no universal cutoff. In many competitive niches, DR 40+ is considered a solid, established site, and large mainstream publishers or platforms often sit well above 70 as high-DR websites. The most useful comparison is against your direct competitors, not an absolute number.</p></div>
+      <div class="faq-item"><h3>How many domains can I check at once?</h3><p>Up to 100 domains or URLs per check. Paste one per line — bare domains and full http(s) URLs are both accepted.</p></div>
+      <div class="faq-item"><h3>Is this tool free to use?</h3><p>Yes. It's free, with a fair-use rate limit per hour so the service stays available and fast for everyone.</p></div>
+      <div class="faq-item"><h3>How is DR calculated?</h3><p>CheckDR does not calculate DR. It retrieves the metric from Ahrefs' public Domain Rating API.</p></div>
+      <div class="faq-item"><h3>Does CheckDR need an Ahrefs account, API key, or login?</h3><p>No. Visitors only enter domains; no Ahrefs account, login, API key, or other credentials are required.</p></div>
+      <div class="faq-item"><h3>Does CheckDR store the domains I check?</h3><p>No. Submitted domains are not written to a database. Temporary IP-based request counters are used for hourly rate limiting.</p></div>
+      <div class="faq-item"><h3>Is CheckDR affiliated with Ahrefs?</h3><p>CheckDR retrieves Domain Rating data through Ahrefs' public Domain Rating API.</p></div>
+      <div class="faq-item"><h3>How often does DR change?</h3><p>DR can change as Ahrefs' backlink index and calculations change; there is no fixed interval at which every domain must change.</p></div>
+      <div class="faq-item"><h3>Why might two SEO tools show different numbers?</h3><p>Different tools, such as Moz, can use different indexes, datasets, update schedules, and methodologies, so their authority-style numbers may not match.</p></div>
+      <div class="faq-item"><h3>Does a high DR mean a site is trustworthy?</h3><p>No. DR is a backlink-profile metric, not a general trust, legitimacy, or content-quality score.</p></div>
+      <div class="faq-item"><h3>How current is the Domain Rating data?</h3><p>Each check queries Ahrefs' API directly and returns their current DR for that domain, so results reflect Ahrefs' live index at the moment you run the check rather than a cached or delayed snapshot.</p></div>
+    </section>
+
+    <section class="panel content-panel" aria-labelledby="more-tools-heading">
       <h2 id="more-tools-heading">More free SEO tools</h2>
       <ul>
-<!-- TOOLS-MANIFEST:START -->
-        <li><a href="/tools/redirect-checker.html">Redirect checker</a> — Trace a URL's redirect chain and inspect the final HTTP status.</li>
-        <li><a href="/tools/site-audit.html">Single-page site audit</a> — Combine metadata, security headers, HTTP reachability, and broken-link checks for one page.</li>
-        <li><a href="/tools/site-audit-domain.html">Domain-wide site audit</a> — Audit sitemap-listed pages for metadata, reachability, security headers, Domain Rating, and certificate history.</li>
-        <li><a href="/tools/meta-preview.html">Meta preview</a> — Inspect a page's title, description, canonical tag, Open Graph/Twitter tags, robots meta, and H1 count.</li>
-        <li><a href="/tools/dns-lookup.html">DNS lookup</a> — Look up A, AAAA, MX, TXT, and NS records for domains.</li>
-        <li><a href="/tools/broken-links.html">Broken link checker</a> — Find broken links on a single page.</li>
-        <li><a href="/tools/security-headers.html">Security headers</a> — Check common HTTP security response headers.</li>
-        <li><a href="/tools/ssl-checker.html">SSL certificate checker</a> — Look up a domain's certificate history via public Certificate Transparency logs.</li>
-        <li><a href="/tools/title-length-checker.html">Title &amp; meta length</a> — Check title and meta description length and approximate search-result pixel width.</li>
-        <li><a href="/tools/readability-checker.html">Readability checker</a> — Analyze pasted content for readability scores and keyword usage.</li>
-        <li><a href="/tools/writing-clarity-checker.html">Writing clarity checker</a> — Highlight filler words and possible passive-voice patterns.</li>
-        <li><a href="/tools/schema-generator.html">Schema markup generator</a> — Generate paste-ready JSON-LD structured data.</li>
-        <li><a href="/tools/sitemap-generator.html">XML sitemap generator</a> — Build and validate a sitemap.xml locally.</li>
-        <li><a href="/tools/robots-generator.html">Robots.txt generator</a> — Build crawler rules, AI bot controls, and sitemap directives.</li>
-        <li><a href="/tools/social-preview-builder.html">Social preview builder</a> — Preview Google SERP and social metadata presentations.</li>
-        <li><a href="/tools/hreflang-generator.html">Hreflang generator</a> — Generate language and regional alternate tags.</li>
-        <li><a href="/tools/keyword-clustering.html">Keyword clustering &amp; content map</a> — Cluster keywords by lexical similarity and build a reviewable SEO content map.</li>
-        <li><a href="/tools/dofollow-nofollow-checker.html">Bulk dofollow/nofollow link checker</a> — Check up to 10 pages for dofollow, nofollow, sponsored and UGC links, with optional target-domain matching.</li>
-<!-- TOOLS-MANIFEST:END -->
+        <li><a href="https://checkdr.net/tools/redirect-checker.html">Redirect checker</a> — Trace a URL's redirect chain and inspect the final HTTP status.</li>
+        <li><a href="https://checkdr.net/tools/site-audit.html">Single-page site audit</a> — Combine metadata, security headers, HTTP reachability, and broken-link checks for one page.</li>
+        <li><a href="https://checkdr.net/tools/site-audit-domain.html">Domain-wide site audit</a> — Audit sitemap-listed pages for metadata, reachability, security headers, Domain Rating, and certificate history.</li>
+        <li><a href="https://checkdr.net/tools/meta-preview.html">Meta preview</a> — Inspect a page's title, description, canonical tag, Open Graph/Twitter tags, robots meta, and H1 count.</li>
+        <li><a href="https://checkdr.net/tools/dns-lookup.html">DNS lookup</a> — Look up A, AAAA, MX, TXT, and NS records for domains.</li>
+        <li><a href="https://checkdr.net/tools/broken-links.html">Broken link checker</a> — Find broken external and internal links on a single page.</li>
+        <li><a href="https://checkdr.net/tools/security-headers.html">Security headers</a> — Check common HTTP security response headers.</li>
+        <li><a href="https://checkdr.net/tools/ssl-checker.html">SSL certificate checker</a> — Look up a domain's certificate history via public Certificate Transparency logs.</li>
+        <li><a href="https://checkdr.net/tools/title-length-checker.html">Title &amp; meta length</a> — Check title and meta description length and approximate search-result pixel width.</li>
+        <li><a href="https://checkdr.net/tools/readability-checker.html">Readability checker</a> — Analyze pasted content for readability scores and keyword usage.</li>
+        <li><a href="https://checkdr.net/tools/writing-clarity-checker.html">Writing clarity checker</a> — Highlight filler words and possible passive-voice patterns.</li>
+        <li><a href="https://checkdr.net/tools/schema-generator.html">Schema markup generator</a> — Generate paste-ready JSON-LD structured data.</li>
+        <li><a href="https://checkdr.net/tools/sitemap-generator.html">XML sitemap generator</a> — Build and validate a sitemap.xml locally.</li>
+        <li><a href="https://checkdr.net/tools/robots-generator.html">Robots.txt generator</a> — Build crawler rules, AI bot controls, and sitemap directives.</li>
+        <li><a href="https://checkdr.net/tools/social-preview-builder.html">Social preview builder</a> — Preview Google SERP and social metadata presentations.</li>
+        <li><a href="https://checkdr.net/tools/hreflang-generator.html">Hreflang generator</a> — Generate language and regional alternate tags.</li>
+        <li><a href="https://checkdr.net/tools/keyword-clustering.html">Keyword clustering &amp; content map</a> — Cluster keywords by lexical similarity and build a reviewable SEO content map.</li>
+        <li><a href="https://checkdr.net/tools/dofollow-nofollow-checker.html">Bulk dofollow/nofollow link checker</a> — Check up to 10 pages for dofollow, nofollow, sponsored and UGC links, with optional target-domain matching.</li>
       </ul>
     </section>
 <!-- footer:start -->
