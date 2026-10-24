@@ -22,10 +22,12 @@ function navBlock() {
 }
 
 function hubGrid() {
-  return tools.map((tool) =>
+  const homeCard = '<a class="tool-link panel" href="/"><h2>Bulk Domain Rating Checker</h2>' +
+    '<p>Check Ahrefs Domain Rating for up to 100 domains in one batch.</p></a>';
+  return [homeCard].concat(tools.map((tool) =>
     '<a class="tool-link panel" href="/tools/' + tool.slug + '.html"><h2>' +
     escHtml(tool.title) + "</h2><p>" + escHtml(tool.description) + "</p></a>"
-  ).join("");
+  )).join("");
 }
 
 function homeList() {
