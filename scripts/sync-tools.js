@@ -123,18 +123,145 @@ function syncFooter(source, file) {
 
 
 function jsonLdHub(source) {
-  const h1 = (source.match(/<h1\\b[^>]*>([\\s\\S]*?)<\\/h1>/i) || [])[1];
-  const description = (source.match(/<meta\\s+name=["']description["']\\s+content=["']([^"']*)/i) || [])[1];
+  const h1 = (source.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i) || [])[1];
+  const description = (source.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)/i) || [])[1];
   const title = h1 ? h1.replace(/<[^>]+>/g, "").trim() : "";
-  if (!title || !description) throw new Error("tools/index.html: cannot generate ItemList schema without H1 and meta description");
-  const itemListElement = [{ slug: "", title: "Bulk Domain Rating Checker", url: "https://checkdr.net/" }]
-    .concat(tools.map((tool) => ({ slug: tool.slug, title: tool.title, url: "https://checkdr.net/tools/" + tool.slug + ".html" })))
-    .map((item, index) => ({ "@type": "ListItem", position: index + 1, name: item.title, url: item.url }));
-  const schema = { "@context": "https://schema.org", "@type": "CollectionPage", name: title, url: "https://checkdr.net/tools/", description, mainEntity: { "@type": "ItemList", numberOfItems: itemListElement.length, itemListElement } };
-  const block = '<!-- tools-itemlist:start -->\\n<script type="application/ld+json">' + JSON.stringify(schema) + '</script>\\n<!-- tools-itemlist:end -->';
-  const re = /<!-- tools-itemlist:start -->[\\s\\S]*?<!-- tools-itemlist:end -->/;
+  if (!title || !description) {
+    throw new Error("tools/index.html: cannot generate ItemList schema without H1 and meta description");
+  }
+
+  const itemListElement = [
+    { title: "Bulk Domain Rating Checker", url: "https://checkdr.net/" },
+    ...tools.map((tool) => ({
+      title: tool.title,
+      url: "https://checkdr.net/tools/" + tool.slug + ".html"
+    }))
+  ].map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.title,
+    url: item.url
+  }));
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    url: "https://checkdr.net/tools/",
+    description,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: itemListElement.length,
+      itemListElement
+    }
+  };
+  const block = "<!-- tools-itemlist:start -->\n" +
+    '<script type="application/ld+json">' + JSON.stringify(schema) + "</script>\n" +
+    "<!-- tools-itemlist:end -->";
+  const re = /<!-- tools-itemlist:start -->[\s\S]*?<!-- tools-itemlist:end -->/;
   if (re.test(source)) return source.replace(re, block);
-  return replaceOrFail(source, /<head[^>]*>/i, "function writeOrCheck(file, next) {\\n" + block, "tools/index.html ItemList schema");
+  return replaceOrFail(source, /<head[^>]*>/i, "$&\n" + block, "tools/index.html ItemList schema");
+}
+
+function validatePages() {
+  const files = [];
+  function walk(dir, prefix) {
+    for (const name of fs.readdirSync(dir).sort()) {
+      const full = path.join(dir, name);
+      const rel = prefix ? prefix + "/" + name : name;
+      if (fs.statSync(full).isDirectory()) walk(full, rel);
+      else if (name.endsWith(".html")) files.push(rel);
+    }
+  }
+  walk(root, "");
+  const failures = [];
+  const required = ["og:title", "og:description", "og:type", "og:url", "og:site_name", "og:image", "twitter:image"];
+
+  for (const file of files) {
+    const html = fs.readFileSync(path.join(root, file), "utf8");
+    const desc = (html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)/i) || [])[1];
+    if (!desc || desc.length < 110 || desc.length > 160) {
+      failures.push(file + ": meta description length must be 110–160 characters (got " + (desc ? desc.length : 0) + ")");
+    }
+
+    const canonical = (html.match(/<link\s+rel=["']canonical["']\s+href=["']([^"']*)/i) || [])[1];
+    const expected = "https://checkdr.net/" + (file === "index.html" ? "" : file === "tools/index.html" ? "tools/" : file);
+    if (canonical !== expected) failures.push(file + ": canonical must equal " + expected);
+
+    const h1Count = (html.match(/<h1\b/gi) || []).length;
+    if (h1Count !== 1) failures.push(file + ": expected exactly one H1 (got " + h1Count + ")");
+
+    if (file === "404.html") {
+      if (!/<meta\s+name=["']robots["']\s+content=["']noindex["']/i.test(html)) {
+        failures.push(file + ": must contain meta robots noindex");
+      }
+    } else {
+      for (const name of required) {
+        const tagPattern = new RegExp("<meta\\b[^>]*(?:property|name)=['\"]" + name + "['\"]", "i");
+        if (!tagPattern.test(html)) failures.push(file + ": missing " + name);
+      }
+      if (!/<meta\s+name=["']twitter:card["']\s+content=["']summary_large_image["']/i.test(html)) {
+        failures.push(file + ": twitter:card must be summary_large_image");
+      }
+    }
+
+    for (const match of html.matchAll(/<a\b[^>]*\bhref=["']([^"']*)["']/gi)) {
+      const href = match[1].trim();
+      if (!href || href.startsWith("#") || /^(mailto:|tel:|javascript:)/i.test(href)) continue;
+      let pathname;
+      if (/^https?:\/\//i.test(href)) {
+        let url;
+        try { url = new URL(href); } catch { continue; }
+        if (url.hostname !== "checkdr.net" && url.hostname !== "www.checkdr.net") continue;
+        pathname = decodeURIComponent(url.pathname);
+      } else if (href.startsWith("/")) {
+        pathname = decodeURIComponent(href.split(/[?#]/)[0]);
+      } else {
+        continue;
+      }
+
+      if (!pathname || pathname === "/") pathname = "/index.html";
+      else if (pathname.endsWith("/")) pathname += "index.html";
+      const target = path.resolve(root, "." + pathname);
+      if (!target.startsWith(root + path.sep) && target !== path.join(root, "index.html")) {
+        failures.push(file + ": unsafe local href " + href);
+      } else if (!fs.existsSync(target) || !fs.statSync(target).isFile()) {
+        failures.push(file + ": broken href " + href);
+      }
+    }
+  }
+
+  const hub = fs.readFileSync(path.join(root, "tools/index.html"), "utf8");
+  const schemaBlock = (hub.match(/<!-- tools-itemlist:start -->([\s\S]*?)<!-- tools-itemlist:end -->/) || [])[1];
+  if (!schemaBlock) {
+    failures.push("tools/index.html: missing or stale ItemList schema block");
+  } else {
+    try {
+      const scriptMatch = schemaBlock.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+      if (!scriptMatch) throw new Error("missing JSON-LD script");
+      const schema = JSON.parse(scriptMatch[1]);
+      const cards = [...hub.matchAll(/<a class="tool-link panel" href="([^"]+)"><h2>([\s\S]*?)<\/h2>/g)];
+      if (schema.mainEntity.numberOfItems !== cards.length ||
+          schema.mainEntity.itemListElement.length !== cards.length) {
+        failures.push("tools/index.html: ItemList count does not match visible cards");
+      }
+      if (cards.some((card, index) => {
+        const item = schema.mainEntity.itemListElement[index];
+        return !item ||
+          item.url !== new URL(card[1], "https://checkdr.net").href ||
+          item.name !== card[2].replace(/&amp;/g, "&");
+      })) {
+        failures.push("tools/index.html: ItemList is stale against visible cards");
+      }
+    } catch (error) {
+      failures.push("tools/index.html: ItemList JSON-LD is invalid (" + error.message + ")");
+    }
+  }
+
+  if (failures.length) throw new Error("SEO/integrity check failed:\n- " + failures.join("\n- "));
+}
+
+function writeOrCheck(file, next) {\\n" + block, "tools/index.html ItemList schema");
 }
 
 function validatePages() {
