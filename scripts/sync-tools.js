@@ -21,13 +21,23 @@ function navBlock() {
   ).join("");
 }
 
+function hubItems() {
+  return [{
+    title: "Bulk Domain Rating Checker",
+    description: "Check Ahrefs Domain Rating for up to 100 domains in one batch.",
+    url: "/"
+  }].concat(tools.map((tool) => ({
+    title: tool.title,
+    description: tool.description,
+    url: "/tools/" + tool.slug + ".html"
+  })));
+}
+
 function hubGrid() {
-  const homeCard = '<a class="tool-link panel" href="/"><h2>Bulk Domain Rating Checker</h2>' +
-    '<p>Check Ahrefs Domain Rating for up to 100 domains in one batch.</p></a>';
-  return [homeCard].concat(tools.map((tool) =>
-    '<a class="tool-link panel" href="/tools/' + tool.slug + '.html"><h2>' +
-    escHtml(tool.title) + "</h2><p>" + escHtml(tool.description) + "</p></a>"
-  )).join("");
+  return hubItems().map((item) =>
+    '<a class="tool-link panel" href="' + item.url + '"><h2>' +
+    escHtml(item.title) + "</h2><p>" + escHtml(item.description) + "</p></a>"
+  ).join("");
 }
 
 function homeList() {
@@ -129,8 +139,10 @@ function jsonLdHub(source) {
   const description = (source.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)/i) || [])[1];
   const title = h1 ? h1.replace(/<[^>]+>/g, "").trim() : "";
   if (!title || !description) throw new Error("tools/index.html: missing H1 or meta description");
-  const items = [{ title: "Bulk Domain Rating Checker", url: "https://checkdr.net/" }]
-    .concat(tools.map(tool => ({ title: tool.title, url: "https://checkdr.net/tools/" + tool.slug + ".html" })));
+  const items = hubItems().map(item => ({
+    title: item.title,
+    url: new URL(item.url, "https://checkdr.net").href
+  }));
   const list = items.map((item, i) => ({ "@type": "ListItem", position: i + 1, name: item.title, url: item.url }));
   const schema = { "@context": "https://schema.org", "@type": "CollectionPage", name: title,
     url: "https://checkdr.net/tools/", description,
