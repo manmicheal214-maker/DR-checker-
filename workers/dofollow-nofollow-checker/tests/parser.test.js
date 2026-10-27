@@ -6,27 +6,11 @@ import { parseRel, linkTypes, targetMatches, resolveLink, robotsNoFollow } from 
 import { isPrivateIPv6 } from "../src/index.js";
 
 const fixture = name => fs.readFileSync(new URL("./fixtures/" + name, import.meta.url), "utf8");
-const workerScript = `
-import { parseHtml } from "./src/index.js";
-export default {
-  async fetch(request) {
-    const html = await request.text();
-    const requestedUrl = request.headers.get("x-requested-url") || "https://example.com/";
-    const finalUrl = request.headers.get("x-final-url") || requestedUrl;
-    const response = new Response(html, {
-      status: 200,
-      headers: { "Content-Type": "text/html; charset=utf-8" }
-    });
-    return Response.json(await parseHtml(response, requestedUrl, finalUrl, null));
-  }
-};
-`;
-
 async function parseWithRealHtmlRewriter(html, { requestedUrl = "https://example.com/", finalUrl = requestedUrl } = {}) {
   const miniflare = new Miniflare({
     modules: true,
     modulesRoot: new URL("../", import.meta.url).pathname,
-    script: workerScript,
+    scriptPath: new URL("./real-htmlrewriter-worker.js", import.meta.url).pathname,
     compatibilityDate: "2026-10-21"
   });
   try {
