@@ -8,7 +8,7 @@ import { isPrivateIPv6 } from "../src/index.js";
 const fixture = name => fs.readFileSync(new URL("./fixtures/" + name, import.meta.url), "utf8");
 async function parseWithRealHtmlRewriter(html, { requestedUrl = "https://example.com/", finalUrl = requestedUrl } = {}) {
   const miniflare = new Miniflare({
-    modules: true,
+    modules: [{ type: "ESModule", include: ["**/*.js"] }],
     modulesRoot: new URL("../", import.meta.url).pathname,
     scriptPath: new URL("./real-htmlrewriter-worker.js", import.meta.url).pathname,
     compatibilityDate: "2026-10-21"
