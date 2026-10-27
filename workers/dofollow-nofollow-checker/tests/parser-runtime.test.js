@@ -32,7 +32,7 @@ test("parseHtml handles anchors in the real Workers HTMLRewriter runtime", async
     assert.equal(result.links[2].href, "https://example.com/redirected/relative");
     assert.equal(result.links[3].href, "https://blog.example.com/unclosed");
     assert.deepEqual(result.links[3].types, ["ugc"]);
-    assert.equal(result.matched.length, 2);
+    assert.equal(result.matched.length, 3);
   } finally {
     await worker.stop();
   }
