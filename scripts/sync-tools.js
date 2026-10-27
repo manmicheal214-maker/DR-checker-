@@ -160,7 +160,7 @@ function validatePages() {
     for (const name of fs.readdirSync(dir).sort()) {
       const full = path.join(dir, name), rel = prefix ? prefix + "/" + name : name;
       if (fs.statSync(full).isDirectory()) walk(full, rel);
-      else if (name.endsWith(".html")) files.push(rel);
+      else if (name.endsWith(".html") && !/(^|\/)tests\/fixtures\//.test(rel)) files.push(rel);
     }
   }
   walk(root, "");
@@ -168,7 +168,8 @@ function validatePages() {
   const required = ["og:title", "og:description", "og:type", "og:url", "og:site_name", "og:image", "twitter:image"];
   for (const file of files) {
     const html = fs.readFileSync(path.join(root, file), "utf8");
-    const desc = (html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)/i) || [])[1];
+    const descMatch = html.match(/<meta\b(?=[^>]*\bname=["\']description["\'])(?=[^>]*\bcontent=(["\'])(.*?)\1)[^>]*>/i);
+    const desc = descMatch ? descMatch[2] : undefined;
     if (!desc || desc.length < 110 || desc.length > 160) failures.push(file + ": meta description length must be 110–160 characters (got " + (desc ? desc.length : 0) + ")");
     const canonical = (html.match(/<link\s+rel=["']canonical["']\s+href=["']([^"']*)/i) || [])[1];
     const expected = "https://checkdr.net/" + (file === "index.html" ? "" : file === "tools/index.html" ? "tools/" : file);
