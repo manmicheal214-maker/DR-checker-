@@ -95,10 +95,14 @@ test("parseHtml collects two fixture links including rel=nofollow", async () => 
               for (const match of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
                 const attrs = Object.fromEntries([...match[1].matchAll(/([\w-]+)\s*=\s*["']([^"']*)["']/g)].map(m => [m[1].toLowerCase(), m[2]]));
                 if (attrs.href === undefined) continue;
-                handlers.element({ getAttribute: name => attrs[name] ?? null });
+                let onEndTag = null;
+                handlers.element({
+                  getAttribute: name => attrs[name] ?? null,
+                  onEndTag(callback) { onEndTag = callback; }
+                });
                 const text = match[2].replace(/<[^>]*>/g, "");
                 if (text) handlers.text({ text, lastInTextNode: true });
-                handlers.end();
+                if (onEndTag) onEndTag();
               }
             }
             controller.close();
