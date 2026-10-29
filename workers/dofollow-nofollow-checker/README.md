@@ -2,12 +2,27 @@
 
 ## Deploy
 
-From this directory:
+**Deploy this Worker from its own directory, using this directory's `wrangler.toml`. Never connect the `dofollow-nofollow-checker` Worker to a Git build rooted at the repository root.** The repository root is the CheckDR static website for GitHub Pages; a root-level build/deploy can publish the website assets instead of the Worker code.
+
+From the repository root, explicitly target the Worker config:
+
+```sh
+npx wrangler deploy --config workers/dofollow-nofollow-checker/wrangler.toml
+```
+
+Or run from this directory:
+
+```sh
+cd workers/dofollow-nofollow-checker
+npx wrangler deploy
+```
+
+Before deploying, verify the selected config has `main = "src/index.js"` and does not contain an `[assets]` block. Do not run `wrangler deploy` from the repository root without the explicit `--config` path. Keep any Git-based Cloudflare build/deploy connection for the static website separate from this Worker; do not attach this Worker to a repo-root Git build. These instructions document the intended setup only; they do not change Cloudflare settings or deploy anything.
 
 1. Install Wrangler 4.36.0 or later: `npm install --save-dev wrangler@^4.36.0` (or use `npx wrangler@^4.36.0`).
 2. Create a Cloudflare Turnstile widget for `checkdr.net` and `www.checkdr.net`. Set the public site key in `wrangler.toml` as `TURNSTILE_SITE_KEY` **and** replace `[TURNSTILE_SITE_KEY]` in `/tools/dofollow-nofollow-checker.js` with that same public key.
 3. Set the private secret interactively: `npx wrangler secret put TURNSTILE_SECRET`. Do not commit the secret.
-4. Deploy: `npx wrangler deploy`.
+4. Deploy using one of the commands above.
 5. The frontend already obtains a fresh Turnstile token for each URL: `checkOne()` calls `getToken()` before every Worker request, and `getToken()` renders and removes a per-request widget. Tokens are single-use; do not reuse a token across batch items.
 6. Add the Worker URL to the tool page configuration and test from the production origin.
 
