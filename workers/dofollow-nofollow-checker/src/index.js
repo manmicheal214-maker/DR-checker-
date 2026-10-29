@@ -1,4 +1,4 @@
-import { parseRel, linkTypes, targetMatches, normalizeHost, resolveLink } from "./parsing.js";
+import { parseRel, linkTypes, targetMatches, normalizeHost, resolveLink, decodeHtmlEntities } from "./parsing.js";
 const MAX_BYTES = 2 * 1024 * 1024;
 const MAX_REDIRECTS = 5;
 const CACHE_TTL = 300;
@@ -37,7 +37,7 @@ function validatePublicUrl(input) {
   return { url: u };
 }
 function errorResponse(url, error, status = null, finalUrl = null) {
-  return { url, finalUrl, status, robotsNofollow: false, links: [], matched: [], error };
+  return { url, finalUrl, status, robotsNofollow: false, links: [], matched: [], parseErrorCount: 0, error };
 }
 async function verifyTurnstile(token, request, env) {
   if (!token || !env.TURNSTILE_SECRET) return false;
@@ -93,7 +93,7 @@ async function fetchHtml(initialUrl) {
 }
 export async function parseHtml(response, requestedUrl, finalUrl, target) {
   const links = [];
-  const parseErrors = [];
+  let parseErrorCount = 0;
   let robotsNofollow = false;
   let baseHref = null;
   let currentAnchor = null;
@@ -107,11 +107,11 @@ export async function parseHtml(response, requestedUrl, finalUrl, target) {
         if (resolvedHref) {
           const rel = parseRel(currentAnchor.rel);
           const hostname = new URL(resolvedHref).hostname;
-          links.push({ href: resolvedHref, anchor: currentAnchor.hasText ? currentAnchor.anchor.trim() : (currentAnchor.imageAlt ? "[image] " + currentAnchor.imageAlt : "[no anchor text]"), rel, types: linkTypes(currentAnchor.rel), scope: normalizeHost(new URL(finalUrl).hostname) === normalizeHost(hostname) ? "internal" : "external", _hostname: hostname });
+          links.push({ href: resolvedHref, anchor: currentAnchor.hasText ? decodeHtmlEntities(currentAnchor.anchor.trim()) : (currentAnchor.imageAlt ? "[image] " + decodeHtmlEntities(currentAnchor.imageAlt) : "[no anchor text]"), rel, types: linkTypes(currentAnchor.rel), scope: normalizeHost(new URL(finalUrl).hostname) === normalizeHost(hostname) ? "internal" : "external", _hostname: hostname });
         }
       } catch (error) {
         const parseError = { href, message: String(error?.message || error) };
-        parseErrors.push(parseError);
+        parseErrorCount += 1;
         console.warn("Failed to parse link", { href: parseError.href, error: parseError.message });
       }
     }
@@ -147,7 +147,7 @@ export async function parseHtml(response, requestedUrl, finalUrl, target) {
   }
   if (tooLarge) return errorResponse(requestedUrl, "too_large", response.status, finalUrl);
   const clean = links.map(({ _hostname, ...link }) => link);
-  const result = { url: requestedUrl, finalUrl, status: response.status, robotsNofollow, links: clean, parseErrors, error: null };
+  const result = { url: requestedUrl, finalUrl, status: response.status, robotsNofollow, links: clean, parseErrorCount, error: null };
   if (target) result.matched = clean.filter(link => {
     try { return targetMatches(new URL(link.href).hostname, target); } catch { return false; }
   });

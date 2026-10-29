@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { Miniflare } from "miniflare";
-import { parseRel, linkTypes, targetMatches, resolveLink, robotsNoFollow } from "../src/parsing.js";
+import { parseRel, linkTypes, targetMatches, resolveLink, robotsNoFollow, decodeHtmlEntities } from "../src/parsing.js";
 import { isPrivateIPv6 } from "../src/index.js";
 
 const fixture = name => fs.readFileSync(new URL("./fixtures/" + name, import.meta.url), "utf8");
@@ -10,7 +10,8 @@ async function parseWithRealHtmlRewriter(html, { requestedUrl = "https://example
   const miniflare = new Miniflare({
     scriptPath: new URL("./real-htmlrewriter-worker.js", import.meta.url).pathname,
     compatibilityDate: "2026-10-21",
-    modules: true
+    modules: true,
+    modulesRules: [{ type: "ESModule", include: ["**/*.js"], fallthrough: true }]
   });
   try {
     const response = await miniflare.dispatchFetch("http://worker.test/parse", {
@@ -97,4 +98,16 @@ test("private IPv6 checks recognize loopback and IPv4-mapped private addresses",
   assert.equal(isPrivateIPv6("::ffff:10.1.2.3"), true);
   assert.equal(isPrivateIPv6("::ffff:192.168.1.10"), true);
   assert.equal(isPrivateIPv6("2001:4860:4860::8888"), false);
+});
+
+test("entity decoding handles named and numeric entities", () => {
+  assert.equal(decodeHtmlEntities("&amp; &lt; &gt; &quot; &#39; &apos; &nbsp; &#8217; &#x2019;"), "& < > \" ' '   ’ ’");
+  assert.equal(decodeHtmlEntities("&unknown;"), "&unknown;");
+});
+test("real HTMLRewriter decodes anchor and image alt entities and returns numeric parseErrorCount", async () => {
+  const a = await parseWithRealHtmlRewriter('<a href="/text">A &amp; B &lt;ok&gt; &quot;quoted&quot; &#39;single&#39; &apos;also&apos; &nbsp;&#8217;&#x2019;</a>');
+  assert.equal(a.links[0].anchor, "A & B <ok> \"quoted\" 'single' 'also'  ’’");
+  assert.equal(typeof a.parseErrorCount, "number"); assert.equal(a.parseErrorCount, 0); assert.equal(Object.hasOwn(a, "parseErrors"), false);
+  const img = await parseWithRealHtmlRewriter('<a href="/logo"><img src="/logo.png" alt="A &amp; B &#x2019; logo"></a>');
+  assert.equal(img.links[0].anchor, "[image] A & B ’ logo"); assert.equal(typeof img.parseErrorCount, "number");
 });
