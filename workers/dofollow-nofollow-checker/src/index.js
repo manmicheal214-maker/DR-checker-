@@ -37,7 +37,7 @@ function validatePublicUrl(input) {
   return { url: u };
 }
 function errorResponse(url, error, status = null, finalUrl = null) {
-  return { url, finalUrl, status, robotsNofollow: false, links: [], matched: [], error };
+  return { url, finalUrl, status, robotsNofollow: false, links: [], matched: [], parseErrorCount: 0, error };
 }
 async function verifyTurnstile(token, request, env) {
   if (!token || !env.TURNSTILE_SECRET) return false;

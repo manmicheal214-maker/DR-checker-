@@ -106,7 +106,7 @@ test("entity decoding handles named and numeric entities", () => {
 });
 test("real HTMLRewriter decodes anchor and image alt entities and returns numeric parseErrorCount", async () => {
   const a = await parseWithRealHtmlRewriter('<a href="/text">A &amp; B &lt;ok&gt; &quot;quoted&quot; &#39;single&#39; &apos;also&apos; &nbsp;&#8217;&#x2019;</a>');
-  assert.equal(a.links[0].anchor, "A & B <ok> \"quoted\" 'single' 'also'   ’’");
+  assert.equal(a.links[0].anchor, "A & B <ok> \"quoted\" 'single' 'also'  ’’");
   assert.equal(typeof a.parseErrorCount, "number"); assert.equal(a.parseErrorCount, 0); assert.equal(Object.hasOwn(a, "parseErrors"), false);
   const img = await parseWithRealHtmlRewriter('<a href="/logo"><img src="/logo.png" alt="A &amp; B &#x2019; logo"></a>');
   assert.equal(img.links[0].anchor, "[image] A & B ’ logo"); assert.equal(typeof img.parseErrorCount, "number");
