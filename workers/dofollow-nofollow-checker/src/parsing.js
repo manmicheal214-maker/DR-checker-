@@ -1,4 +1,17 @@
 export const TYPES = ["nofollow", "sponsored", "ugc"];
+const HTML_ENTITIES = Object.freeze({ amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", apos: "'", nbsp: " " });
+export function decodeHtmlEntities(value) {
+  return String(value ?? "").replace(/&(#(?:x[\da-f]+|\d+)|[a-z][a-z\d]+);/gi, (entity, name) => {
+    if (name[0] === "#") {
+      const hex = name[1]?.toLowerCase() === "x";
+      const codePoint = Number.parseInt(name.slice(hex ? 2 : 1), hex ? 16 : 10);
+      if (!Number.isFinite(codePoint) || codePoint <= 0 || codePoint > 0x10ffff || (codePoint >= 0xd800 && codePoint <= 0xdfff)) return "�";
+      return String.fromCodePoint(codePoint);
+    }
+    const key = name.toLowerCase();
+    return Object.prototype.hasOwnProperty.call(HTML_ENTITIES, key) ? HTML_ENTITIES[key] : entity;
+  });
+}
 export function parseRel(rel) {
   return [...new Set(String(rel || "").toLowerCase().trim().split(/\s+/).filter(Boolean))];
 }
