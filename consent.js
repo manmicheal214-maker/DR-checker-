@@ -2,7 +2,7 @@
   const STORAGE_KEY = "checkdr-analytics-consent";
   // Set this to the real container ID when supplied, e.g. "GTM-ABC1234".
   // Keep empty until then: no Google scripts are requested without a real ID.
-  const GTM_ID = "";
+  const GTM_ID = "GTM-XXXXXXX";
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () {
@@ -39,7 +39,7 @@
   }
 
   function loadGoogleTagManager() {
-    if (!/^GTM-[A-Z0-9]+$/.test(GTM_ID) || window.__checkdrGtmLoaded) return;
+    if (!(/^GTM-[A-Z0-9]+$/.test(GTM_ID) && GTM_ID !== "GTM-XXXXXXX") || window.__checkdrGtmLoaded) return;
     window.__checkdrGtmLoaded = true;
     window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
     const script = document.createElement("script");
@@ -66,7 +66,7 @@
     box.querySelector("#cookieAccept").addEventListener("click", function () {
       try { localStorage.setItem(STORAGE_KEY, "accepted"); } catch (_) {}
       box.remove();
-      if (/^GTM-[A-Z0-9]+$/.test(GTM_ID)) {
+      if ((/^GTM-[A-Z0-9]+$/.test(GTM_ID) && GTM_ID !== "GTM-XXXXXXX")) {
         updateConsent(true);
         loadGoogleTagManager();
       } else {
@@ -85,7 +85,7 @@
     let choice = "";
     try { choice = localStorage.getItem(STORAGE_KEY) || ""; } catch (_) {}
 
-    if (choice === "accepted" && /^GTM-[A-Z0-9]+$/.test(GTM_ID)) {
+    if (choice === "accepted" && (/^GTM-[A-Z0-9]+$/.test(GTM_ID) && GTM_ID !== "GTM-XXXXXXX")) {
       updateConsent(true);
       loadGoogleTagManager();
     } else {
