@@ -31,14 +31,20 @@
     <p>Those rate-limit counters automatically expire after roughly one hour. They are not sold, shared, or used for another purpose by CheckDR.</p>
   </section>
   <section class="panel content-panel">
-    <h2>Analytics</h2>
-    <p>The site is configured to use Google Tag Manager, Google Analytics, and Ahrefs Analytics after applicable consent. These services are separate from the tool backend and may process visitor and usage information such as page views, approximate location, device/browser information, and related analytics identifiers under their own practices.</p>
-    <p>For Google's practices, see <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google's Privacy Policy</a>. For Ahrefs' practices, see <a href="https://ahrefs.com/privacy-policy" rel="noopener noreferrer">Ahrefs' Privacy Policy</a>. CheckDR does not control the data practices or retention periods of those providers.</p>
+    <h2>Analytics providers and information collected</h2>
+    <p>CheckDR loads Google Tag Manager and Ahrefs Web Analytics only after a visitor selects <strong>Accept analytics</strong>. Neither analytics script is requested before acceptance. Selecting Reject prevents either service from loading.</p>
+    <h3>Google Analytics through Google Tag Manager</h3>
+    <p>Google Tag Manager (container <code>GTM-PP972P5P</code>) loads tags. CheckDR does not load a separate, hard-coded Google Analytics script. Google Analytics 4 is intended to run as a tag configured inside this GTM container. When configured and fired, Google Analytics can collect page views, site interactions, page/referrer information, approximate location, and browser/device information. The precise events and any additional tags depend on the live GTM container configuration.</p>
+    <p>GTM itself is a tag manager, not the analytics service. A GA4 tag commonly uses first-party cookies <code>_ga</code> and <code>_ga_*</code> for browser identification and analytics state. Other tags configured in GTM may set additional cookies; the repository cannot establish the full list without inspecting the live container.</p>
+    <h3>Ahrefs Web Analytics</h3>
+    <p>After acceptance, CheckDR loads Ahrefs Web Analytics from <code>analytics.ahrefs.com</code> using the existing project key. Ahrefs collects page URLs (including URL parameters), referrers, user-agent information used to report browser/device/operating-system details, country/city-level location, language preferences, and screen size. It automatically measures common interactions such as page views, link clicks, and form submissions. Ahrefs derives a daily pseudonymous visitor ID from IP address and user-agent data; it says raw IP addresses are discarded, the identifier is not used to track visitors across days, and it does not track people across devices or sites.</p>
+    <p>Ahrefs Web Analytics states that it uses no cookies or persistent identifiers. Therefore it is not expected to set analytics cookies. Google Analytics cookies may be set if/when a GA4 tag in GTM is configured and runs. The consent choice is stored in this browser's local storage under <code>checkdr-analytics-consent</code>, not in an analytics cookie.</p>
+    <p>Provider details: <a href="https://support.google.com/analytics/answer/11593727" rel="noopener noreferrer">Google Analytics data collection</a>, <a href="https://help.ahrefs.com/en/articles/10247870-about-ahrefs-web-analytics" rel="noopener noreferrer">Ahrefs Web Analytics data collection</a>, <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google's Privacy Policy</a>, and <a href="https://ahrefs.com/privacy-policy" rel="noopener noreferrer">Ahrefs' Privacy Policy</a>.</p>
   </section>
   <section class="panel content-panel">
-    <h2>Cookies and retention</h2>
-    <p>Google Tag Manager loads analytics tags after consent. Google Analytics can use cookies and similar identifiers. Ahrefs Analytics may use its own analytics technologies according to Ahrefs' documentation and policy. Because these services operate independently, their retention periods are governed by their own policies rather than by CheckDR's rate-limit storage.</p>
-    <p>CheckDR's rate-limit counters expire after roughly one hour. CheckDR does not retain submitted domains, URLs, or keywords in a database.</p>
+    <h2>Changing or withdrawing consent</h2>
+    <p>Select <strong>Cookie settings</strong> in the footer to withdraw a previous choice and reopen the consent banner. This sets Google's Consent Mode v2 signals to denied, attempts to clear known Google Analytics/advertising cookies on the current host, and reloads the page so already-loaded analytics code is no longer active. Choose Reject to keep Google-through-GTM and Ahrefs analytics from loading. Choose Accept analytics to enable both.</p>
+    <p>Your choice is stored in this browser's local storage. Clearing site data or using another browser/device resets the choice. Withdrawal stops future collection by these scripts; it cannot retract data already sent to Google or Ahrefs.</p>
   </section>
   <section class="panel content-panel">
     <h2>Third-party sharing</h2>
