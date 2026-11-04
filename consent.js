@@ -1,15 +1,14 @@
 (function () {
   const STORAGE_KEY = "checkdr-analytics-consent";
-  // Set this to the real container ID when supplied, e.g. "GTM-ABC1234".
-  // Keep empty until then: no Google scripts are requested without a real ID.
-  const GTM_ID = "GTM-XXXXXXX";
+  const GTM_ID = "GTM-PP972P5P";
+  const AHREFS_KEY = "JYJKjwBzSK4mcCZ4VELUEA";
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () {
     window.dataLayer.push(arguments);
   };
 
-  // Consent Mode v2 defaults are queued before GTM is ever requested.
+  // Queue Consent Mode v2 defaults before requesting any analytics script.
   window.gtag("consent", "default", {
     ad_storage: "denied",
     analytics_storage: "denied",
@@ -17,6 +16,10 @@
     ad_personalization: "denied",
     wait_for_update: 500
   });
+
+  function hasValidGtmId() {
+    return /^GTM-[A-Z0-9]+$/.test(GTM_ID) && GTM_ID !== "GTM-XXXXXXX";
+  }
 
   function updateConsent(granted) {
     const value = granted ? "granted" : "denied";
@@ -31,7 +34,7 @@
   function clearAnalyticsCookies() {
     document.cookie.split(";").forEach(function (item) {
       const name = item.trim().split("=")[0];
-      if (name && /^(?:_ga(?:_.+)?|_gid|_gat(?:_.+)?|_gcl_.+|IDE|ahrefs.*)$/i.test(name)) {
+      if (name && /^(?:_ga(?:_.+)?|_gid|_gat(?:_.+)?|_gcl_.+|IDE)$/i.test(name)) {
         document.cookie = name + "=; Max-Age=0; path=/; SameSite=Lax";
         document.cookie = name + "=; Max-Age=0; path=/; domain=" + location.hostname + "; SameSite=Lax";
       }
@@ -39,13 +42,33 @@
   }
 
   function loadGoogleTagManager() {
-    if (!(/^GTM-[A-Z0-9]+$/.test(GTM_ID) && GTM_ID !== "GTM-XXXXXXX") || window.__checkdrGtmLoaded) return;
+    if (!hasValidGtmId() || window.__checkdrGtmLoaded) return;
     window.__checkdrGtmLoaded = true;
     window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
     const script = document.createElement("script");
     script.async = true;
     script.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(GTM_ID);
     document.head.appendChild(script);
+  }
+
+  function loadAhrefsAnalytics() {
+    if (window.__checkdrAhrefsLoaded) return;
+    window.__checkdrAhrefsLoaded = true;
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://analytics.ahrefs.com/analytics.js";
+    script.dataset.key = AHREFS_KEY;
+    document.head.appendChild(script);
+  }
+
+  function enableAnalytics() {
+    if (!hasValidGtmId()) {
+      updateConsent(false);
+      return;
+    }
+    updateConsent(true);
+    loadGoogleTagManager();
+    loadAhrefsAnalytics();
   }
 
   function revokeConsent() {
@@ -66,12 +89,7 @@
     box.querySelector("#cookieAccept").addEventListener("click", function () {
       try { localStorage.setItem(STORAGE_KEY, "accepted"); } catch (_) {}
       box.remove();
-      if ((/^GTM-[A-Z0-9]+$/.test(GTM_ID) && GTM_ID !== "GTM-XXXXXXX")) {
-        updateConsent(true);
-        loadGoogleTagManager();
-      } else {
-        updateConsent(false);
-      }
+      enableAnalytics();
     });
 
     box.querySelector("#cookieReject").addEventListener("click", function () {
@@ -85,20 +103,20 @@
     let choice = "";
     try { choice = localStorage.getItem(STORAGE_KEY) || ""; } catch (_) {}
 
-    if (choice === "accepted" && (/^GTM-[A-Z0-9]+$/.test(GTM_ID) && GTM_ID !== "GTM-XXXXXXX")) {
-      updateConsent(true);
-      loadGoogleTagManager();
+    if (choice === "accepted") {
+      enableAnalytics();
     } else {
       updateConsent(false);
-      if (!choice) banner();
+      if (!choice || choice === "pending") banner();
     }
 
     document.querySelectorAll("#cookieSettingsLink").forEach(function (link) {
       link.addEventListener("click", function (event) {
         event.preventDefault();
-        try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+        // Withdraw consent and reload to stop already-initialized third-party code.
+        try { localStorage.setItem(STORAGE_KEY, "pending"); } catch (_) {}
         revokeConsent();
-        banner();
+        window.location.reload();
       });
     });
   }
