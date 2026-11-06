@@ -76,27 +76,41 @@
     clearAnalyticsCookies();
   }
 
-  function banner() {
-    if (document.getElementById("cookieConsentBanner")) return;
-    const box = document.createElement("aside");
-    box.id = "cookieConsentBanner";
-    box.className = "cookie-consent";
-    box.setAttribute("role", "dialog");
-    box.setAttribute("aria-label", "Cookie preferences");
-    box.innerHTML = '<p>CheckDR uses analytics technologies to understand site usage. Accept to enable analytics, or reject to continue without analytics.</p><button type="button" id="cookieAccept" class="btn btn-primary">Accept analytics</button><button type="button" id="cookieReject" class="btn btn-secondary">Reject</button>';
-    document.body.appendChild(box);
+  function banner(options) {
+    options = options || {};
+    let box = document.getElementById("cookieConsentBanner");
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "cookieConsentBanner";
+      box.className = "cookie-consent";
+      box.setAttribute("role", "dialog");
+      box.setAttribute("aria-modal", "false");
+      box.setAttribute("aria-labelledby", "cookieConsentHeading");
+      box.setAttribute("aria-describedby", "cookieConsentDescription");
+      box.innerHTML = '<h2 id="cookieConsentHeading" class="visually-hidden">Cookie preferences</h2><p id="cookieConsentDescription">CheckDR uses analytics technologies to understand site usage. Accept to enable analytics, or reject to continue without analytics.</p><button type="button" id="cookieAccept" class="btn btn-secondary">Accept analytics</button><button type="button" id="cookieReject" class="btn btn-secondary">Reject</button>';
+      document.body.appendChild(box);
+    }
 
-    box.querySelector("#cookieAccept").addEventListener("click", function () {
-      try { localStorage.setItem(STORAGE_KEY, "accepted"); } catch (_) {}
+    const returnFocus = options.returnFocus || null;
+    function close() {
       box.remove();
-      enableAnalytics();
-    });
+      if (returnFocus && returnFocus.isConnected) returnFocus.focus();
+    }
 
-    box.querySelector("#cookieReject").addEventListener("click", function () {
+    box.querySelector("#cookieAccept").onclick = function () {
+      try { localStorage.setItem(STORAGE_KEY, "accepted"); } catch (_) {}
+      close();
+      enableAnalytics();
+    };
+
+    box.querySelector("#cookieReject").onclick = function () {
       try { localStorage.setItem(STORAGE_KEY, "rejected"); } catch (_) {}
       revokeConsent();
-      box.remove();
-    });
+      close();
+    };
+
+    // Only an explicit settings-link activation moves focus; first-load display stays non-intrusive.
+    if (options.moveFocus) box.querySelector("#cookieAccept").focus();
   }
 
   function init() {
@@ -113,10 +127,9 @@
     document.querySelectorAll("#cookieSettingsLink").forEach(function (link) {
       link.addEventListener("click", function (event) {
         event.preventDefault();
-        // Withdraw consent and reload to stop already-initialized third-party code.
         try { localStorage.setItem(STORAGE_KEY, "pending"); } catch (_) {}
         revokeConsent();
-        window.location.reload();
+        banner({ moveFocus: true, returnFocus: link });
       });
     });
   }
