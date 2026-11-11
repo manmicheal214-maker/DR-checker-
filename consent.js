@@ -88,10 +88,12 @@
       box.setAttribute("aria-modal", "false");
       box.setAttribute("aria-labelledby", "cookieConsentHeading");
       box.setAttribute("aria-describedby", "cookieConsentDescription");
-      box.innerHTML = '<h2 id="cookieConsentHeading" class="visually-hidden">Cookie preferences</h2><p id="cookieConsentDescription">CheckDR uses Google Analytics and Ahrefs Web Analytics to understand site usage if you accept. Basic, cookieless traffic statistics from Cloudflare Web Analytics run regardless of this choice. Read our <a href="/privacy.html">Privacy Policy</a> for details.</p><div class="cookie-consent-actions"><button type="button" id="cookieAccept" class="btn btn-secondary">Accept analytics</button><button type="button" id="cookieReject" class="btn btn-secondary">Reject</button><button type="button" id="cookieClose" class="btn btn-secondary">Close</button></div>';
+      box.innerHTML = '<h2 id="cookieConsentHeading" class="visually-hidden">Cookie preferences</h2><p id="cookieConsentChoice" class="cookie-consent-choice" aria-live="polite"></p><p id="cookieConsentDescription">CheckDR uses Google Analytics and Ahrefs Web Analytics to understand site usage if you accept. Basic, cookieless traffic statistics from Cloudflare Web Analytics run regardless of this choice. Read our <a href="/privacy.html">Privacy Policy</a> for details.</p><div class="cookie-consent-actions"><button type="button" id="cookieAccept" class="btn btn-secondary">Accept analytics</button><button type="button" id="cookieReject" class="btn btn-secondary">Reject</button><button type="button" id="cookieClose" class="btn btn-secondary">Close</button></div>';
       document.body.appendChild(box);
     }
 
+    const choiceLabel = box.querySelector("#cookieConsentChoice");
+    choiceLabel.textContent = choice === "accepted" ? "Current choice: analytics accepted." : choice === "rejected" ? "Current choice: analytics rejected." : "Current choice: no analytics choice saved.";
     const accept = box.querySelector("#cookieAccept");
     const reject = box.querySelector("#cookieReject");
     const closeButton = box.querySelector("#cookieClose");
