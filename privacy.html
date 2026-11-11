@@ -27,24 +27,32 @@
   </section>
   <section class="panel content-panel">
     <h2>Rate-limit information</h2>
-    <p>For tools that use the backend, an IP address is used to enforce hourly rate limits. The persistent-ish Cloudflare value is a request count keyed for the relevant IP, tool, and hourly window. It does not contain the domain, URL, or keyword that was checked.</p>
+    <p>For tools that use the backend, an IP address is used to enforce hourly rate limits. The Cloudflare value is a request count keyed for the relevant IP, tool, and hourly window. It does not contain the domain, URL, or keyword that was checked.</p>
     <p>Those rate-limit counters automatically expire after roughly one hour. They are not sold, shared, or used for another purpose by CheckDR.</p>
   </section>
   <section class="panel content-panel">
     <h2>Analytics providers and information collected</h2>
     <p>CheckDR loads Google Tag Manager and Ahrefs Web Analytics only after a visitor selects <strong>Accept analytics</strong>. Neither analytics script is requested before acceptance. Selecting Reject prevents either service from loading.</p>
     <h3>Google Analytics through Google Tag Manager</h3>
-    <p>Google Tag Manager (container <code>GTM-PP972P5P</code>) loads tags. CheckDR does not load a separate, hard-coded Google Analytics script. Google Analytics 4 is intended to run as a tag configured inside this GTM container. When configured and fired, Google Analytics can collect page views, site interactions, page/referrer information, approximate location, and browser/device information. The precise events and any additional tags depend on the live GTM container configuration.</p>
-    <p>GTM itself is a tag manager, not the analytics service. A GA4 tag commonly uses first-party cookies <code>_ga</code> and <code>_ga_*</code> for browser identification and analytics state. Other tags configured in GTM may set additional cookies; the repository cannot establish the full list without inspecting the live container.</p>
+    <p>Google Tag Manager (container <code>GTM-PP972P5P</code>) loads tags. CheckDR does not load a separate, hard-coded Google Analytics script. Google Analytics 4 runs as a tag configured inside this GTM container. When the tag fires, Google Analytics can collect page views, site interactions, page/referrer information, approximate location, and browser/device information. The precise events and any additional tags depend on the live GTM container configuration.</p>
+    <p>GTM itself is a tag manager, not the analytics service. A GA4 tag commonly uses first-party cookies <code>_ga</code> and <code>_ga_*</code> for browser identification and analytics state. Other tags configured in GTM may set additional cookies.</p>
     <h3>Ahrefs Web Analytics</h3>
     <p>After acceptance, CheckDR loads Ahrefs Web Analytics from <code>analytics.ahrefs.com</code> using the existing project key. Ahrefs collects page URLs (including URL parameters), referrers, user-agent information used to report browser/device/operating-system details, country/city-level location, language preferences, and screen size. It automatically measures common interactions such as page views, link clicks, and form submissions. Ahrefs derives a daily pseudonymous visitor ID from IP address and user-agent data; it says raw IP addresses are discarded, the identifier is not used to track visitors across days, and it does not track people across devices or sites.</p>
     <p>Ahrefs Web Analytics states that it uses no cookies or persistent identifiers. Therefore it is not expected to set analytics cookies. Google Analytics cookies may be set if/when a GA4 tag in GTM is configured and runs. The consent choice is stored in this browser's local storage under <code>checkdr-analytics-consent</code>, not in an analytics cookie.</p>
     <p>Provider details: <a href="https://support.google.com/analytics/answer/11593727" rel="noopener noreferrer">Google Analytics data collection</a>, <a href="https://help.ahrefs.com/en/articles/10247870-about-ahrefs-web-analytics" rel="noopener noreferrer">Ahrefs Web Analytics data collection</a>, <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google's Privacy Policy</a>, and <a href="https://ahrefs.com/privacy-policy" rel="noopener noreferrer">Ahrefs' Privacy Policy</a>.</p>
   </section>
   <section class="panel content-panel">
+    <h2>Cloudflare Web Analytics</h2>
+    <p>Cloudflare Web Analytics provides basic traffic statistics independently of the optional Google Analytics and Ahrefs Web Analytics consent choice. It is designed to measure page views and aggregate site traffic without cookies or persistent visitor identifiers. Cloudflare's beacon can process page URL, referrer, browser and device information, and network information used to derive coarse geographic statistics. It is not gated by the cookie banner.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Cloudflare Turnstile</h2>
+    <p>CheckDR uses Cloudflare Turnstile on protected forms or requests to distinguish legitimate visitors from automated abuse. Turnstile evaluates browser and device signals, request metadata such as IP address and user agent, and interaction/challenge signals to produce a verification result. This security check is separate from optional analytics consent and may run when a protected feature is used. Cloudflare processes this information to detect bots and protect the service.</p>
+  </section>
+  <section class="panel content-panel">
     <h2>Changing or withdrawing consent</h2>
-    <p>Select <strong>Cookie settings</strong> in the footer to withdraw a previous choice and reopen the consent banner. This sets Google's Consent Mode v2 signals to denied, attempts to clear known Google Analytics/advertising cookies on the current host, and reloads the page so already-loaded analytics code is no longer active. Choose Reject to keep Google-through-GTM and Ahrefs analytics from loading. Choose Accept analytics to enable both.</p>
-    <p>Your choice is stored in this browser's local storage. Clearing site data or using another browser/device resets the choice. Withdrawal stops future collection by these scripts; it cannot retract data already sent to Google or Ahrefs.</p>
+    <p>Select <strong>Cookie settings</strong> in the footer to review or change your current choice. Opening settings does not change or withdraw consent. Close or press Escape to dismiss the banner while keeping your existing choice. Select <strong>Accept analytics</strong> to enable Google Analytics through Google Tag Manager and Ahrefs Web Analytics; this grants only the analytics_storage consent signal. Advertising-related consent signals remain denied. Select <strong>Reject</strong> to deny analytics consent and prevent the optional analytics scripts from loading on subsequent page loads.</p>
+    <p>If Google Tag Manager or Ahrefs Web Analytics has already loaded in the current page, choosing Reject updates consent, clears known Google Analytics/advertising cookies where possible, and reloads the page because already-running third-party scripts cannot be reliably unloaded in place. Your choice is stored in this browser's local storage. Cloudflare Web Analytics traffic statistics and Cloudflare Turnstile security checks are not controlled by this optional analytics setting. Clearing site data or using another browser/device resets the saved choice.</p>
   </section>
   <section class="panel content-panel">
     <h2>Third-party sharing</h2>

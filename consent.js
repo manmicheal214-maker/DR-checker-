@@ -21,13 +21,12 @@
     return /^GTM-[A-Z0-9]+$/.test(GTM_ID) && GTM_ID !== "GTM-XXXXXXX";
   }
 
-  function updateConsent(granted) {
-    const value = granted ? "granted" : "denied";
+  function updateConsent(analyticsGranted) {
     window.gtag("consent", "update", {
-      ad_storage: value,
-      analytics_storage: value,
-      ad_user_data: value,
-      ad_personalization: value
+      ad_storage: "denied",
+      analytics_storage: analyticsGranted ? "granted" : "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied"
     });
   }
 
@@ -79,6 +78,8 @@
   function banner(options) {
     options = options || {};
     let box = document.getElementById("cookieConsentBanner");
+    const choice = options.choice || "";
+    const returnFocus = options.returnFocus || null;
     if (!box) {
       box = document.createElement("div");
       box.id = "cookieConsentBanner";
@@ -87,30 +88,45 @@
       box.setAttribute("aria-modal", "false");
       box.setAttribute("aria-labelledby", "cookieConsentHeading");
       box.setAttribute("aria-describedby", "cookieConsentDescription");
-      box.innerHTML = '<h2 id="cookieConsentHeading" class="visually-hidden">Cookie preferences</h2><p id="cookieConsentDescription">CheckDR uses analytics technologies to understand site usage. Accept to enable analytics, or reject to continue without analytics.</p><button type="button" id="cookieAccept" class="btn btn-secondary">Accept analytics</button><button type="button" id="cookieReject" class="btn btn-secondary">Reject</button>';
+      box.innerHTML = '<h2 id="cookieConsentHeading" class="visually-hidden">Cookie preferences</h2><p id="cookieConsentChoice" class="cookie-consent-choice" aria-live="polite"></p><p id="cookieConsentDescription">CheckDR uses Google Analytics and Ahrefs Web Analytics to understand site usage if you accept. Basic, cookieless traffic statistics from Cloudflare Web Analytics run regardless of this choice. Read our <a href="/privacy.html">Privacy Policy</a> for details.</p><div class="cookie-consent-actions"><button type="button" id="cookieAccept" class="btn btn-secondary">Accept analytics</button><button type="button" id="cookieReject" class="btn btn-secondary">Reject</button><button type="button" id="cookieClose" class="btn btn-secondary">Close</button></div>';
       document.body.appendChild(box);
     }
 
-    const returnFocus = options.returnFocus || null;
-    function close() {
+    const choiceLabel = box.querySelector("#cookieConsentChoice");
+    choiceLabel.textContent = choice === "accepted" ? "Current choice: analytics accepted." : choice === "rejected" ? "Current choice: analytics rejected." : "Current choice: no analytics choice saved.";
+    const accept = box.querySelector("#cookieAccept");
+    const reject = box.querySelector("#cookieReject");
+    const closeButton = box.querySelector("#cookieClose");
+    function close(restoreFocus) {
+      document.removeEventListener("keydown", onKeydown);
       box.remove();
-      if (returnFocus && returnFocus.isConnected) returnFocus.focus();
+      if (restoreFocus && returnFocus && returnFocus.isConnected) returnFocus.focus();
     }
-
-    box.querySelector("#cookieAccept").onclick = function () {
+    function onKeydown(event) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close(true);
+      }
+    }
+    function acceptChoice() {
       try { localStorage.setItem(STORAGE_KEY, "accepted"); } catch (_) {}
-      close();
+      close(true);
       enableAnalytics();
-    };
-
-    box.querySelector("#cookieReject").onclick = function () {
+    }
+    function rejectChoice() {
+      const hadLoadedAnalytics = !!(window.__checkdrGtmLoaded || window.__checkdrAhrefsLoaded);
       try { localStorage.setItem(STORAGE_KEY, "rejected"); } catch (_) {}
       revokeConsent();
-      close();
-    };
-
-    // Only an explicit settings-link activation moves focus; first-load display stays non-intrusive.
-    if (options.moveFocus) box.querySelector("#cookieAccept").focus();
+      close(true);
+      // Already-executing third-party scripts cannot be unloaded reliably; reload the document.
+      if (hadLoadedAnalytics) window.location.reload();
+    }
+    accept.onclick = acceptChoice;
+    reject.onclick = rejectChoice;
+    closeButton.onclick = function () { close(true); };
+    document.removeEventListener("keydown", onKeydown);
+    document.addEventListener("keydown", onKeydown);
+    if (options.moveFocus) accept.focus();
   }
 
   function init() {
@@ -121,15 +137,15 @@
       enableAnalytics();
     } else {
       updateConsent(false);
-      if (!choice || choice === "pending") banner();
+      if (!choice || choice === "pending") banner({ choice: choice });
     }
 
     document.querySelectorAll("#cookieSettingsLink").forEach(function (link) {
       link.addEventListener("click", function (event) {
         event.preventDefault();
-        try { localStorage.setItem(STORAGE_KEY, "pending"); } catch (_) {}
-        revokeConsent();
-        banner({ moveFocus: true, returnFocus: link });
+        let currentChoice = "";
+        try { currentChoice = localStorage.getItem(STORAGE_KEY) || ""; } catch (_) {}
+        banner({ moveFocus: true, returnFocus: link, choice: currentChoice });
       });
     });
   }
