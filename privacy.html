@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Analytics is loaded by consent.js only after consent. -->
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,11 +22,11 @@
   <section class="panel content-panel">
     <h2>What the tools receive</h2>
     <p>The site does not require an account, login, API key, or credentials for Ahrefs, Google, hosting, FTP, analytics, or any other account. Depending on the tool, visitors can submit domains, URLs, or keywords for processing.</p>
-    <p>Submitted domains, URLs, and keywords are not written to a database. There is no database in this stack.</p>
+    <p>The CheckDR application code does not write submitted domains, URLs, or keywords to an application database. This statement describes the application code; it is not a claim that hosting, proxy, or service providers do not process request data.</p>
   </section>
   <section class="panel content-panel">
     <h2>Rate-limit information</h2>
-    <p>For tools that use the backend, an IP address is used to enforce hourly rate limits. The Cloudflare value is a request count keyed for the relevant IP, tool, and hourly window. It does not contain the domain, URL, or keyword that was checked.</p>
+    <p>For tools that use the backend, the Worker reads the visitor IP from the Cloudflare-provided <code>CF-Connecting-IP</code> header (falling back to <code>X-Forwarded-For</code>) for hourly rate limiting. The KV counter key contains the IP, tool name, and hourly window; it does not contain the submitted domain, URL, or keyword. The Worker code sets an expiry of 3,700 seconds on these counters.</p>
     <p>Those rate-limit counters automatically expire after roughly one hour. They are not sold, shared, or used for another purpose by CheckDR.</p>
   </section>
   <section class="panel content-panel">
@@ -43,11 +42,13 @@
   </section>
   <section class="panel content-panel">
     <h2>Cloudflare Web Analytics</h2>
-    <p>Cloudflare Web Analytics provides basic traffic statistics independently of the optional Google Analytics and Ahrefs Web Analytics consent choice. It is designed to measure page views and aggregate site traffic without cookies or persistent visitor identifiers. Cloudflare's beacon can process page URL, referrer, browser and device information, and network information used to derive coarse geographic statistics. It is not gated by the cookie banner.</p>
+    <p>Cloudflare Web Analytics is enabled through a setting in the Cloudflare dashboard for the site's zone. Its beacon is injected by Cloudflare's dashboard/proxy configuration and is not added by this repository's HTML or JavaScript. It operates independently of the optional Google Analytics and Ahrefs consent choice and is not controlled by the cookie banner. Cloudflare documents that Web Analytics does not use cookies or local storage to identify visitors, and describes collecting page/performance measurements through the browser Performance API. The exact beacon presence and configuration are controlled in the Cloudflare dashboard, not this repository.</p>
+    <p>See Cloudflare's <a href="https://developers.cloudflare.com/web-analytics/get-started/" rel="noopener noreferrer">Web Analytics setup guide</a>, <a href="https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/" rel="noopener noreferrer">data origin and collection documentation</a>, and <a href="https://developers.cloudflare.com/web-analytics/about/" rel="noopener noreferrer">Web Analytics overview</a>.</p>
   </section>
   <section class="panel content-panel">
     <h2>Cloudflare Turnstile</h2>
-    <p>CheckDR uses Cloudflare Turnstile on protected forms or requests to distinguish legitimate visitors from automated abuse. Turnstile evaluates browser and device signals, request metadata such as IP address and user agent, and interaction/challenge signals to produce a verification result. This security check is separate from optional analytics consent and may run when a protected feature is used. Cloudflare processes this information to detect bots and protect the service.</p>
+    <p>The <a href="/tools/dofollow-nofollow-checker.html">Dofollow/Nofollow Link Checker</a> is the CheckDR tool that loads Cloudflare Turnstile. Its page loads the Turnstile JavaScript API; the backend verifies the returned token with Cloudflare's Siteverify service. The Worker forwards the visitor IP in the Siteverify request when the <code>CF-Connecting-IP</code> header is present. Cloudflare's documentation describes Turnstile processing signals such as the visitor IP address, user-agent, and browser/device signals to assess automated traffic. This security processing is separate from the optional analytics consent choice.</p>
+    <p>See the <a href="https://developers.cloudflare.com/turnstile/" rel="noopener noreferrer">Cloudflare Turnstile documentation</a>, <a href="https://developers.cloudflare.com/turnstile/get-started/" rel="noopener noreferrer">Turnstile implementation guide</a>, and <a href="https://www.cloudflare.com/turnstile-privacy-policy/" rel="noopener noreferrer">Cloudflare Turnstile Privacy Addendum</a>.</p>
   </section>
   <section class="panel content-panel">
     <h2>Changing or withdrawing consent</h2>
@@ -56,11 +57,22 @@
   </section>
   <section class="panel content-panel">
     <h2>Third-party sharing</h2>
-    <p>CheckDR does not sell or share the temporary rate-limit data with third parties. The disclosed exception is that Google Analytics and Ahrefs Analytics process their own visitor/usage data when their scripts run on the site, subject to their respective privacy practices.</p>
+    <p>CheckDR does not sell personal information. Providers involved in hosting, proxying, security, and analytics may process visitor or request information as necessary to provide their services. These providers include:</p>
+    <ul>
+      <li><strong>GitHub Pages</strong> — hosts the site's static HTML, CSS, JavaScript, and other site assets. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener noreferrer">GitHub's General Privacy Statement</a>.</li>
+      <li><strong>Cloudflare</strong> — provides DNS/proxy services and the Worker backend; it also provides the dashboard-managed Web Analytics beacon and Turnstile token verification described above. See <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener noreferrer">Cloudflare's Privacy Policy</a>, <a href="https://developers.cloudflare.com/fundamentals/concepts/cloudflare-ip-addresses/" rel="noopener noreferrer">Cloudflare proxy/IP documentation</a>, and the linked Web Analytics and Turnstile documentation.</li>
+      <li><strong>Google</strong> — Google Tag Manager and any Google Analytics tags configured in the GTM container are requested only after analytics acceptance. See <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Google's Privacy Policy</a>.</li>
+      <li><strong>Ahrefs</strong> — Ahrefs Web Analytics is requested only after analytics acceptance. See <a href="https://ahrefs.com/privacy-policy" rel="noopener noreferrer">Ahrefs' Privacy Policy</a>.</li>
+    </ul>
+    <p>Hosting, proxy, and security providers necessarily receive network/request information when browsers connect to the site or use protected features. The optional Google and Ahrefs analytics scripts are governed by the saved analytics choice described above. Cloudflare Web Analytics is dashboard-managed and is not controlled by that choice.</p>
   </section>
   <section class="panel content-panel">
     <h2>Domain Rating data</h2>
     <p>Domain Rating data comes from Ahrefs' public Domain Rating API. CheckDR retrieves and displays that metric; it does not calculate Domain Rating itself.</p>
+  </section>
+  <section class="panel content-panel">
+    <h2>Privacy requests and contact</h2>
+    <p>For privacy questions or requests, contact <a href="mailto:hello@checkdr.net">hello@checkdr.net</a>.</p>
   </section>
   <section class="panel content-panel">
     <h2>Changes to this policy</h2>
