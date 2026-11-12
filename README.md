@@ -442,3 +442,8 @@ No framework or build step is required.
 ## Adding a tool
 
 To add a new tool, add one entry to `tools/tools-manifest.json` and create the tool's HTML file; nav, hub listing, and sitemap update automatically.
+
+
+## Cloudflare Web Analytics deployment note
+
+Cloudflare Web Analytics is configured in the Cloudflare dashboard for the site's zone. When automatic injection is enabled, Cloudflare injects the beacon at its edge; it is not included in this repository's HTML, JavaScript, or build scripts. Review or change the zone's **Web Analytics** settings in the Cloudflare dashboard. See the [Cloudflare Web Analytics setup guide](https://developers.cloudflare.com/web-analytics/get-started/).

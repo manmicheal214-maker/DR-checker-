@@ -590,3 +590,23 @@ footer {
 .visually-hidden { position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip:rect(0, 0, 0, 0) !important; clip-path:inset(50%) !important; white-space:nowrap !important; border:0 !important; }
 .cookie-consent .btn { margin-right:8px; }
 .cookie-consent .btn:focus-visible { outline:3px solid var(--signal); outline-offset:3px; }
+
+
+/* Cookie consent banner action layout */
+.cookie-consent-choice { margin: 0 0 10px; font-weight: 700; }
+.cookie-consent-actions { display: flex; align-items: stretch; gap: 10px; }
+.cookie-consent-actions .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+}
+.cookie-consent-actions .btn:focus-visible {
+  outline: 3px solid var(--signal);
+  outline-offset: 3px;
+}
+.cookie-consent-actions .btn[hidden] { display: none !important; }
+@media (max-width: 760px) {
+  .cookie-consent-actions { flex-direction: column; }
+  .cookie-consent-actions .btn { width: 100%; flex: 1 1 auto; }
+}
