@@ -22,6 +22,9 @@ jobs:
       - name: Check Worker syntax on pull requests
         if: github.event_name == 'pull_request'
         run: node --check worker.js && node --check tools/site-audit-domain.js && node --check tools/site-audit.js
+      - name: Check cookie settings pages load consent.js on pull requests
+        if: github.event_name == 'pull_request'
+        run: node scripts/check-cookie-consent.js
       - name: Check generated surfaces on pull requests
         if: github.event_name == 'pull_request'
         run: node scripts/sync-tools.js --check
