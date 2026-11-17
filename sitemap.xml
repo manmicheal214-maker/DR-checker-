@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://checkdr.net/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://checkdr.net/tools/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-<!-- TOOLS-MANIFEST:START -->
-  <url><loc>https://checkdr.net/tools/redirect-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/site-audit.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/site-audit-domain.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/meta-preview.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/dns-lookup.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/broken-links.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/security-headers.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/ssl-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/title-length-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/readability-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/writing-clarity-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/schema-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/sitemap-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/robots-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/social-preview-builder.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/hreflang-generator.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/keyword-clustering.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkdr.net/tools/dofollow-nofollow-checker.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <!-- TOOLS-MANIFEST:END -->
-  <url><loc>https://checkdr.net/about.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://checkdr.net/how-it-works.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://checkdr.net/privacy.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://checkdr.net/terms.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://checkdr.net/contact.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://checkdr.net/</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/redirect-checker.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/site-audit.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/site-audit-domain.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/meta-preview.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/dns-lookup.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/broken-links.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/security-headers.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/ssl-checker.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/title-length-checker.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/readability-checker.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/writing-clarity-checker.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/schema-generator.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/sitemap-generator.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/robots-generator.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/social-preview-builder.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/hreflang-generator.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/keyword-clustering.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/tools/dofollow-nofollow-checker.html</loc><lastmod>2026-11-05</lastmod></url>
+  <url><loc>https://checkdr.net/about.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/how-it-works.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/privacy.html</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://checkdr.net/terms.html</loc><lastmod>2026-11-11</lastmod></url>
+  <url><loc>https://checkdr.net/contact.html</loc><lastmod>2026-11-11</lastmod></url>
 </urlset>
