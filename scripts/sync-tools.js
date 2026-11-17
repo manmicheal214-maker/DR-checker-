@@ -154,11 +154,19 @@ function footerBlock() {
 
 function syncFooter(source, file) {
   const block = footerBlock();
-  const markerPattern = /<!-- footer:start -->[\s\S]*?<!-- footer:end -->/;
+  const markerPattern = /<!-- footer:start -->[\s\S]*?<!-- footer:end -->/g;
   let out = source;
-  if (markerPattern.test(out)) out = out.replace(markerPattern, block);
-  else if (/<div id="site-footer"><\/div>/.test(out)) out = out.replace(/<div id="site-footer"><\/div>/, block);
-  else throw new Error(file + " is missing its footer placeholder or markers");
+  if (markerPattern.test(out)) {
+    let kept = false;
+    markerPattern.lastIndex = 0;
+    out = out.replace(markerPattern, () => {
+      if (kept) return "";
+      kept = true;
+      return block;
+    });
+  } else if (/<div id="site-footer"><\/div>/.test(out)) {
+    out = out.replace(/<div id="site-footer"><\/div>/, block);
+  } else throw new Error(file + " is missing its footer placeholder or markers");
   return out.replace(/\s*<script src="\/?footer\.js" defer><\/script>/g, "");
 }
 
@@ -183,6 +191,170 @@ function jsonLdHub(source) {
   return replaceOrFail(source, /<head[^>]*>/i, "$&\n" + block, "tools/index.html ItemList schema");
 }
 
+
+const FAQ_TOOL_PAGES = new Set([
+  "tools/site-audit.html", "tools/meta-preview.html", "tools/dns-lookup.html",
+  "tools/broken-links.html", "tools/security-headers.html", "tools/ssl-checker.html",
+  "tools/sitemap-generator.html", "tools/robots-generator.html",
+  "tools/social-preview-builder.html", "tools/hreflang-generator.html",
+  "tools/dofollow-nofollow-checker.html"
+]);
+
+function plainText(html) {
+  return String(html).replace(/<[^>]*>/g, " ")
+    .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'")
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ").trim();
+}
+
+function questionTokens(value) {
+  return plainText(value).toLowerCase()
+    .replace(/\bchecker\b/g, "tool").replace(/\bedit\b/g, "change")
+    .replace(/\bperform\b/g, "do").replace(/\bchecks?\b/g, "validate")
+    .replace(/\burls\b/g, "url").replace(/\bexists\b/g, "exist")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .split(/\s+/).filter((word) => word && ![
+      "does", "do", "this", "that", "it", "a", "an", "the", "is", "are",
+      "how", "what", "why", "can", "i", "my", "your", "to", "for", "of",
+      "on", "in", "and", "or", "will", "be"
+    ].includes(word));
+}
+
+function nearDuplicateQuestion(left, right) {
+  const a = new Set(questionTokens(left));
+  const b = new Set(questionTokens(right));
+  if (!a.size || !b.size) return false;
+  const overlap = [...a].filter((word) => b.has(word)).length;
+  return overlap / new Set([...a, ...b]).size >= 0.72;
+}
+
+function removeRepeatedContentSections(source) {
+  const sections = [...source.matchAll(/<section\b[^>]*>[\s\S]*?<\/section>/gi)];
+  const seen = new Map();
+  let out = source;
+  for (let i = sections.length - 1; i >= 0; i--) {
+    const match = sections[i];
+    const heading = match[0].match(/<h2\b[^>]*>([\s\S]*?)<\/h2>/i);
+    if (!heading) continue;
+    const title = plainText(heading[1]).toLowerCase();
+    const normalized = match[0].replace(/\s+/g, " ").trim();
+    if (seen.get(title) === normalized) {
+      out = out.slice(0, match.index) + out.slice(match.index + match[0].length);
+    } else if (!seen.has(title)) {
+      seen.set(title, normalized);
+    }
+  }
+  return out;
+}
+
+function syncToolFaq(source, file) {
+  if (!FAQ_TOOL_PAGES.has(file)) return source;
+  let out = removeRepeatedContentSections(source);
+  const sections = [...out.matchAll(/<section\b[^>]*>[\s\S]*?<\/section>/gi)];
+  const main = sections.find((section) =>
+    /<h2\b[^>]*>\s*Frequently asked questions\s*<\/h2>/i.test(section[0])
+  );
+  if (!main) throw new Error(file + ": missing main FAQ section");
+  const faqItemPattern = /<div class="faq-item">\s*<h3>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>\s*<\/div>/gi;
+  const existing = [...main[0].matchAll(faqItemPattern)].map((match) => ({
+    question: plainText(match[1]), answer: plainText(match[2])
+  }));
+  const additions = [];
+  const edits = [];
+  for (const section of sections) {
+    if (section.index === main.index) continue;
+    const heading = section[0].match(/<h3\b[^>]*>\s*Frequently asked questions\s*<\/h3>/i);
+    if (!heading) continue;
+    const tail = section[0].slice(heading.index + heading[0].length);
+    for (const item of tail.matchAll(/<p>\s*<strong>([\s\S]*?)<\/strong>\s*([\s\S]*?)<\/p>/gi)) {
+      const question = plainText(item[1]);
+      const answer = plainText(item[2]);
+      if (question && answer &&
+          !existing.some((entry) => nearDuplicateQuestion(entry.question, question)) &&
+          !additions.some((entry) => nearDuplicateQuestion(entry.question, question))) {
+        additions.push({ question, answer, questionHtml: item[1], answerHtml: item[2] });
+      }
+    }
+    const cleaned = section[0].replace(
+      /<h3\b[^>]*>\s*Frequently asked questions\s*<\/h3>(?:\s*<p>\s*<strong>[\s\S]*?<\/strong>[\s\S]*?<\/p>)*/i,
+      ""
+    );
+    edits.push({ index: section.index, length: section[0].length, value: cleaned });
+  }
+  for (const edit of edits.sort((a, b) => b.index - a.index)) {
+    out = out.slice(0, edit.index) + edit.value + out.slice(edit.index + edit.length);
+  }
+  if (additions.length) {
+    const faqSection = out.match(/<section\b[^>]*>[\s\S]*?<h2\b[^>]*>\s*Frequently asked questions\s*<\/h2>[\s\S]*?<\/section>/i);
+    if (!faqSection) throw new Error(file + ": FAQ section disappeared during merge");
+    const markup = additions.map((item) =>
+      '<div class="faq-item"><h3>' + item.questionHtml + '</h3><p>' + item.answerHtml + '</p></div>'
+    ).join("");
+    const updated = faqSection[0].replace(/<\/section>$/i, markup + "</section>");
+    out = out.slice(0, faqSection.index) + updated + out.slice(faqSection.index + faqSection[0].length);
+  }
+  let visibleSection = out.match(/<section\b[^>]*>[\s\S]*?<h2\b[^>]*>\s*Frequently asked questions\s*<\/h2>[\s\S]*?<\/section>/i);
+  const faqMatches = [...visibleSection[0].matchAll(faqItemPattern)];
+  const seenQuestions = [];
+  const duplicateItems = [];
+  for (const item of faqMatches) {
+    const question = plainText(item[1]);
+    if (seenQuestions.some((seen) => nearDuplicateQuestion(seen, question))) {
+      duplicateItems.push({ index: visibleSection.index + item.index, length: item[0].length });
+    } else {
+      seenQuestions.push(question);
+    }
+  }
+  for (const item of duplicateItems.sort((a, b) => b.index - a.index)) {
+    out = out.slice(0, item.index) + out.slice(item.index + item.length);
+  }
+  visibleSection = out.match(/<section\b[^>]*>[\s\S]*?<h2\b[^>]*>\s*Frequently asked questions\s*<\/h2>[\s\S]*?<\/section>/i);
+  const visibleItems = [...visibleSection[0].matchAll(faqItemPattern)].map((match) => ({
+    question: plainText(match[1]), answer: plainText(match[2])
+  }));
+  const jsonLdPattern = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/i;
+  const jsonLd = out.match(jsonLdPattern);
+  if (!jsonLd) throw new Error(file + ": missing JSON-LD");
+  const schema = JSON.parse(jsonLd[1]);
+  const faq = (schema["@graph"] || []).find((item) => item["@type"] === "FAQPage") ||
+    (schema["@type"] === "FAQPage" ? schema : null);
+  if (!faq) throw new Error(file + ": missing FAQPage JSON-LD");
+  faq.mainEntity = visibleItems.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer }
+  }));
+  out = out.replace(jsonLdPattern, '<script type="application/ld+json">' + JSON.stringify(schema) + "</script>");
+
+  let headings = [...out.matchAll(/<h([1-3])\b[^>]*>([\s\S]*?)<\/h\1>/gi)];
+  const grouped = new Map();
+  for (const heading of headings) {
+    const title = plainText(heading[2]).toLowerCase();
+    if (!grouped.has(title)) grouped.set(title, []);
+    grouped.get(title).push(heading);
+  }
+  for (const [title, matches] of grouped) {
+    if (matches.length < 2) continue;
+    const descriptive = matches.find((heading) =>
+      heading[1] === "2" && title !== "frequently asked questions"
+    );
+    if (descriptive) {
+      const renamed = descriptive[0].replace(/>([\s\S]*?)</,
+        ">" + plainText(descriptive[2]) + " overview<");
+      out = out.replace(descriptive[0], renamed);
+    }
+  }
+  headings = [...out.matchAll(/<h([1-3])\b[^>]*>([\s\S]*?)<\/h\1>/gi)];
+  const titles = headings.map((heading) => plainText(heading[2]).toLowerCase());
+  if (titles.filter((title) => title === "frequently asked questions").length !== 1 ||
+      headings.filter((heading) => heading[1] === "1").length !== 1 ||
+      titles.some((title, index) => titles.indexOf(title) !== index)) {
+    throw new Error(file + ": duplicate FAQ or heading text remains");
+  }
+  return out;
+}
+
 function validatePages() {
   const files = [];
   function walk(dir, prefix) {
@@ -205,6 +377,27 @@ function validatePages() {
     if (canonical !== expected) failures.push(file + ": canonical must equal " + expected);
     const h1Count = (html.match(/<h1\b/gi) || []).length;
     if (h1Count !== 1) failures.push(file + ": expected exactly one H1 (got " + h1Count + ")");
+    if (FAQ_TOOL_PAGES.has(file)) {
+      const headings = [...html.matchAll(/<h([1-3])\b[^>]*>([\s\S]*?)<\/h\1>/gi)];
+      const headingText = headings.map((match) => plainText(match[2]).toLowerCase());
+      if (headingText.filter((value) => value === "frequently asked questions").length !== 1) failures.push(file + ": expected exactly one FAQ heading");
+      if (headingText.some((value, index) => headingText.indexOf(value) !== index)) failures.push(file + ": duplicate heading text");
+      for (let i = 1; i < headings.length; i++) {
+        if (Number(headings[i][1]) > Number(headings[i - 1][1]) + 1) failures.push(file + ": skipped heading level before " + plainText(headings[i][2]));
+      }
+      try {
+        const faqSection = html.match(/<section\b[^>]*>[\s\S]*?<h2\b[^>]*>\s*Frequently asked questions\s*<\/h2>[\s\S]*?<\/section>/i);
+        const visible = [...faqSection[0].matchAll(/<div class="faq-item">\s*<h3>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>\s*<\/div>/gi)]
+          .map((match) => ({ question: plainText(match[1]), answer: plainText(match[2]) }));
+        const jsonLd = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/i);
+        const schema = JSON.parse(jsonLd[1]);
+        const faq = (schema["@graph"] || []).find((item) => item["@type"] === "FAQPage");
+        const structured = faq.mainEntity.map((item) => ({ question: item.name, answer: item.acceptedAnswer.text }));
+        if (JSON.stringify(structured) !== JSON.stringify(visible)) failures.push(file + ": FAQ JSON-LD does not match visible questions and answers");
+      } catch (error) {
+        failures.push(file + ": FAQ JSON-LD validation failed (" + error.message + ")");
+      }
+    }
     if (file === "404.html") {
       if (!/<meta\s+name=["']robots["']\s+content=["']noindex["']/i.test(html)) failures.push(file + ": must contain meta robots noindex");
     } else {
@@ -270,7 +463,9 @@ let changed = 0;
 for (const file of htmlFiles) {
   const rel = "tools/" + file;
   const current = fs.readFileSync(path.join(root, rel), "utf8");
-  const next = syncFooter(syncToolPage(current, file), rel);
+  let next = syncToolPage(current, file);
+  next = syncToolFaq(next, rel);
+  next = syncFooter(next, rel);
   changed += writeOrCheck(rel, next) ? 1 : 0;
 }
 
