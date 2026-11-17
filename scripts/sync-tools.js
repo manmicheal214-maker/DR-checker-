@@ -47,11 +47,51 @@ function homeList() {
   ).join("\n");
 }
 
-function sitemapTools() {
-  return tools.map((tool) =>
-    '  <url><loc>https://checkdr.net/tools/' + tool.slug +
-    '.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>'
-  ).join("\n");
+const SITEMAP_LASTMOD = {
+  "/": "2026-11-12",
+  "/tools/": "2026-11-12",
+  "/tools/redirect-checker.html": "2026-11-12",
+  "/tools/site-audit.html": "2026-11-12",
+  "/tools/site-audit-domain.html": "2026-11-12",
+  "/tools/meta-preview.html": "2026-11-12",
+  "/tools/dns-lookup.html": "2026-11-12",
+  "/tools/broken-links.html": "2026-11-12",
+  "/tools/security-headers.html": "2026-11-12",
+  "/tools/ssl-checker.html": "2026-11-12",
+  "/tools/title-length-checker.html": "2026-11-12",
+  "/tools/readability-checker.html": "2026-11-12",
+  "/tools/writing-clarity-checker.html": "2026-11-12",
+  "/tools/schema-generator.html": "2026-11-12",
+  "/tools/sitemap-generator.html": "2026-11-12",
+  "/tools/robots-generator.html": "2026-11-12",
+  "/tools/social-preview-builder.html": "2026-11-12",
+  "/tools/hreflang-generator.html": "2026-11-12",
+  "/tools/keyword-clustering.html": "2026-11-12",
+  "/tools/dofollow-nofollow-checker.html": "2026-11-05",
+  "/about.html": "2026-11-12",
+  "/how-it-works.html": "2026-11-12",
+  "/privacy.html": "2026-11-12",
+  "/terms.html": "2026-11-11",
+  "/contact.html": "2026-11-11"
+};
+
+function sitemapEntry(url) {
+  const lastmod = SITEMAP_LASTMOD[url];
+  if (!lastmod || !/^\\d{4}-\\d{2}-\\d{2}$/.test(lastmod)) {
+    throw new Error("Missing or invalid sitemap lastmod for " + url);
+  }
+  return "  <url><loc>https://checkdr.net" + url +
+    "</loc><lastmod>" + lastmod + "</lastmod></url>";
+}
+
+function syncSitemap() {
+  const urls = ["/", "/tools/"].concat(
+    tools.map((tool) => "/tools/" + tool.slug + ".html"),
+    ["/about.html", "/how-it-works.html", "/privacy.html", "/terms.html", "/contact.html"]
+  );
+  return '<?xml version="1.0" encoding="UTF-8"?>\\n' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\\n' +
+    urls.map(sitemapEntry).join("\\n") + "\\n</urlset>\\n";
 }
 
 function replaceOrFail(source, re, replacement, label) {
@@ -93,18 +133,7 @@ function syncHome(source) {
   );
 }
 
-function syncSitemap(source) {
-  const block = "<!-- TOOLS-MANIFEST:START -->\n" + sitemapTools() + "\n  <!-- TOOLS-MANIFEST:END -->";
-  const re = /<!-- TOOLS-MANIFEST:START -->[\s\S]*?<!-- TOOLS-MANIFEST:END -->/;
-  if (re.test(source)) return source.replace(re, block);
 
-  const startMarker = "  <url><loc>https://checkdr.net/tools/redirect-checker.html</loc>";
-  const start = source.indexOf(startMarker);
-  if (start === -1) throw new Error("Could not find sitemap tool region");
-  const end = source.indexOf("  <url><loc>https://checkdr.net/about.html</loc>", start);
-  if (end === -1) throw new Error("Could not find sitemap static-page boundary");
-  return source.slice(0, start) + block + "\n" + source.slice(end);
-}
 
 function footerBlock() {
   return '<!-- footer:start -->\n' +
@@ -258,7 +287,7 @@ const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
 changed += writeOrCheck("index.html", syncHome(home)) ? 1 : 0;
 
 const sitemap = fs.readFileSync(path.join(root, "sitemap.xml"), "utf8");
-changed += writeOrCheck("sitemap.xml", syncSitemap(sitemap)) ? 1 : 0;
+changed += writeOrCheck("sitemap.xml", syncSitemap()) ? 1 : 0;
 
 if (process.argv.includes("--check")) validatePages();
 console.log((process.argv.includes("--check") ? "Checked" : "Synchronized") + " tool manifest; " + changed + " file(s) changed.");
